@@ -107,8 +107,8 @@ export default function ProductDirectory({ products }: ProductDirectoryProps) {
           aria-hidden="true"
           className="absolute inset-0 h-full w-full object-cover"
         />
-        <div className="relative mx-auto flex min-h-[460px] max-w-[1400px] items-end px-4 py-16 sm:px-6 lg:px-8">
-          <div className="max-w-xl pb-8">
+        <div className="relative mx-auto w-full flex min-h-[460px] max-w-[1400px] items-end px-4 py-16 sm:px-6 lg:px-8">
+          <div className="max-w-xl pb-16">
             <h1 className="text-5xl font-extrabold leading-[1.05] tracking-tight text-white drop-shadow-md sm:text-6xl" style={{ color: '#ffffff' }}>
               Complete your
               <br />
@@ -130,7 +130,7 @@ export default function ProductDirectory({ products }: ProductDirectoryProps) {
           <img
             src="/lovable/brainrot-hero.webp"
             alt="Voxel character collection"
-            className="pointer-events-none absolute bottom-[14%] right-[2%] hidden h-[55%] w-auto object-contain md:block"
+            className="pointer-events-none absolute bottom-[22%] right-[8%] hidden h-[50%] w-auto object-contain md:block"
           />
         </div>
       </section>
