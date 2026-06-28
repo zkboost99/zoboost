@@ -1,0 +1,502 @@
+/* Global styles cleared to avoid Bootstrap conflicts */
+
+.banner-style-five-area {
+    padding-bottom: 400px !important;
+}
+
+.promotion-brand-area {
+    margin-top: -375px !important;
+    margin-bottom: 0 !important;
+}
+
+/* Tablet */
+@media (max-width: 991px) {
+    .banner-style-five-area {
+        padding-bottom: 220px !important;
+    }
+    .promotion-brand-area {
+        margin-top: -180px !important;
+        margin-bottom: 0 !important;
+    }
+}
+
+/* Mobile */
+@media (max-width: 767px) {
+    .banner-style-five-area {
+        padding-bottom: 300px !important;
+    }
+    .promotion-brand-area {
+        margin-top: -240px !important;
+        margin-bottom: 0 !important;
+    }
+}
+
+/* Feature Cards */
+.about-four-right-info .social-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    list-style: none;
+    padding: 0;
+    margin-top: 12px;
+}
+
+.about-four-right-info .social-list li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: #ffffff;
+    border: 1px solid #e8e8f0;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(99, 102, 241, 0.08);
+    font-size: 14px;
+    font-weight: 600;
+    color: #1e1e3f;
+    transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.about-four-right-info .social-list li:hover {
+    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.18);
+    transform: translateY(-2px);
+}
+
+.about-four-right-info .social-list li svg {
+    flex-shrink: 0;
+    background: #eef0ff;
+    padding: 7px;
+    border-radius: 9px;
+    width: 36px !important;
+    height: 36px !important;
+}
+
+/* Global styles cleared to avoid Bootstrap conflicts */
+
+.banner-style-five-area {
+    padding-bottom: 400px !important;
+}
+
+.promotion-brand-area {
+    margin-top: -375px !important;
+    margin-bottom: 0 !important;
+}
+
+/* Tablet */
+@media (max-width: 991px) {
+    .banner-style-five-area {
+        padding-bottom: 220px !important;
+    }
+    .promotion-brand-area {
+        margin-top: -180px !important;
+        margin-bottom: 0 !important;
+    }
+}
+
+/* Mobile */
+@media (max-width: 767px) {
+    .banner-style-five-area {
+        padding-bottom: 300px !important;
+    }
+    .promotion-brand-area {
+        margin-top: -240px !important;
+        margin-bottom: 0 !important;
+    }
+}
+
+/* Feature Cards */
+.about-four-right-info .social-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    list-style: none;
+    padding: 0;
+    margin-top: 12px;
+}
+
+.about-four-right-info .social-list li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: #ffffff;
+    border: 1px solid #e8e8f0;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px rgba(99, 102, 241, 0.08);
+    font-size: 14px;
+    font-weight: 600;
+    color: #1e1e3f;
+    transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.about-four-right-info .social-list li:hover {
+    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.18);
+    transform: translateY(-2px);
+}
+
+.about-four-right-info .social-list li svg {
+    flex-shrink: 0;
+    background: #eef0ff;
+    padding: 7px;
+    border-radius: 9px;
+    width: 36px !important;
+    height: 36px !important;
+}
+
+/* Remove inner menu border and background to fix the 'menu inside a menu' look */
+nav.navbar.navbar-common ul.nav.navbar-nav.navbar-center {
+    border: none !important;
+    background: transparent !important;
+}
+
+/* Make sure the ZoroBoost watermark text fits within the card without being cut off */
+.about-style-one-info .fixed-text {
+    font-size: 115px !important;
+}
+
+/* macOS Style Modal */
+.macos-modal-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100vw; height: 100vh;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999;
+    animation: fadeIn 0.2s ease-out;
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.macos-window {
+    width: 90%;
+    max-width: 500px;
+    background: rgba(25, 25, 25, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+    overflow: hidden;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    animation: scaleUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+@keyframes scaleUp { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+.macos-titlebar {
+    height: 40px;
+    background: linear-gradient(to bottom, rgba(50,50,50,0.8), rgba(30,30,30,0.8));
+    border-bottom: 1px solid rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    position: relative;
+}
+.macos-controls {
+    display: flex;
+    gap: 8px;
+    position: absolute;
+    left: 16px;
+}
+.macos-btn {
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+.macos-btn.close { 
+    background: #FF5F56; 
+    border: 1px solid #E0443E; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.macos-btn.close::after {
+    content: "\00d7"; /* multiplication sign (cross) */
+    color: #4a0000;
+    font-size: 10px;
+    font-weight: bold;
+    opacity: 0.8;
+}
+.macos-btn.close:hover::after {
+    opacity: 1;
+}
+.macos-btn.minimize { background: #FFBD2E; border: 1px solid #DEA123; }
+.macos-btn.maximize { background: #27C93F; border: 1px solid #1AAB29; }
+.macos-btn:hover { filter: brightness(0.8); }
+
+.macos-title {
+    flex: 1;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: #e0e0e0;
+    letter-spacing: 0.5px;
+    pointer-events: none;
+}
+
+.macos-content {
+    padding: 24px;
+    color: #fff;
+}
+.macos-form label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #aaa;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.macos-form .form-group { margin-bottom: 16px; }
+.macos-submit-btn {
+    background: #007AFF;
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    transition: background 0.15s;
+}
+.macos-submit-btn:hover { background: #0066d6; }
+.macos-cancel-btn {
+    background: transparent;
+    color: #aaa;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-right: 10px;
+    transition: all 0.15s;
+}
+.macos-cancel-btn:hover { color: #fff; background: rgba(255,255,255,0.1); }
+
+/* Floating Feedback Widgets */
+.feedback-floating-container {
+  position: fixed;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  z-index: 9000;
+}
+
+.feedback-btn-wrapper {
+  display: flex;
+  align-items: center;
+  background: #f4f6fa;
+  border: 1px solid #e2e8f0;
+  border-left: none;
+  border-radius: 0 50px 50px 0;
+  padding: 8px 12px 8px 8px;
+  cursor: pointer;
+  box-shadow: 2px 4px 12px rgba(0,0,0,0.08);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transform: translateX(calc(-100% + 48px));
+}
+
+.feedback-btn-wrapper:hover {
+  transform: translateX(0);
+  background: #ffffff;
+  box-shadow: 4px 6px 16px rgba(0,0,0,0.12);
+}
+
+.feedback-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.suggestion-icon {
+  background: #eef2ff;
+  color: #6366f1;
+}
+
+.report-icon {
+  background: #fef2f2;
+  color: #ef4444;
+}
+
+.feedback-text {
+  margin-left: 12px;
+  font-weight: 600;
+  font-size: 14px;
+  color: #1e293b;
+  white-space: nowrap;
+}
+
+/* Feedback Modal specific overrides */
+.feedback-window {
+  background: #ffffff;
+  border: 1px solid rgba(0,0,0,0.1);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  color: #1e293b;
+  border-radius: 12px;
+  overflow: hidden;
+  width: 450px; /* Exact modal width for the genie calc */
+}
+
+.feedback-modal-header {
+  padding: 30px 24px 20px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.suggestion-header {
+  background: linear-gradient(180deg, #eff6ff 0%, #ffffff 100%);
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.report-header {
+  background: linear-gradient(180deg, #fef2f2 0%, #ffffff 100%);
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.macos-controls-feedback {
+  display: flex;
+  gap: 8px;
+  position: absolute;
+  top: 16px;
+  left: 16px;
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.header-content i {
+  font-size: 22px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.suggestion-header .header-content i {
+  background: rgba(59, 130, 246, 0.15);
+  color: #2563eb;
+}
+
+.report-header .header-content i {
+  background: rgba(239, 68, 68, 0.15);
+  color: #dc2626;
+}
+
+.header-content h3 {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0 0 2px 0;
+  color: #0f172a;
+}
+
+.header-content p {
+  font-size: 13px;
+  color: #64748b;
+  margin: 0;
+}
+
+.feedback-modal-body {
+  padding: 24px;
+}
+
+.feedback-modal-body .form-group {
+  margin-bottom: 16px;
+}
+
+.feedback-modal-body label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.feedback-modal-body input.form-control,
+.feedback-modal-body select.form-control {
+  height: 42px !important;
+  min-height: 42px !important;
+  max-height: 42px !important;
+  box-sizing: border-box !important;
+  line-height: normal !important;
+}
+
+.feedback-modal-body .form-control {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  color: #1e293b;
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-size: 14px;
+  transition: all 0.2s;
+  width: 100%;
+  box-sizing: border-box;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.feedback-modal-body .form-control:focus {
+  border-color: #3b82f6;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+.input-row {
+  display: flex;
+  gap: 16px;
+}
+.input-row .form-group {
+  flex: 1;
+}
+
+.feedback-submit-btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 6px;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 8px;
+}
+
+.suggestion-submit {
+  background: #2563eb;
+}
+.suggestion-submit:hover {
+  background: #1d4ed8;
+}
+
+.report-submit {
+  background: #ef4444;
+}
+.report-submit:hover {
+  background: #dc2626;
+}
+
+/* Fix macOS close buttons pointer blocking */
+.macos-controls-feedback {
+  z-index: 9999 !important;
+  pointer-events: auto !important;
+}
+
+.macos-btn {
+  position: relative;
+  z-index: 99999 !important;
+  pointer-events: auto !important;
+}

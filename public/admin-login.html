@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login — ZoroBoost Panel</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg:        #060612;
+            --surface:   rgba(255,255,255,0.04);
+            --border:    rgba(255,255,255,0.08);
+            --p1:        #7C3AED;
+            --p2:        #A855F7;
+            --cyan:      #06B6D4;
+            --text:      #F1F5F9;
+            --muted:     #94A3B8;
+            --err:       #EF4444;
+            --success:   #10B981;
+        }
+
+        html, body { height: 100%; font-family: 'Inter', sans-serif; }
+
+        body {
+            background: var(--bg);
+            display: flex; align-items: center; justify-content: center;
+            min-height: 100vh; overflow: hidden; position: relative;
+        }
+
+        /* ── Animated mesh background ── */
+        .bg-mesh {
+            position: fixed; inset: 0; z-index: 0;
+            background:
+                radial-gradient(ellipse 80% 60% at 20% -10%, rgba(124,58,237,.35) 0%, transparent 60%),
+                radial-gradient(ellipse 70% 50% at 80% 110%, rgba(6,182,212,.25) 0%, transparent 60%),
+                radial-gradient(ellipse 50% 40% at 50% 50%, rgba(168,85,247,.12) 0%, transparent 70%);
+            animation: bgPulse 8s ease-in-out infinite alternate;
+        }
+        @keyframes bgPulse {
+            0%   { opacity: .7; }
+            100% { opacity: 1; }
+        }
+
+        /* ── Floating orbs ── */
+        .orb { position: fixed; border-radius: 50%; filter: blur(80px); pointer-events: none; z-index: 0; }
+        .orb-1 { width: 500px; height: 500px; top: -150px; left: -150px; background: rgba(124,58,237,.2); animation: orbit 14s linear infinite; }
+        .orb-2 { width: 400px; height: 400px; bottom: -100px; right: -100px; background: rgba(6,182,212,.18); animation: orbit 18s linear infinite reverse; }
+        .orb-3 { width: 250px; height: 250px; top: 40%; left: 60%; background: rgba(168,85,247,.15); animation: orbit 10s linear infinite; }
+        @keyframes orbit {
+            0%   { transform: translate(0,0) scale(1); }
+            33%  { transform: translate(40px,-30px) scale(1.05); }
+            66%  { transform: translate(-20px,40px) scale(.95); }
+            100% { transform: translate(0,0) scale(1); }
+        }
+
+        /* ── Particle canvas ── */
+        #particles { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+
+        /* ── Grid lines ── */
+        .grid-lines {
+            position: fixed; inset: 0; z-index: 0; pointer-events: none;
+            background-image:
+                linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+            background-size: 60px 60px;
+        }
+
+        /* ── Login card ── */
+        .card-wrap { position: relative; z-index: 10; width: 100%; max-width: 440px; padding: 20px; }
+
+        .card {
+            background: rgba(255,255,255,.05);
+            backdrop-filter: blur(28px) saturate(180%);
+            -webkit-backdrop-filter: blur(28px) saturate(180%);
+            border: 1px solid rgba(255,255,255,.1);
+            border-radius: 28px;
+            padding: 48px 44px 44px;
+            box-shadow: 0 32px 80px rgba(0,0,0,.6), 0 0 0 1px rgba(124,58,237,.2), inset 0 1px 0 rgba(255,255,255,.08);
+            animation: cardIn .8s cubic-bezier(.22,1,.36,1) both;
+        }
+        @keyframes cardIn {
+            from { opacity:0; transform: translateY(40px) scale(.96); }
+            to   { opacity:1; transform: translateY(0) scale(1); }
+        }
+
+        /* ── Brand ── */
+        .brand { text-align: center; margin-bottom: 36px; }
+        .brand-logo {
+            width: 64px; height: 64px; border-radius: 20px; margin: 0 auto 18px;
+            background: linear-gradient(135deg, var(--p1), var(--cyan));
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 8px 32px rgba(124,58,237,.5), 0 0 0 1px rgba(124,58,237,.3);
+            position: relative; overflow: hidden;
+        }
+        .brand-logo::before {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,.2), transparent);
+        }
+        .brand-logo i { font-size: 28px; color: #fff; position: relative; z-index: 1; }
+        .brand h1 { font-size: 22px; font-weight: 800; color: var(--text); letter-spacing: -.3px; }
+        .brand p  { font-size: 13px; color: var(--muted); margin-top: 4px; font-weight: 400; }
+
+        /* ── Divider ── */
+        .divider { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; }
+        .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+        .divider span { font-size: 11px; color: var(--muted); font-weight: 500; letter-spacing: .08em; text-transform: uppercase; }
+
+        /* ── Form ── */
+        .form-group { margin-bottom: 18px; position: relative; }
+        .form-label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 8px; letter-spacing: .06em; text-transform: uppercase; }
+
+        .input-wrap { position: relative; }
+        .input-wrap i.icon {
+            position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
+            color: var(--muted); font-size: 15px; pointer-events: none; transition: color .2s;
+        }
+        .form-control {
+            width: 100%; padding: 14px 16px 14px 46px;
+            background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1);
+            border-radius: 14px; color: var(--text); font-family: 'Inter', sans-serif;
+            font-size: 14.5px; font-weight: 500; outline: none; transition: all .2s;
+        }
+        .form-control::placeholder { color: rgba(148,163,184,.5); }
+        .form-control:focus {
+            border-color: var(--p1); background: rgba(124,58,237,.08);
+            box-shadow: 0 0 0 3px rgba(124,58,237,.18), 0 4px 16px rgba(0,0,0,.2);
+        }
+        .form-control:focus + .focus-ring { opacity: 1; }
+        .form-control:focus ~ i.icon { color: var(--p2); }
+
+        .toggle-pw {
+            position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+            color: var(--muted); cursor: pointer; padding: 4px; font-size: 15px;
+            transition: color .2s;
+        }
+        .toggle-pw:hover { color: var(--p2); }
+
+        /* ── Remember & Forgot ── */
+        .form-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 26px; }
+
+        .checkbox-wrap { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+        .checkbox-wrap input { display: none; }
+        .checkbox-box {
+            width: 18px; height: 18px; border: 1.5px solid rgba(255,255,255,.2);
+            border-radius: 6px; display: flex; align-items: center; justify-content: center;
+            transition: all .2s; flex-shrink: 0;
+        }
+        .checkbox-wrap input:checked ~ .checkbox-box {
+            background: var(--p1); border-color: var(--p1);
+            box-shadow: 0 0 12px rgba(124,58,237,.4);
+        }
+        .checkbox-box i { font-size: 10px; color: #fff; display: none; }
+        .checkbox-wrap input:checked ~ .checkbox-box i { display: block; }
+        .checkbox-label { font-size: 13px; color: var(--muted); font-weight: 500; }
+
+        .forgot { font-size: 13px; color: var(--p2); text-decoration: none; font-weight: 500; transition: color .2s; }
+        .forgot:hover { color: var(--cyan); }
+
+        /* ── Button ── */
+        .btn-login {
+            width: 100%; padding: 15px; border: none; border-radius: 14px; cursor: pointer;
+            font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 700;
+            letter-spacing: .02em; position: relative; overflow: hidden;
+            background: linear-gradient(135deg, var(--p1) 0%, #5B21B6 50%, var(--cyan) 150%);
+            color: #fff; transition: all .3s;
+            box-shadow: 0 8px 32px rgba(124,58,237,.5), 0 2px 8px rgba(0,0,0,.3);
+        }
+        .btn-login::before {
+            content: ''; position: absolute; inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,.15), transparent);
+            opacity: 0; transition: opacity .3s;
+        }
+        .btn-login:hover { transform: translateY(-2px); box-shadow: 0 14px 40px rgba(124,58,237,.6), 0 4px 12px rgba(0,0,0,.4); }
+        .btn-login:hover::before { opacity: 1; }
+        .btn-login:active { transform: translateY(0); }
+        .btn-login .btn-text { position: relative; z-index: 1; display: flex; align-items: center; justify-content: center; gap: 8px; }
+
+        /* ── Loading state ── */
+        .btn-login.loading .btn-text span { display: none; }
+        .btn-login .spinner { display: none; width: 20px; height: 20px; border: 2px solid rgba(255,255,255,.3); border-top-color: #fff; border-radius: 50%; animation: spin .6s linear infinite; }
+        .btn-login.loading .spinner { display: block; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ── Error message ── */
+        .error-msg {
+            display: none; background: rgba(239,68,68,.12); border: 1px solid rgba(239,68,68,.3);
+            border-radius: 10px; padding: 12px 14px; margin-bottom: 18px;
+            font-size: 13px; color: #FCA5A5; display: flex; align-items: center; gap: 8px;
+        }
+        .error-msg.show { display: flex; animation: shake .4s ease; }
+        @keyframes shake {
+            0%,100% { transform: translateX(0); }
+            20%,60%  { transform: translateX(-6px); }
+            40%,80%  { transform: translateX(6px); }
+        }
+
+        /* ── Footer ── */
+        .card-footer { text-align: center; margin-top: 24px; font-size: 12.5px; color: var(--muted); }
+        .card-footer a { color: var(--p2); text-decoration: none; }
+
+        /* ── Glow ring on card on hover ── */
+        .card:hover { box-shadow: 0 32px 80px rgba(0,0,0,.6), 0 0 0 1px rgba(124,58,237,.35), 0 0 60px rgba(124,58,237,.08), inset 0 1px 0 rgba(255,255,255,.08); }
+
+        /* ── Badge top right ── */
+        .secure-badge {
+            position: absolute; top: -14px; right: 24px;
+            background: linear-gradient(135deg, #059669, #10B981);
+            border-radius: 20px; padding: 4px 14px 4px 10px;
+            font-size: 11px; font-weight: 700; color: #fff; letter-spacing: .04em;
+            display: flex; align-items: center; gap: 6px;
+            box-shadow: 0 4px 16px rgba(16,185,129,.4);
+        }
+        .secure-badge i { font-size: 10px; }
+
+        /* ── Version ── */
+        .version {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            z-index: 10; font-size: 11px; color: rgba(148,163,184,.4); letter-spacing: .1em;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-mesh"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <div class="grid-lines"></div>
+    <canvas id="particles"></canvas>
+
+    <div class="card-wrap">
+        <div class="card">
+            <div class="secure-badge"><i class="fas fa-shield-halved"></i> Secure Access</div>
+
+            <div class="brand">
+                <div class="brand-logo">
+                    <i class="fas fa-bolt"></i>
+                </div>
+                <h1>ZoroBoost Admin</h1>
+                <p>Sign in to your control panel</p>
+            </div>
+
+            <div class="divider"><span>Administrator Login</span></div>
+
+            <div class="error-msg" id="errorMsg">
+                <i class="fas fa-circle-exclamation"></i>
+                <span>Invalid credentials. Please try again.</span>
+            </div>
+
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label class="form-label" for="username">Username</label>
+                    <div class="input-wrap">
+                        <i class="fas fa-user icon"></i>
+                        <input class="form-control" type="text" id="username" placeholder="Enter your username" autocomplete="username" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="password">Password</label>
+                    <div class="input-wrap">
+                        <i class="fas fa-lock icon"></i>
+                        <input class="form-control" type="password" id="password" placeholder="Enter your password" autocomplete="current-password" required>
+                        <i class="fas fa-eye toggle-pw" id="pwToggle" onclick="togglePw()"></i>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <label class="checkbox-wrap">
+                        <input type="checkbox" id="rememberMe">
+                        <div class="checkbox-box"><i class="fas fa-check"></i></div>
+                        <span class="checkbox-label">Remember me</span>
+                    </label>
+                    <a href="#" class="forgot">Forgot password?</a>
+                </div>
+
+                <button class="btn-login" type="submit" id="loginBtn">
+                    <div class="btn-text">
+                        <div class="spinner"></div>
+                        <span><i class="fas fa-arrow-right-to-bracket"></i> Sign In</span>
+                    </div>
+                </button>
+            </form>
+        </div>
+        <div class="card-footer">
+            &copy; 2026 ZoroBoost &mdash; All rights reserved &bull; <a href="#">Privacy Policy</a>
+        </div>
+    </div>
+
+    <div class="version">v2.4.1 &bull; ZoroBoost Admin Panel</div>
+
+    <script>
+        // Particle system
+        const canvas = document.getElementById('particles');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor() { this.reset(); }
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 1.5 + .3;
+                this.speedX = (Math.random() - .5) * .4;
+                this.speedY = (Math.random() - .5) * .4;
+                this.opacity = Math.random() * .5 + .1;
+                this.color = Math.random() > .5 ? '124,58,237' : '6,182,212';
+            }
+            update() {
+                this.x += this.speedX; this.y += this.speedY;
+                if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(${this.color},${this.opacity})`;
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < 120; i++) particles.push(new Particle());
+
+        const animateParticles = () => {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => { p.update(); p.draw(); });
+
+            // Draw connections
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.sqrt(dx*dx + dy*dy);
+                    if (dist < 100) {
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.strokeStyle = `rgba(124,58,237,${.12 * (1 - dist/100)})`;
+                        ctx.lineWidth = .5;
+                        ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(animateParticles);
+        };
+        animateParticles();
+
+        // Toggle password
+        function togglePw() {
+            const pw = document.getElementById('password');
+            const icon = document.getElementById('pwToggle');
+            if (pw.type === 'password') { pw.type = 'text'; icon.className = 'fas fa-eye-slash toggle-pw'; }
+            else { pw.type = 'password'; icon.className = 'fas fa-eye toggle-pw'; }
+        }
+
+        // Login handler
+        function handleLogin(e) {
+            e.preventDefault();
+            const btn = document.getElementById('loginBtn');
+            const err = document.getElementById('errorMsg');
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+
+            btn.classList.add('loading');
+            err.classList.remove('show');
+
+            setTimeout(() => {
+                btn.classList.remove('loading');
+                if (user === 'admin' && pass === 'admin123') {
+                    btn.style.background = 'linear-gradient(135deg, #059669, #10B981)';
+                    btn.querySelector('.btn-text').innerHTML = '<i class="fas fa-check"></i> <span>Authenticated!</span>';
+                    setTimeout(() => { window.location.href = '/admin.php'; }, 800);
+                } else {
+                    err.classList.add('show');
+                    document.getElementById('password').value = '';
+                    document.getElementById('password').focus();
+                }
+            }, 1400);
+        }
+    </script>
+</body>
+</html>
