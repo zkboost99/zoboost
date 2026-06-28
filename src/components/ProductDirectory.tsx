@@ -107,6 +107,9 @@ export default function ProductDirectory({ products }: ProductDirectoryProps) {
           aria-hidden="true"
           className="absolute inset-0 h-full w-full object-cover"
         />
+        {/* Full-width smooth bottom fade blur */}
+        <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#0f0f10] via-[#0f0f10]/80 to-transparent pointer-events-none" />
+
         <div className="relative mx-auto w-full flex min-h-[460px] max-w-[1200px] items-end px-4 py-16 sm:px-6 lg:px-8">
           <div className="max-w-xl pb-16">
             <h1 className="text-5xl font-extrabold leading-[1.05] tracking-tight text-white drop-shadow-md sm:text-6xl" style={{ color: '#ffffff' }}>
@@ -132,8 +135,6 @@ export default function ProductDirectory({ products }: ProductDirectoryProps) {
             alt="Voxel character collection"
             className="pointer-events-none absolute bottom-[22%] right-[4%] hidden h-[50%] w-auto object-contain md:block"
           />
-          {/* Smooth bottom fade blur */}
-          <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#0f0f10] via-[#0f0f10]/80 to-transparent pointer-events-none" />
         </div>
       </section>
 
