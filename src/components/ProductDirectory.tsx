@@ -111,13 +111,13 @@ export default function ProductDirectory({ products }: ProductDirectoryProps) {
         <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#0f0f10] via-[#0f0f10]/80 to-transparent pointer-events-none" />
 
         <div className="relative mx-auto w-full flex min-h-[460px] max-w-[1200px] items-end px-4 py-16 sm:px-6 lg:px-8">
-          <div className="max-w-xl pb-16">
-            <h1 className="text-5xl font-extrabold leading-[1.05] tracking-tight text-white drop-shadow-md sm:text-6xl" style={{ color: '#ffffff' }}>
+          <div className="max-w-md pb-16">
+            <h1 className="text-4xl font-extrabold leading-[1.05] tracking-tight text-white drop-shadow-md sm:text-5xl" style={{ color: '#ffffff' }}>
               Complete your
               <br />
               Discord set
             </h1>
-            <p className="mt-5 text-base font-medium text-white/95">
+            <p className="mt-4 text-sm font-medium text-white/90">
               The safest player-to-player Discord services marketplace
             </p>
             <button 
@@ -125,7 +125,7 @@ export default function ProductDirectory({ products }: ProductDirectoryProps) {
                 const el = document.getElementById('listings');
                 if (el) el.scrollIntoView({ behavior: 'smooth' });
               }}
-              className="mt-8 inline-flex items-center justify-center rounded-md bg-amber-400 px-12 py-3.5 text-sm font-bold text-neutral-900 shadow-md transition hover:bg-amber-300 border-none cursor-pointer"
+              className="mt-6 inline-flex items-center justify-center rounded-md bg-amber-400 px-8 py-2.5 text-xs font-bold text-neutral-900 shadow-md transition hover:bg-amber-300 border-none cursor-pointer"
             >
               Shop Now
             </button>
