@@ -21,6 +21,7 @@ import {
   Coins,
   Rocket,
   Gamepad2,
+  Globe,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
@@ -96,30 +97,14 @@ export default function ProductDirectory({ products, posts }: ProductDirectoryPr
       
       {/* Hero Section */}
       <section className="relative overflow-hidden">
-        {/* Sky */}
-        <div className="absolute inset-0 bg-gradient-to-b from-sky-600 via-sky-500 to-sky-400" />
-        {/* Clouds */}
-        <div className="absolute inset-x-0 top-1/2 -translate-y-[60%]">
-          <div className="absolute left-[8%] h-32 w-72 rounded-full bg-sky-300/70 blur-md" />
-          <div className="absolute left-[35%] h-40 w-96 rounded-full bg-sky-300/70 blur-md" />
-          <div className="absolute right-[10%] h-36 w-80 rounded-full bg-sky-300/70 blur-md" />
-        </div>
-        {/* Stars */}
-        <Sparkles className="absolute left-[42%] top-16 h-5 w-5 text-white/90" />
-        <Sparkles className="absolute right-[8%] top-10 h-4 w-4 text-white/80" />
-        <Sparkles className="absolute right-[28%] top-40 h-3 w-3 text-white/80" />
-        <Sparkles className="absolute left-[55%] top-44 h-3 w-3 text-white/70" />
-
-        {/* Ground */}
-        <div className="absolute bottom-0 left-0 right-0 h-[45%] bg-gradient-to-b from-emerald-500 to-emerald-700" />
-        {/* Red road */}
-        <div 
-          className="absolute bottom-0 left-1/2 h-[45%] w-[70%] -translate-x-[35%] bg-gradient-to-b from-red-700 via-red-800 to-red-900" 
-          style={{ clipPath: 'polygon(42% 0, 58% 0, 100% 100%, 0 100%)' }}
+        <img
+          src="/lovable/brainrot-bg.webp"
+          alt=""
+          aria-hidden="true"
+          className="absolute inset-0 h-full w-full object-cover"
         />
-
-        <div className="relative mx-auto flex min-h-[460px] max-w-[1400px] items-center px-4 py-16 sm:px-6 lg:px-8">
-          <div className="max-w-xl">
+        <div className="relative mx-auto flex min-h-[460px] max-w-[1400px] items-end px-4 py-16 sm:px-6 lg:px-8">
+          <div className="max-w-xl pb-8">
             <h1 className="text-5xl font-extrabold leading-[1.05] tracking-tight text-white drop-shadow-md sm:text-6xl" style={{ color: '#ffffff' }}>
               Complete your
               <br />
@@ -138,16 +123,11 @@ export default function ProductDirectory({ products, posts }: ProductDirectoryPr
               Shop Now
             </button>
           </div>
-
-          {/* Voxel characters on right */}
-          <div className="absolute bottom-12 right-[4%] hidden items-end gap-1 md:flex">
-            <VoxelChar color="bg-stone-300" hat="bg-cyan-500" size="h-28 w-20" />
-            <VoxelChar color="bg-amber-500" hat="bg-orange-600" size="h-32 w-20" />
-            <VoxelChar color="bg-lime-500" hat="bg-yellow-300" size="h-40 w-24" />
-            <VoxelChar color="bg-neutral-500" hat="bg-neutral-700" size="h-44 w-24" />
-            <VoxelChar color="bg-sky-500" hat="bg-blue-700" size="h-28 w-20" />
-            <VoxelChar color="bg-red-600" hat="bg-red-800" size="h-52 w-28" />
-          </div>
+          <img
+            src="/lovable/brainrot-hero.webp"
+            alt="Voxel character collection"
+            className="pointer-events-none absolute bottom-0 right-[2%] hidden h-[90%] w-auto object-contain md:block"
+          />
         </div>
       </section>
 
@@ -158,7 +138,7 @@ export default function ProductDirectory({ products, posts }: ProductDirectoryPr
         <section className="-mt-2 pt-8">
           <div className="flex items-center justify-between">
             <h2 className="flex items-center gap-2 text-lg font-bold text-white m-0">
-              Popular Deals
+              Recently viewed
               <HelpCircle className="h-4 w-4 text-neutral-400" />
             </h2>
             <div className="flex items-center gap-2">
@@ -186,9 +166,9 @@ export default function ProductDirectory({ products, posts }: ProductDirectoryPr
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <div className="grid h-9 w-9 place-items-center rounded-md bg-indigo-500 text-xs font-bold text-white">
-                      ZB
+                      MV
                     </div>
-                    <span className="text-sm font-semibold text-white">ZoroBoost</span>
+                    <span className="text-sm font-semibold text-white">Boost Hub</span>
                   </div>
                   <span className="rounded-md bg-[#2a2a2e] px-2 py-1 text-[11px] font-bold text-white">
                     {r.category}
@@ -362,7 +342,16 @@ export default function ProductDirectory({ products, posts }: ProductDirectoryPr
         </section>
 
       </main>
-      
+
+      {/* Safe Trading Section */}
+      <SafeTrading />
+
+      {/* Trust Cards Section */}
+      <TrustCards />
+
+      {/* Payments Bar Section */}
+      <PaymentsBar />
+
       {/* Floating Chat */}
       <button
         aria-label="Open chat"
@@ -372,27 +361,6 @@ export default function ProductDirectory({ products, posts }: ProductDirectoryPr
         <MessageCircle className="h-6 w-6" />
       </button>
 
-    </div>
-  );
-}
-
-/* Voxel Character Component */
-function VoxelChar({
-  color,
-  hat,
-  size,
-}: {
-  color: string;
-  hat: string;
-  size: string;
-}) {
-  return (
-    <div className={`relative ${size} drop-shadow-xl`}>
-      <div className={`absolute inset-x-1 top-0 h-1/4 rounded-sm ${hat}`} />
-      <div className={`absolute inset-x-0 top-1/4 h-2/4 rounded-sm ${color}`} />
-      <div className="absolute inset-x-1 bottom-0 h-1/4 rounded-sm bg-neutral-800" />
-      <div className="absolute left-[25%] top-[35%] h-1.5 w-1.5 rounded-sm bg-white" />
-      <div className="absolute right-[25%] top-[35%] h-1.5 w-1.5 rounded-sm bg-white" />
     </div>
   );
 }
@@ -436,6 +404,110 @@ function CategoryCard({
           </li>
         ))}
       </ul>
+    </section>
+  );
+}
+
+/* Safe Trading Component */
+function SafeTrading() {
+  return (
+    <section className="bg-[#15161a]">
+      <div className="mx-auto grid max-w-[1400px] grid-cols-1 items-center gap-10 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:px-8 lg:py-20">
+        <div className="max-w-md">
+          <h2 className="text-2xl font-bold text-white sm:text-[28px]">Safe and Easy Trading</h2>
+          <div className="mt-6 space-y-5 text-sm leading-6 text-neutral-300">
+            <p>
+              Trade without fear — ZoroBoost guarantees that all trades are legit and keeps you
+              safe from scammers.
+            </p>
+            <p>
+              It's quick and easy — find the best product for your Discord server, make a payment,
+              receive your order, and get back to playing.
+            </p>
+            <p>Join us today to level up your gaming experience!</p>
+          </div>
+        </div>
+        <div className="relative flex justify-center lg:justify-end">
+          <img
+            src="/lovable/phones.webp"
+            alt="Mobile app preview"
+            className="w-full max-w-[560px] object-contain"
+          />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* Trust Cards Component */
+function TrustCards() {
+  return (
+    <section className="bg-[#0a0a0c]">
+      <div className="mx-auto grid max-w-[1400px] grid-cols-1 gap-5 px-4 py-10 sm:px-6 md:grid-cols-2 lg:px-8">
+        <article className="flex items-center gap-5 rounded-2xl bg-[#f3e5c7] p-6 sm:p-7">
+          <div className="grid h-24 w-24 shrink-0 place-items-center rounded-xl bg-amber-300/40">
+            <Shield className="h-14 w-14 text-amber-700" strokeWidth={2} />
+          </div>
+          <div className="min-w-0">
+            <h3 className="text-lg font-bold text-neutral-900">Money-Back Guarantee</h3>
+            <p className="mt-1 text-sm text-neutral-700">
+              Receive your order or get a refund. Feel safe with full trading protection!
+            </p>
+            <button 
+              onClick={(e) => { e.preventDefault(); e.stopPropagation(); document.dispatchEvent(new CustomEvent('openFeedback', { detail: { type: 'suggestion', rect: e.currentTarget.getBoundingClientRect() } })); }}
+              className="mt-4 inline-flex items-center rounded-md bg-amber-400 px-4 py-2 text-xs font-bold text-neutral-900 hover:bg-amber-300 border-none cursor-pointer"
+            >
+              Learn more
+            </button>
+          </div>
+        </article>
+        <article className="flex items-center gap-5 rounded-2xl bg-[#c8e6a0] p-6 sm:p-7">
+          <div className="grid h-24 w-24 shrink-0 place-items-center rounded-xl bg-lime-300/50">
+            <HelpCircle className="h-14 w-14 text-emerald-800" strokeWidth={2} />
+          </div>
+          <div className="min-w-0">
+            <h3 className="text-lg font-bold text-neutral-900">24/7 Live Support</h3>
+            <p className="mt-1 text-sm text-neutral-700">
+              ZoroBoost support works around the clock. Contact us at any time!
+            </p>
+            <button 
+              onClick={(e) => { e.preventDefault(); e.stopPropagation(); document.dispatchEvent(new CustomEvent('openFeedback', { detail: { type: 'report', rect: e.currentTarget.getBoundingClientRect() } })); }}
+              className="mt-4 inline-flex items-center rounded-md bg-amber-400 px-4 py-2 text-xs font-bold text-neutral-900 hover:bg-amber-300 border-none cursor-pointer"
+            >
+              Chat now
+            </button>
+          </div>
+        </article>
+      </div>
+    </section>
+  );
+}
+
+/* Payments Bar Component */
+function PaymentsBar() {
+  const pays = [
+    '/lovable/Visa.svg',
+    '/lovable/Mastercard.svg',
+    '/lovable/Amex.svg',
+    '/lovable/Discover.svg',
+    '/lovable/BTC.svg',
+    '/lovable/GooglePay.svg',
+    '/lovable/ApplePay.svg'
+  ];
+  return (
+    <section className="bg-[#0a0a0c]">
+      <div className="mx-auto flex max-w-[1400px] flex-col items-center justify-between gap-4 px-4 py-6 sm:px-6 md:flex-row lg:px-8">
+        <div className="flex flex-wrap items-center gap-2">
+          {pays.map((p, i) => (
+            <img key={i} src={p} alt="" className="h-7 w-auto" />
+          ))}
+          <span className="ml-2 text-xs font-semibold text-neutral-400">+15 more</span>
+        </div>
+        <button className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-[#15161a] px-4 py-2 text-xs font-semibold text-neutral-200 hover:border-white/20">
+          <Globe className="h-4 w-4" />
+          English | USD - $
+        </button>
+      </div>
     </section>
   );
 }
