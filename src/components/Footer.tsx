@@ -2,158 +2,91 @@ import Link from 'next/link';
 
 export default function Footer() {
   return (
-    <>
-      {/*  Start Footer 
-    =============================================  */}
-    <footer className="footer-style-one box-layout bg-dark text-light">
+    <footer className="footer-eldorado text-light">
+      <div className="eldorado-container">
         
-        <div className="footer-shape">
-            <img src="/assets/img/shape/globe.png" alt="Image Not Found" />
-        </div>
-        <div className="container">
-            <div className="f-items default-padding">
-                <div className="row">
-                    <div className="col-xl-5 col-lg-5">
-                        <div className="f-item contact">
-                            <h4 className="widget-title"> Contact</h4>
-                            <p>
-                                Join our official Discord server or send us an email for any queries regarding our services.
-                            </p>
-                            <ul className="contact">
-                                <li>
-                                    <p>Phone Support</p>
-                                    <h4><a href="tel:+923438495390">+923438495390</a></h4>
-                                </li>
-                                <li>
-                                    <p>Email</p>
-                                    <h4><a href="mailto:info@zoroboost.com">info@zoroboost.com</a></h4>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div className="col-xl-6 offset-xl-1 col-lg-7">
-                        <div className="footer-style-one-items">
-                            {/*  Single Item  */}
-                            <div className="f-item link">
-                                <h4 className="widget-title">Company</h4>
-                                <ul>
-                                    <li>
-                                        <a href="/about-us">About Us</a>
-                                    </li>
-                                    <li>
-                                         <Link href="/blog">Blog</Link>
-                                    </li>
-                                    <li>
-                                        <a href="/contact-us">Contact Us</a>
-                                    </li>
-                                    <li>
-                                        <a href="/faq">FAQ</a>
-                                    </li>
-                                    <li>
-                                         <Link href="/">Home</Link>
-                                    </li>
-                                </ul>
-                            </div>
-                            {/*  End Single Item  */}
-                            {/*  Single Item  */}
-                            <div className="f-item link">
-                                <h4 className="widget-title">Services</h4>
-                                <ul>
-                                    <li>
-                                        <a href="/aged-accounts">Aged Accounts</a>
-                                    </li>
-                                    <li>
-                                        <a href="/decoration">Decoration</a>
-                                    </li>
-                                    <li>
-                                        <a href="/nitro-accounts">Nitro Accounts</a>
-                                    </li>
-                                    <li>
-                                        <a href="/nitro-basic">Nitro Basic</a>
-                                    </li>
-                                    <li>
-                                        <a href="/nitro-boost">Nitro Boost</a>
-                                    </li>
-                                    <li>
-                                        <a href="/promo">Promo</a>
-                                    </li>
-                                    <li>
-                                        <a href="/server-boosts">Server Boosts</a>
-                                    </li>
-                                    <li>
-                                        <a href="/server-members">Server Members</a>
-                                    </li>
-                                </ul>
-                            </div>
-                            {/*  End Single Item  */}
-                            {/*  Single Item  */}
-                            <div className="f-item link">
-                                <h4 className="widget-title">Legal Pages</h4>
-                                <ul>
-                                    <li>
-                                        <a href="/cookies-policy">Cookies Policy</a>
-                                    </li>
-                                    <li>
-                                        <a href="/disclaimer">Disclaimer</a>
-                                    </li>
-                                    <li>
-                                        <a href="/privacy-policy">Privacy Policy</a>
-                                    </li>
-                                    <li>
-                                        <a href="/refund-policy">Refund Policy</a>
-                                    </li>
-                                    <li>
-                                        <a href="/terms-and-conditions">Terms &amp; Conditions</a>
-                                    </li>
-                                </ul>
-                            </div>
-                            {/*  End Single Item  */}
-                        </div>
-                    </div>
-                </div>
+        {/* Footer Grid */}
+        <div className="footer-grid">
+          
+          {/* Column 1: Contact & About */}
+          <div className="footer-col">
+            <div className="logo mb-4">
+              <Link href="/">
+                <img src="/assets/img/logo-light.png" alt="ZoroBoost Logo" style={{ height: '38px', objectFit: 'contain' }} />
+              </Link>
             </div>
+            <p className="mb-4 text-secondary" style={{ fontSize: '14px', lineHeight: '1.6' }}>
+              ZoroBoost is the ultimate destination for premium Discord services. Boost your server, get aged accounts, nitro, and active members with absolute security.
+            </p>
+            <div className="d-flex flex-column gap-2 text-secondary" style={{ fontSize: '13px' }}>
+              <div><i className="fas fa-envelope text-warning me-2"></i> info@zoroboost.com</div>
+              <div><i className="fas fa-phone text-warning me-2"></i> +923438495390</div>
+            </div>
+          </div>
+
+          {/* Column 2: Quick Links */}
+          <div className="footer-col">
+            <h4>Company</h4>
+            <ul className="footer-links">
+              <li><Link href="/">Home</Link></li>
+              <li><Link href="/about-us">About Us</Link></li>
+              <li><Link href="/contact-us">Contact Us</Link></li>
+              <li><Link href="/blog">Blog</Link></li>
+              <li><Link href="/faq">FAQ</Link></li>
+            </ul>
+          </div>
+
+          {/* Column 3: Services */}
+          <div className="footer-col">
+            <h4>Services</h4>
+            <ul className="footer-links">
+              <li><Link href="/aged-accounts">Aged Accounts</Link></li>
+              <li><Link href="/server-boosts">Server Boosts</Link></li>
+              <li><Link href="/server-members">Server Members</Link></li>
+              <li><Link href="/nitro-boost">Nitro Boost</Link></li>
+              <li><Link href="/decoration">Decorations</Link></li>
+              <li><Link href="/promo">Promo Deals</Link></li>
+            </ul>
+          </div>
+
+          {/* Column 4: Trust & Payments */}
+          <div className="footer-col">
+            <h4>Safe & Secure</h4>
+            <p className="mb-3 text-secondary" style={{ fontSize: '13px', lineHeight: '1.5' }}>
+              All transactions are secured by our TradeShield™ escrow protection. Seller funds are only released after successful service delivery.
+            </p>
+            
+            <div className="payment-methods-grid">
+              <div className="payment-icon" title="Visa"><i className="fab fa-cc-visa"></i></div>
+              <div className="payment-icon" title="Mastercard"><i className="fab fa-cc-mastercard"></i></div>
+              <div className="payment-icon" title="Apple Pay"><i className="fab fa-apple-pay"></i></div>
+              <div className="payment-icon" title="Google Pay"><i className="fab fa-google-pay"></i></div>
+              <div className="payment-icon" title="Bitcoin"><i className="fab fa-btc"></i></div>
+              <div className="payment-icon" title="Ethereum"><i className="fab fa-ethereum"></i></div>
+              <div className="payment-icon" title="Discord"><i className="fab fa-discord"></i></div>
+              <div className="payment-icon" title="Secure Escrow"><i className="fas fa-shield-alt text-warning"></i></div>
+            </div>
+          </div>
+
         </div>
 
-        {/*  Start Footer Bottom  */}
-        <div className="footer-bottom-one">
-            <div className="container">
-                <div className="content">
-                    <div className="row align-center">
-                        <div className="col-lg-6 col-md-6">
-                            <div className="logo">
-                                <a href="#"><img src="/assets/img/logo-light.png" alt="Logo" /></a>
-                            </div>
-                        </div>
-                        <div className="col-lg-6 col-md-6">
-                            <ul className="footer-item-social text-end">
-                                <li><a href="#"><i className="fab fa-facebook-f"></i></a></li>
-                                <li><a href="#"><img src="/assets/img/icon/twitter-x.png" alt="Image Not Found" /></a></li>
-                                <li><a href="#"><i className="fab fa-instagram"></i></a></li>
-                                <li><a href="#"><i className="fab fa-linkedin-in"></i></a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        {/*  End Footer Bottom  */}
-
-        {/*  Start Footer Bottom  */}
+        {/* Footer Bottom */}
         <div className="footer-bottom">
-            <div className="container">
-                <div className="row">
-                    <div className="col-lg-6">
-                        <p>© <a href="#">ZoroBoost</a> 2026. All Rights Reserved</p>
-                    </div>
-                    <div className="col-lg-6 text-end">
-                        <p>developed by <a href="https://udesigner.net" target="_blank" rel="noopener noreferrer">UDESIGNER</a></p>
-                    </div>
-                </div>
-            </div>
+          <div>
+            <p>© {new Date().getFullYear()} <Link href="/" className="text-warning">ZoroBoost</Link>. All Rights Reserved.</p>
+          </div>
+          <div className="d-flex align-items-center gap-3">
+            <Link href="/privacy-policy" className="text-secondary" style={{ fontSize: '13px' }}>Privacy Policy</Link>
+            <span className="text-secondary" style={{ fontSize: '13px' }}>•</span>
+            <Link href="/terms-and-conditions" className="text-secondary" style={{ fontSize: '13px' }}>Terms &amp; Conditions</Link>
+            <span className="text-secondary" style={{ fontSize: '13px' }}>•</span>
+            <a href="https://udesigner.net" target="_blank" rel="noopener noreferrer" className="text-secondary" style={{ fontSize: '13px' }}>
+              Developed by UDESIGNER
+            </a>
+          </div>
         </div>
-        {/*  End Footer Bottom  */}
 
+      </div>
     </footer>
-    </>
   );
 }

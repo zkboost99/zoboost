@@ -59,38 +59,38 @@ export default function SearchBox() {
   };
 
   return (
-    <div ref={dropdownRef} style={{ position: 'relative', width: '100%' }}>
+    <div ref={dropdownRef} className="header-search">
       <form onSubmit={handleSubmit}>
-        <input 
-          type="text" 
-          placeholder="Describe what you want" 
-          className="form-control" 
-          name="text" 
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          onFocus={() => {
-            if (suggestions.length > 0) {
-              setShowDropdown(true);
-            }
-          }}
-          autoComplete="off"
-        />
-        <button className="btn btn-style-one" type="submit">
-          Search <i className="fa fa-search"></i>
-        </button>  
+        <div className="search-input-wrapper">
+          <i className="fa fa-search search-icon-eldorado"></i>
+          <input 
+            type="text" 
+            placeholder="Search for aged accounts, boosts, members..." 
+            className="search-input-eldorado" 
+            name="text" 
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onFocus={() => {
+              if (suggestions.length > 0) {
+                setShowDropdown(true);
+              }
+            }}
+            autoComplete="off"
+          />
+        </div>
 
         {showDropdown && suggestions.length > 0 && (
           <div 
             style={{
               position: 'absolute',
               top: '100%',
-              marginTop: '10px',
+              marginTop: '8px',
               left: 0,
               width: '100%',
-              background: '#ffffff',
+              background: 'var(--bg-section)',
               borderRadius: '8px',
-              boxShadow: '0 10px 40px rgba(0, 0, 0, 0.12)',
-              border: '1px solid #f1f5f9',
+              boxShadow: '0 10px 40px rgba(0, 0, 0, 0.4)',
+              border: '1px solid var(--border-color)',
               zIndex: 999,
               overflow: 'hidden',
               maxHeight: '380px',
@@ -109,24 +109,24 @@ export default function SearchBox() {
                   display: 'flex',
                   alignItems: 'center',
                   gap: '15px',
-                  borderBottom: '1px solid #f1f5f9',
+                  borderBottom: '1px solid var(--border-color)',
                   cursor: 'pointer',
                   transition: 'background-color 0.2s',
                   textAlign: 'left'
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = '#f8fafc';
+                  e.currentTarget.style.backgroundColor = 'var(--bg-card-hover)';
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = '#ffffff';
+                  e.currentTarget.style.backgroundColor = 'transparent';
                 }}
               >
                 <div 
                   style={{ 
-                    width: '40px', 
-                    height: '40px', 
+                    width: '36px', 
+                    height: '36px', 
                     borderRadius: '6px', 
-                    background: '#f1f5f9',
+                    background: 'var(--bg-input)',
                     overflow: 'hidden',
                     display: 'flex',
                     alignItems: 'center',
@@ -141,7 +141,7 @@ export default function SearchBox() {
                       style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                     />
                   ) : (
-                    <i className="fab fa-discord" style={{ color: '#5865F2', fontSize: '18px' }}></i>
+                    <i className="fab fa-discord" style={{ color: 'var(--accent-gold)', fontSize: '16px' }}></i>
                   )}
                 </div>
                 <div style={{ flexGrow: 1 }}>
@@ -149,9 +149,9 @@ export default function SearchBox() {
                     style={{ 
                       fontSize: '14px', 
                       fontWeight: '600', 
-                      color: '#0f172a', 
+                      color: 'var(--text-primary)', 
                       margin: '0 0 2px 0',
-                      fontFamily: 'inherit'
+                      fontFamily: 'var(--font-family)'
                     }}
                   >
                     {product.title}
@@ -159,21 +159,21 @@ export default function SearchBox() {
                   <span 
                     style={{ 
                       fontSize: '11px', 
-                      color: '#64748b', 
+                      color: 'var(--text-secondary)', 
                       fontWeight: '500',
                       display: 'flex',
                       alignItems: 'center',
                       gap: '4px'
                     }}
                   >
-                    <i className="fab fa-discord" style={{ fontSize: '12px', color: '#5865F2' }}></i> {product.category}
+                    <i className="fab fa-discord" style={{ fontSize: '11px', color: 'var(--accent-gold)' }}></i> {product.category}
                   </span>
                 </div>
                 <div 
                   style={{ 
                     fontSize: '14px', 
                     fontWeight: '700', 
-                    color: '#5865F2',
+                    color: 'var(--accent-gold)',
                     flexShrink: 0 
                   }}
                 >
