@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
+import { Search } from 'lucide-react';
 
 interface Product {
   id: string;
@@ -59,15 +60,13 @@ export default function SearchBox() {
   };
 
   return (
-    <div ref={dropdownRef} className="header-search">
+    <div ref={dropdownRef} className="relative w-full">
       <form onSubmit={handleSubmit}>
-        <div className="search-input-wrapper">
-          <i className="fa fa-search search-icon-eldorado"></i>
-          <input 
-            type="text" 
-            placeholder="Search for aged accounts, boosts, members..." 
-            className="search-input-eldorado" 
-            name="text" 
+        <div className="relative">
+          <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-400" />
+          <input
+            type="search"
+            placeholder="Search ZoroBoost..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onFocus={() => {
@@ -76,26 +75,13 @@ export default function SearchBox() {
               }
             }}
             autoComplete="off"
+            className="h-10 w-full rounded-md bg-[#1c1c1f] pl-11 pr-4 text-sm text-neutral-100 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-amber-400/40 border border-white/5"
           />
         </div>
 
         {showDropdown && suggestions.length > 0 && (
           <div 
-            style={{
-              position: 'absolute',
-              top: '100%',
-              marginTop: '8px',
-              left: 0,
-              width: '100%',
-              background: 'var(--bg-section)',
-              borderRadius: '8px',
-              boxShadow: '0 10px 40px rgba(0, 0, 0, 0.4)',
-              border: '1px solid var(--border-color)',
-              zIndex: 999,
-              overflow: 'hidden',
-              maxHeight: '380px',
-              overflowY: 'auto'
-            }}
+            className="absolute left-0 top-full mt-2 w-full rounded-md bg-[#1c1c1f] border border-white/5 shadow-xl z-50 max-h-[380px] overflow-y-auto"
           >
             {suggestions.map((product) => (
               <div
@@ -104,79 +90,30 @@ export default function SearchBox() {
                   router.push(`/product/${product.id}`);
                   setShowDropdown(false);
                 }}
-                style={{
-                  padding: '12px 20px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '15px',
-                  borderBottom: '1px solid var(--border-color)',
-                  cursor: 'pointer',
-                  transition: 'background-color 0.2s',
-                  textAlign: 'left'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = 'var(--bg-card-hover)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = 'transparent';
-                }}
+                className="flex items-center gap-3 px-4 py-3 border-b border-white/5 cursor-pointer hover:bg-white/5 text-left"
               >
                 <div 
-                  style={{ 
-                    width: '36px', 
-                    height: '36px', 
-                    borderRadius: '6px', 
-                    background: 'var(--bg-input)',
-                    overflow: 'hidden',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexShrink: 0
-                  }}
+                  className="w-9 h-9 rounded bg-[#2a2a2e] overflow-hidden flex items-center justify-center flex-shrink-0"
                 >
                   {product.media_url ? (
                     <img 
                       src={product.media_url} 
                       alt={product.title} 
-                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      className="w-full h-full object-cover"
                     />
                   ) : (
-                    <i className="fab fa-discord" style={{ color: 'var(--accent-gold)', fontSize: '16px' }}></i>
+                    <div className="text-[10px] font-bold text-amber-400">ZB</div>
                   )}
                 </div>
-                <div style={{ flexGrow: 1 }}>
-                  <h4 
-                    style={{ 
-                      fontSize: '14px', 
-                      fontWeight: '600', 
-                      color: 'var(--text-primary)', 
-                      margin: '0 0 2px 0',
-                      fontFamily: 'var(--font-family)'
-                    }}
-                  >
+                <div className="flex-1 min-w-0">
+                  <h4 className="text-sm font-semibold text-white truncate">
                     {product.title}
                   </h4>
-                  <span 
-                    style={{ 
-                      fontSize: '11px', 
-                      color: 'var(--text-secondary)', 
-                      fontWeight: '500',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '4px'
-                    }}
-                  >
-                    <i className="fab fa-discord" style={{ fontSize: '11px', color: 'var(--accent-gold)' }}></i> {product.category}
+                  <span className="text-xs text-neutral-400 font-medium">
+                    {product.category}
                   </span>
                 </div>
-                <div 
-                  style={{ 
-                    fontSize: '14px', 
-                    fontWeight: '700', 
-                    color: 'var(--accent-gold)',
-                    flexShrink: 0 
-                  }}
-                >
+                <div className="text-sm font-bold text-amber-400 flex-shrink-0">
                   ${product.price}
                 </div>
               </div>

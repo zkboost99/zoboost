@@ -1,737 +1,93 @@
-/* Eldorado.gg Inspired Theme & Layout Variables */
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-ring-offset-background: var(--background);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
 :root {
-  --bg-main: #0b0e14;
-  --bg-section: #0f131c;
-  --bg-card: #151b26;
-  --bg-card-hover: #1e2636;
-  --bg-input: #1b222f;
-  --accent-gold: #ffb900;
-  --accent-gold-hover: #e0a300;
-  --accent-gold-light: rgba(255, 185, 0, 0.1);
-  --border-color: #212a38;
-  --border-color-hover: #313c4f;
-  --text-primary: #ffffff;
-  --text-secondary: #8f9cae;
-  --text-muted: #5a6675;
-  --success-green: #00d68f;
-  --font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --radius: 0.625rem;
+  --background: oklch(0.129 0.042 264.695);
+  --foreground: oklch(0.984 0.003 247.858);
+  --card: oklch(0.208 0.042 265.755);
+  --card-foreground: oklch(0.984 0.003 247.858);
+  --popover: oklch(0.208 0.042 265.755);
+  --popover-foreground: oklch(0.984 0.003 247.858);
+  --primary: oklch(0.929 0.013 255.508);
+  --primary-foreground: oklch(0.208 0.042 265.755);
+  --secondary: oklch(0.279 0.041 260.031);
+  --secondary-foreground: oklch(0.984 0.003 247.858);
+  --muted: oklch(0.279 0.041 260.031);
+  --muted-foreground: oklch(0.704 0.04 256.788);
+  --accent: oklch(0.279 0.041 260.031);
+  --accent-foreground: oklch(0.984 0.003 247.858);
+  --destructive: oklch(0.704 0.191 22.216);
+  --destructive-foreground: oklch(0.984 0.003 247.858);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.551 0.027 264.364);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.208 0.042 265.755);
+  --sidebar-foreground: oklch(0.984 0.003 247.858);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
+  --sidebar-accent: oklch(0.279 0.041 260.031);
+  --sidebar-accent-foreground: oklch(0.984 0.003 247.858);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.551 0.027 264.364);
 }
 
-/* Global resets & overrides for Eldorado style */
-body {
-  background-color: var(--bg-main) !important;
-  color: var(--text-primary) !important;
-  font-family: var(--font-family) !important;
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
-}
-
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-::-webkit-scrollbar-track {
-  background: var(--bg-main);
-}
-::-webkit-scrollbar-thumb {
-  background: var(--border-color);
-  border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--border-color-hover);
-}
-
-/* Typography elements */
-h1, h2, h3, h4, h5, h6 {
-  color: var(--text-primary) !important;
-  font-family: var(--font-family) !important;
-  font-weight: 700;
-}
-
-a {
-  color: var(--accent-gold);
-  text-decoration: none;
-  transition: color 0.2s ease-in-out;
-}
-a:hover {
-  color: var(--accent-gold-hover);
-  text-decoration: none;
-}
-
-/* Eldorado Layout Containers */
-.eldorado-container {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 24px;
-}
-
-.eldorado-main-layout {
-  display: grid;
-  grid-template-columns: 280px 1fr;
-  gap: 30px;
-  padding: 40px 0;
-}
-
-@media (max-width: 1199px) {
-  .eldorado-main-layout {
-    grid-template-columns: 1fr;
+@layer base {
+  * {
+    border-color: var(--color-border);
   }
-}
 
-/* Left Sidebar Navigation */
-.eldorado-sidebar {
-  background-color: var(--bg-section);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  padding: 20px;
-  height: fit-content;
-  position: sticky;
-  top: 100px;
-  z-index: 10;
-}
-
-@media (max-width: 1199px) {
-  .eldorado-sidebar {
-    position: static;
-    margin-bottom: 20px;
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
   }
-}
-
-.sidebar-title {
-  font-size: 14px;
-  text-transform: uppercase;
-  color: var(--text-secondary);
-  letter-spacing: 1px;
-  margin-bottom: 16px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.sidebar-menu {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.sidebar-menu-item a {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
-  color: var(--text-secondary) !important;
-  border-radius: 8px;
-  font-size: 15px;
-  font-weight: 500;
-  transition: all 0.2s ease;
-}
-
-.sidebar-menu-item a:hover,
-.sidebar-menu-item.active a {
-  background-color: var(--bg-card-hover);
-  color: var(--text-primary) !important;
-  transform: translateX(4px);
-}
-
-.sidebar-menu-item a i {
-  font-size: 16px;
-  color: var(--accent-gold);
-}
-
-/* Eldorado Header Redesign */
-.header-eldorado {
-  background-color: var(--bg-section) !important;
-  border-bottom: 1px solid var(--border-color);
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  padding: 16px 0;
-}
-
-.header-inner {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-}
-
-.header-logo img {
-  height: 38px;
-  object-fit: contain;
-}
-
-.header-search {
-  flex: 1;
-  max-width: 600px;
-  position: relative;
-}
-
-.search-input-wrapper {
-  display: flex;
-  align-items: center;
-  background-color: var(--bg-input);
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  padding: 0 16px;
-  height: 44px;
-  transition: border-color 0.2s ease;
-}
-
-.search-input-wrapper:focus-within {
-  border-color: var(--accent-gold);
-}
-
-.search-icon-eldorado {
-  color: var(--text-secondary);
-  font-size: 16px;
-  margin-right: 12px;
-}
-
-.search-input-eldorado {
-  background: transparent;
-  border: none;
-  color: var(--text-primary);
-  width: 100%;
-  height: 100%;
-  font-size: 14px;
-  outline: none;
-}
-
-.search-input-eldorado::placeholder {
-  color: var(--text-muted);
-}
-
-.header-actions {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-/* Buttons style */
-.btn-eldorado-gold {
-  background-color: var(--accent-gold) !important;
-  color: var(--bg-main) !important;
-  font-weight: 600 !important;
-  border-radius: 8px !important;
-  padding: 10px 20px !important;
-  border: 1px solid var(--accent-gold) !important;
-  transition: all 0.2s ease !important;
-  font-size: 14px !important;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-}
-
-.btn-eldorado-gold:hover {
-  background-color: var(--accent-gold-hover) !important;
-  border-color: var(--accent-gold-hover) !important;
-  transform: translateY(-1px);
-}
-
-.btn-eldorado-outline {
-  background: transparent !important;
-  color: var(--text-primary) !important;
-  border: 1px solid var(--border-color) !important;
-  border-radius: 8px !important;
-  padding: 10px 20px !important;
-  font-weight: 500 !important;
-  font-size: 14px !important;
-  transition: all 0.2s ease !important;
-  cursor: pointer;
-}
-
-.btn-eldorado-outline:hover {
-  background-color: var(--bg-card-hover) !important;
-  border-color: var(--border-color-hover) !important;
-}
-
-/* Category Tabs (Gold, Items, Accounts, Boosting) */
-.eldorado-tabs {
-  display: flex;
-  gap: 8px;
-  border-bottom: 1px solid var(--border-color);
-  padding-bottom: 16px;
-  margin-bottom: 24px;
-  overflow-x: auto;
-}
-
-.eldorado-tab {
-  background: var(--bg-section);
-  border: 1px solid var(--border-color);
-  color: var(--text-secondary);
-  padding: 10px 20px;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 14px;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: all 0.2s ease;
-}
-
-.eldorado-tab:hover {
-  border-color: var(--border-color-hover);
-  color: var(--text-primary);
-}
-
-.eldorado-tab.active {
-  background-color: var(--accent-gold);
-  border-color: var(--accent-gold);
-  color: var(--bg-main);
-}
-
-/* Eldorado Product Cards Grid */
-.eldorado-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
-  gap: 20px;
-}
-
-/* Eldorado Style Cards */
-.eldorado-card {
-  background-color: var(--bg-section);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  overflow: hidden;
-  transition: all 0.25s cubic-bezier(0.165, 0.84, 0.44, 1);
-  display: flex;
-  flex-direction: column;
-}
-
-.eldorado-card:hover {
-  transform: translateY(-4px);
-  border-color: var(--border-color-hover);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-}
-
-.card-img-wrapper {
-  position: relative;
-  height: 160px;
-  width: 100%;
-  background-color: rgba(255, 255, 255, 0.02);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  border-bottom: 1px solid var(--border-color);
-}
-
-.card-img-wrapper img {
-  height: 80%;
-  max-width: 90%;
-  object-fit: contain;
-  transition: transform 0.3s ease;
-}
-
-.eldorado-card:hover .card-img-wrapper img {
-  transform: scale(1.08);
-}
-
-.card-discount-badge {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  background-color: var(--accent-gold);
-  color: var(--bg-main);
-  font-weight: 700;
-  font-size: 11px;
-  padding: 4px 8px;
-  border-radius: 4px;
-  text-transform: uppercase;
-}
-
-.card-body-eldorado {
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-}
-
-.card-category-tag {
-  color: var(--text-secondary);
-  font-size: 12px;
-  text-transform: uppercase;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  margin-bottom: 6px;
-}
-
-.card-title-eldorado {
-  font-size: 17px;
-  color: var(--text-primary);
-  margin-bottom: 12px;
-  line-height: 1.4;
-  font-weight: 600;
-}
-
-.card-rating {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  margin-bottom: 16px;
-}
-
-.card-rating-stars {
-  color: var(--accent-gold);
-  font-size: 12px;
-}
-
-.card-rating-text {
-  color: var(--text-secondary);
-  font-size: 12px;
-}
-
-.card-footer-eldorado {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: auto;
-  padding-top: 16px;
-  border-top: 1px solid var(--border-color);
-}
-
-.card-price-info {
-  display: flex;
-  flex-direction: column;
-}
-
-.card-price-label {
-  color: var(--text-muted);
-  font-size: 11px;
-  text-transform: uppercase;
-}
-
-.card-price-value {
-  color: var(--accent-gold);
-  font-size: 20px;
-  font-weight: 700;
-}
-
-/* TradeShield™ Banner */
-.tradeshield-banner {
-  background: linear-gradient(135deg, #101622 0%, #172030 100%);
-  border: 1px solid var(--border-color);
-  border-radius: 16px;
-  padding: 40px;
-  margin: 50px 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 30px;
-}
-
-@media (max-width: 991px) {
-  .tradeshield-banner {
-    flex-direction: column;
-    text-align: center;
-    padding: 30px;
-  }
-}
-
-.tradeshield-badge {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: var(--accent-gold-light);
-  border: 1px solid var(--accent-gold);
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  color: var(--accent-gold);
-  font-size: 32px;
-  flex-shrink: 0;
-}
-
-.tradeshield-text h3 {
-  font-size: 22px;
-  margin-bottom: 8px;
-}
-
-.tradeshield-text p {
-  color: var(--text-secondary);
-  margin: 0;
-  font-size: 15px;
-  line-height: 1.6;
-}
-
-/* Eldorado Footer style */
-.footer-eldorado {
-  background-color: var(--bg-section);
-  border-top: 1px solid var(--border-color);
-  padding: 60px 0 30px 0;
-  margin-top: 80px;
-}
-
-.footer-grid {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1.5fr;
-  gap: 40px;
-  margin-bottom: 40px;
-}
-
-@media (max-width: 991px) {
-  .footer-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-@media (max-width: 575px) {
-  .footer-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.footer-col h4 {
-  font-size: 15px;
-  text-transform: uppercase;
-  color: var(--text-primary);
-  margin-bottom: 20px;
-  letter-spacing: 0.5px;
-}
-
-.footer-col p {
-  color: var(--text-secondary);
-  font-size: 14px;
-  line-height: 1.6;
-}
-
-.footer-links {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.footer-links a {
-  color: var(--text-secondary) !important;
-  font-size: 14px;
-  transition: color 0.2s ease;
-}
-
-.footer-links a:hover {
-  color: var(--accent-gold) !important;
-}
-
-.payment-methods-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
-  margin-top: 16px;
-}
-
-.payment-icon {
-  background-color: var(--bg-input);
-  border: 1px solid var(--border-color);
-  border-radius: 6px;
-  padding: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--text-secondary);
-  font-size: 18px;
-}
-
-.footer-bottom {
-  border-top: 1px solid var(--border-color);
-  padding-top: 24px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-@media (max-width: 767px) {
-  .footer-bottom {
-    flex-direction: column;
-    gap: 16px;
-    text-align: center;
-  }
-}
-
-.footer-bottom p {
-  color: var(--text-muted);
-  font-size: 13px;
-  margin: 0;
-}
-
-/* Floating Feedback Widgets Overrides (Eldorado Style) */
-.feedback-floating-container {
-  position: fixed;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  z-index: 9000;
-}
-
-.feedback-btn-wrapper {
-  display: flex;
-  align-items: center;
-  background: var(--bg-section) !important;
-  border: 1px solid var(--border-color) !important;
-  border-left: none !important;
-  border-radius: 0 8px 8px 0 !important;
-  padding: 10px 14px 10px 10px !important;
-  cursor: pointer;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-  transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
-  transform: translateX(calc(-100% + 44px));
-}
-
-.feedback-btn-wrapper:hover {
-  transform: translateX(0);
-  background: var(--bg-card-hover) !important;
-  border-color: var(--border-color-hover) !important;
-}
-
-.feedback-icon {
-  width: 28px;
-  height: 28px;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 13px;
-  flex-shrink: 0;
-}
-
-.suggestion-icon {
-  background: rgba(255, 185, 0, 0.15) !important;
-  color: var(--accent-gold) !important;
-}
-
-.report-icon {
-  background: rgba(239, 68, 68, 0.15) !important;
-  color: #ef4444 !important;
-}
-
-.feedback-text {
-  margin-left: 12px;
-  font-weight: 600;
-  font-size: 13px;
-  color: var(--text-secondary);
-  white-space: nowrap;
-}
-
-.feedback-btn-wrapper:hover .feedback-text {
-  color: var(--text-primary);
-}
-
-/* Modals Override (Eldorado Theme Style) */
-.macos-modal-overlay {
-  position: fixed;
-  top: 0; left: 0; width: 100vw; height: 100vh;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(4px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 99999;
-  animation: fadeIn 0.2s ease-out;
-}
-
-.feedback-window {
-  background: var(--bg-section) !important;
-  border: 1px solid var(--border-color) !important;
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5) !important;
-  color: var(--text-primary) !important;
-  border-radius: 12px !important;
-  overflow: hidden;
-  width: 450px;
-}
-
-.suggestion-header, .report-header {
-  background: var(--bg-card) !important;
-  border-bottom: 1px solid var(--border-color) !important;
-}
-
-.header-content h3 {
-  color: var(--text-primary) !important;
-}
-
-.header-content p {
-  color: var(--text-secondary) !important;
-}
-
-.feedback-modal-body label {
-  color: var(--text-secondary) !important;
-  font-weight: 500 !important;
-}
-
-.feedback-modal-body .form-control {
-  background: var(--bg-input) !important;
-  border: 1px solid var(--border-color) !important;
-  color: var(--text-primary) !important;
-  border-radius: 6px !important;
-}
-
-.feedback-modal-body .form-control:focus {
-  border-color: var(--accent-gold) !important;
-  box-shadow: 0 0 0 2px var(--accent-gold-light) !important;
-}
-
-.macos-cancel-btn {
-  color: var(--text-secondary) !important;
-}
-
-.macos-cancel-btn:hover {
-  color: var(--text-primary) !important;
-  background: var(--bg-card-hover) !important;
-}
-
-/* Flat Hero Banner */
-.eldorado-hero {
-  background: linear-gradient(135deg, #161c28 0%, #0d121c 100%);
-  border: 1px solid var(--border-color);
-  border-radius: 12px;
-  padding: 40px;
-  margin-bottom: 30px;
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  min-height: 220px;
-}
-
-.eldorado-hero-content {
-  max-width: 60%;
-  z-index: 2;
-}
-
-@media (max-width: 767px) {
-  .eldorado-hero-content {
-    max-width: 100%;
-  }
-}
-
-.eldorado-hero h2 {
-  font-size: 28px;
-  margin-bottom: 12px;
-  line-height: 1.3;
-}
-
-.eldorado-hero p {
-  color: var(--text-secondary);
-  font-size: 15px;
-  margin-bottom: 0;
-  line-height: 1.5;
-}
-
-.eldorado-hero-badge {
-  position: absolute;
-  right: 40px;
-  bottom: 0;
-  height: 110%;
-  opacity: 0.15;
-  z-index: 1;
-  pointer-events: none;
 }
