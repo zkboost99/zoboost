@@ -148,7 +148,7 @@ export default function ProductDirectory({ products }: ProductDirectoryProps) {
             {recently.map((r) => (
               <li
                 key={r.id}
-                className="relative overflow-hidden rounded-md bg-[#1c1c1f] p-4 min-h-[146px] flex flex-col justify-between ring-1 ring-white/5 transition hover:ring-white/10"
+                className="relative overflow-hidden rounded-md bg-[#1c1c1f] p-4 min-h-[170px] flex flex-col justify-between ring-1 ring-white/5 transition hover:ring-white/10"
               >
                 {/* Faint card header background texture & glow */}
                 <div className="absolute inset-x-0 top-0 h-1/2 overflow-hidden rounded-t-md pointer-events-none opacity-[0.06]">
