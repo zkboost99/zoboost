@@ -111,7 +111,7 @@ export default function ProductDirectory({ products }: ProductDirectoryProps) {
         <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#0f0f10] via-[#0f0f10]/80 to-transparent pointer-events-none" />
 
         <div className="relative mx-auto w-full flex min-h-[460px] max-w-[1200px] items-end px-4 py-16 sm:px-6 lg:px-8">
-          <div className="max-w-md pb-16">
+          <div className="max-w-md pb-24">
             <h1 className="text-4xl font-extrabold leading-[1.05] tracking-tight text-white drop-shadow-md sm:text-5xl" style={{ color: '#ffffff' }}>
               Complete your
               <br />
@@ -133,7 +133,7 @@ export default function ProductDirectory({ products }: ProductDirectoryProps) {
           <img
             src="/lovable/brainrot-hero.webp"
             alt="Voxel character collection"
-            className="pointer-events-none absolute bottom-[22%] right-[4%] hidden h-[50%] w-auto object-contain md:block"
+            className="pointer-events-none absolute bottom-[26%] right-[4%] hidden h-[50%] w-auto object-contain md:block"
           />
         </div>
       </section>
@@ -142,7 +142,7 @@ export default function ProductDirectory({ products }: ProductDirectoryProps) {
       <main className="mx-auto max-w-[1200px] px-4 pb-16 sm:px-6 lg:px-8" id="listings">
         
         {/* Recently viewed section */}
-        <section className="-mt-20 pt-8 relative z-10">
+        <section className="-mt-26 pt-8 relative z-10">
 
           <ul className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4" style={{ listStyle: 'none', padding: 0 }}>
             {recently.map((r) => (
