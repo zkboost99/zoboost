@@ -107,7 +107,7 @@ export default function ProductDirectory({ products }: ProductDirectoryProps) {
           aria-hidden="true"
           className="absolute inset-0 h-full w-full object-cover"
         />
-        <div className="relative mx-auto w-full flex min-h-[460px] max-w-[1400px] items-end px-4 py-16 sm:px-6 lg:px-8">
+        <div className="relative mx-auto w-full flex min-h-[460px] max-w-[1200px] items-end px-4 py-16 sm:px-6 lg:px-8">
           <div className="max-w-xl pb-16">
             <h1 className="text-5xl font-extrabold leading-[1.05] tracking-tight text-white drop-shadow-md sm:text-6xl" style={{ color: '#ffffff' }}>
               Complete your
@@ -130,13 +130,13 @@ export default function ProductDirectory({ products }: ProductDirectoryProps) {
           <img
             src="/lovable/brainrot-hero.webp"
             alt="Voxel character collection"
-            className="pointer-events-none absolute bottom-[22%] right-[8%] hidden h-[50%] w-auto object-contain md:block"
+            className="pointer-events-none absolute bottom-[22%] right-[4%] hidden h-[50%] w-auto object-contain md:block"
           />
         </div>
       </section>
 
       {/* Main Content Area */}
-      <main className="mx-auto max-w-[1400px] px-4 pb-16 sm:px-6 lg:px-8" id="listings">
+      <main className="mx-auto max-w-[1200px] px-4 pb-16 sm:px-6 lg:px-8" id="listings">
         
         {/* Recently viewed section */}
         <section className="-mt-2 pt-8">
@@ -252,7 +252,7 @@ function CategoryCard({
 function SafeTrading() {
   return (
     <section className="bg-[#15161a]">
-      <div className="mx-auto grid max-w-[1400px] grid-cols-1 items-center gap-10 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:px-8 lg:py-20">
+      <div className="mx-auto grid max-w-[1200px] grid-cols-1 items-center gap-10 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:px-8 lg:py-20">
         <div className="max-w-md">
           <h2 className="text-2xl font-bold text-white sm:text-[28px] m-0">Safe and Easy Trading</h2>
           <div className="mt-6 space-y-5 text-sm leading-6 text-neutral-300">
@@ -283,7 +283,7 @@ function SafeTrading() {
 function TrustCards() {
   return (
     <section className="bg-[#0a0a0c]">
-      <div className="mx-auto grid max-w-[1400px] grid-cols-1 gap-5 px-4 py-10 sm:px-6 md:grid-cols-2 lg:px-8">
+      <div className="mx-auto grid max-w-[1200px] grid-cols-1 gap-5 px-4 py-10 sm:px-6 md:grid-cols-2 lg:px-8">
         <article className="flex items-center gap-5 rounded-2xl bg-[#f3e5c7] p-6 sm:p-7">
           <div className="grid h-24 w-24 shrink-0 place-items-center rounded-xl bg-amber-300/40">
             <Shield className="h-14 w-14 text-amber-700" strokeWidth={2} />
@@ -330,7 +330,7 @@ function PaymentsBar() {
   ];
   return (
     <section className="bg-[#0a0a0c]">
-      <div className="mx-auto flex max-w-[1400px] flex-col items-center justify-between gap-4 px-4 py-6 sm:px-6 md:flex-row lg:px-8">
+      <div className="mx-auto flex max-w-[1200px] flex-col items-center justify-between gap-4 px-4 py-6 sm:px-6 md:flex-row lg:px-8">
         <div className="flex flex-wrap items-center gap-2">
           {pays.map((p, i) => (
             <img key={i} src={p} alt="" className="h-7 w-auto" />

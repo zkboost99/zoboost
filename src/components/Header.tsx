@@ -27,7 +27,7 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-40 bg-[#0f0f10] border-b border-white/5">
       {/* Top Bar */}
-      <div className="mx-auto flex h-16 max-w-[1400px] items-center gap-4 px-4 sm:gap-6 sm:px-6 lg:px-8">
+      <div className="mx-auto flex h-16 max-w-[1200px] items-center gap-4 px-4 sm:gap-6 sm:px-6 lg:px-8">
         
         {/* Brand Logo */}
         <Link href="/" className="flex shrink-0 items-center gap-2" style={{ textDecoration: 'none' }}>
@@ -77,7 +77,7 @@ export default function Header() {
 
       {/* Category Navigation Sub-bar */}
       <div className="bg-[#1a1a1d] border-t border-white/5">
-        <div className="mx-auto flex h-12 max-w-[1400px] items-center justify-between px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto flex h-12 max-w-[1200px] items-center justify-between px-4 sm:px-6 lg:px-8">
           <nav className="flex h-full items-center gap-1 overflow-x-auto">
             {navItems.map(({ label }) => (
               <button

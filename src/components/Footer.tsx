@@ -9,7 +9,7 @@ export default function Footer() {
 
   return (
     <footer className="bg-[#0a0a0c] text-neutral-300 border-t border-white/5">
-      <div className="mx-auto grid max-w-[1400px] grid-cols-1 gap-10 px-4 py-12 sm:px-6 md:grid-cols-4 lg:px-8">
+      <div className="mx-auto grid max-w-[1200px] grid-cols-1 gap-10 px-4 py-12 sm:px-6 md:grid-cols-4 lg:px-8">
         <div>
           <a href="/" className="flex items-center gap-2" style={{ textDecoration: 'none' }}>
             <div className="grid h-9 w-9 place-items-center rounded-md bg-amber-400 text-neutral-900">
@@ -50,7 +50,7 @@ export default function Footer() {
         ))}
       </div>
       <div className="border-t border-white/5">
-        <div className="mx-auto flex max-w-[1400px] flex-col gap-3 px-4 py-6 text-xs text-neutral-500 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
+        <div className="mx-auto flex max-w-[1200px] flex-col gap-3 px-4 py-6 text-xs text-neutral-500 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
           <p>
             © {new Date().getFullYear()}. The ZoroBoost website is operated by ZoroBoost Ltd.
           </p>
