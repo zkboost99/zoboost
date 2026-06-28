@@ -132,6 +132,8 @@ export default function ProductDirectory({ products }: ProductDirectoryProps) {
             alt="Voxel character collection"
             className="pointer-events-none absolute bottom-[22%] right-[4%] hidden h-[50%] w-auto object-contain md:block"
           />
+          {/* Smooth bottom fade blur */}
+          <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#0f0f10] via-[#0f0f10]/80 to-transparent pointer-events-none" />
         </div>
       </section>
 
@@ -139,13 +141,13 @@ export default function ProductDirectory({ products }: ProductDirectoryProps) {
       <main className="mx-auto max-w-[1200px] px-4 pb-16 sm:px-6 lg:px-8" id="listings">
         
         {/* Recently viewed section */}
-        <section className="-mt-2 pt-8">
+        <section className="-mt-10 pt-8 relative z-10">
 
           <ul className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4" style={{ listStyle: 'none', padding: 0 }}>
             {recently.map((r) => (
               <li
                 key={r.id}
-                className="rounded-xl bg-[#1c1c1f] p-4 ring-1 ring-white/5 transition hover:ring-white/10"
+                className="rounded-md bg-[#1c1c1f] p-4 ring-1 ring-white/5 transition hover:ring-white/10"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
@@ -217,7 +219,7 @@ function CategoryCard({
   twoCol?: boolean;
 }) {
   return (
-    <section className="rounded-xl bg-[#1c1c1f] p-6 ring-1 ring-white/5 sm:p-7">
+    <section className="rounded-md bg-[#1c1c1f] p-6 ring-1 ring-white/5 sm:p-7">
       <h2 className="text-lg font-bold text-white m-0">{title}</h2>
       <ul
         className={`mt-5 grid gap-x-8 gap-y-3 ${
@@ -229,7 +231,7 @@ function CategoryCard({
           <li key={idx}>
             <a
               href="#"
-              className="group flex items-center gap-3 rounded-lg py-1.5 transition hover:bg-white/5"
+              className="group flex items-center gap-3 rounded-md py-1.5 transition hover:bg-white/5"
               style={{ textDecoration: 'none' }}
             >
               <span
@@ -284,8 +286,8 @@ function TrustCards() {
   return (
     <section className="bg-[#0a0a0c]">
       <div className="mx-auto grid max-w-[1200px] grid-cols-1 gap-5 px-4 py-10 sm:px-6 md:grid-cols-2 lg:px-8">
-        <article className="flex items-center gap-5 rounded-2xl bg-[#f3e5c7] p-6 sm:p-7">
-          <div className="grid h-24 w-24 shrink-0 place-items-center rounded-xl bg-amber-300/40">
+        <article className="flex items-center gap-5 rounded-md bg-[#f3e5c7] p-6 sm:p-7">
+          <div className="grid h-24 w-24 shrink-0 place-items-center rounded-md bg-amber-300/40">
             <Shield className="h-14 w-14 text-amber-700" strokeWidth={2} />
           </div>
           <div className="min-w-0">
@@ -298,8 +300,8 @@ function TrustCards() {
             </button>
           </div>
         </article>
-        <article className="flex items-center gap-5 rounded-2xl bg-[#c8e6a0] p-6 sm:p-7">
-          <div className="grid h-24 w-24 shrink-0 place-items-center rounded-xl bg-lime-300/50">
+        <article className="flex items-center gap-5 rounded-md bg-[#c8e6a0] p-6 sm:p-7">
+          <div className="grid h-24 w-24 shrink-0 place-items-center rounded-md bg-lime-300/50">
             <HelpCircle className="h-14 w-14 text-emerald-800" strokeWidth={2} />
           </div>
           <div className="min-w-0">
