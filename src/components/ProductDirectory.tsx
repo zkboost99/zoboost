@@ -142,7 +142,7 @@ export default function ProductDirectory({ products }: ProductDirectoryProps) {
       <main className="mx-auto max-w-[1200px] px-4 pb-16 sm:px-6 lg:px-8" id="listings">
         
         {/* Recently viewed section */}
-        <section className="-mt-10 pt-8 relative z-10">
+        <section className="-mt-20 pt-8 relative z-10">
 
           <ul className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4" style={{ listStyle: 'none', padding: 0 }}>
             {recently.map((r) => (
