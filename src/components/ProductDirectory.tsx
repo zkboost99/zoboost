@@ -161,13 +161,13 @@ export default function ProductDirectory({ products }: ProductDirectoryProps) {
                     {r.category.replace('-', ' ')}
                   </span>
                 </div>
-                <p className="mt-6 line-clamp-2 min-h-[2.5rem] text-sm font-semibold text-white mb-0">
+                <p className="mt-4 line-clamp-2 min-h-[2rem] text-xs font-semibold text-white mb-0">
                   <Link href={`/product/${r.id}`} style={{ color: '#ffffff', textDecoration: 'none' }}>
                     {r.title}
                   </Link>
                 </p>
-                <p className="mt-5 text-sm text-neutral-300 m-0">
-                  <span className="text-base font-bold text-white">${r.price}</span> / unit
+                <p className="mt-3 text-xs text-neutral-400 m-0">
+                  <span className="text-sm font-bold text-white">${r.price}</span> / unit
                 </p>
               </li>
             ))}
