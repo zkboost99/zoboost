@@ -140,26 +140,7 @@ export default function ProductDirectory({ products }: ProductDirectoryProps) {
         
         {/* Recently viewed section */}
         <section className="-mt-2 pt-8">
-          <div className="flex items-center justify-between">
-            <h2 className="flex items-center gap-2 text-lg font-bold text-white m-0">
-              Recently viewed
-              <HelpCircle className="h-4 w-4 text-neutral-400" />
-            </h2>
-            <div className="flex items-center gap-2">
-              <button
-                aria-label="Previous"
-                className="grid h-9 w-9 place-items-center rounded-md bg-[#1c1c1f] text-neutral-300 hover:bg-[#26262a] border-none cursor-pointer"
-              >
-                <ChevronLeft className="h-5 w-5" />
-              </button>
-              <button
-                aria-label="Next"
-                className="grid h-9 w-9 place-items-center rounded-md bg-[#1c1c1f] text-neutral-300 hover:bg-[#26262a] border-none cursor-pointer"
-              >
-                <ChevronRight className="h-5 w-5" />
-              </button>
-            </div>
-          </div>
+
           <ul className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4" style={{ listStyle: 'none', padding: 0 }}>
             {recently.map((r) => (
               <li
