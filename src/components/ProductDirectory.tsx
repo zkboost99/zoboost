@@ -130,7 +130,7 @@ export default function ProductDirectory({ products }: ProductDirectoryProps) {
           <img
             src="/lovable/brainrot-hero.webp"
             alt="Voxel character collection"
-            className="pointer-events-none absolute bottom-0 right-[2%] hidden h-[90%] w-auto object-contain md:block"
+            className="pointer-events-none absolute bottom-0 right-[2%] hidden h-[72%] w-auto object-contain md:block"
           />
         </div>
       </section>
