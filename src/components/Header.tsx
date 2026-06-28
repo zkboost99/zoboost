@@ -38,7 +38,7 @@ export default function Header() {
         </Link>
 
         {/* Central Search Box */}
-        <div className="relative mx-2 hidden flex-1 md:block max-w-[600px]">
+        <div className="relative mx-2 hidden flex-1 md:block max-w-[760px]">
           <SearchBox />
         </div>
 

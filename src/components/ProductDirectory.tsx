@@ -125,7 +125,7 @@ export default function ProductDirectory({ products }: ProductDirectoryProps) {
                 const el = document.getElementById('listings');
                 if (el) el.scrollIntoView({ behavior: 'smooth' });
               }}
-              className="mt-6 inline-flex items-center justify-center rounded-md bg-amber-400 px-8 py-2.5 text-xs font-bold text-neutral-900 shadow-md transition hover:bg-amber-300 border-none cursor-pointer"
+              className="mt-6 inline-flex items-center justify-center rounded-[4px] bg-amber-400 px-10 py-3 text-sm font-bold text-neutral-900 shadow-md transition hover:bg-amber-300 border-none cursor-pointer"
             >
               Shop Now
             </button>
@@ -148,25 +148,37 @@ export default function ProductDirectory({ products }: ProductDirectoryProps) {
             {recently.map((r) => (
               <li
                 key={r.id}
-                className="rounded-md bg-[#1c1c1f] p-4 ring-1 ring-white/5 transition hover:ring-white/10"
+                className="relative overflow-hidden rounded-md bg-[#1c1c1f] p-4 min-h-[146px] flex flex-col justify-between ring-1 ring-white/5 transition hover:ring-white/10"
               >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="grid h-9 w-9 place-items-center rounded-md bg-indigo-500 text-xs font-bold text-white">
-                      MV
-                    </div>
-                    <span className="text-sm font-semibold text-white">Boost Hub</span>
-                  </div>
-                  <span className="rounded-md bg-[#2a2a2e] px-2 py-1 text-[11px] font-bold text-white uppercase">
-                    {r.category.replace('-', ' ')}
-                  </span>
+                {/* Faint card header background texture & glow */}
+                <div className="absolute inset-x-0 top-0 h-1/2 overflow-hidden rounded-t-md pointer-events-none opacity-[0.06]">
+                  <img 
+                    src="/lovable/brainrot-bg.webp" 
+                    alt="" 
+                    className="w-full h-full object-cover scale-150 origin-top-right filter blur-[1px]" 
+                  />
                 </div>
-                <p className="mt-4 line-clamp-2 min-h-[2rem] text-xs font-semibold text-white mb-0">
-                  <Link href={`/product/${r.id}`} style={{ color: '#ffffff', textDecoration: 'none' }}>
-                    {r.title}
-                  </Link>
-                </p>
-                <p className="mt-3 text-xs text-neutral-400 m-0">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.05),transparent_60%)] pointer-events-none" />
+
+                <div className="relative z-10">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="grid h-9 w-9 place-items-center rounded-md bg-indigo-500 text-xs font-bold text-white">
+                        MV
+                      </div>
+                      <span className="text-sm font-semibold text-white">Boost Hub</span>
+                    </div>
+                    <span className="rounded-md bg-[#2a2a2e] px-2 py-1 text-[11px] font-bold text-white uppercase">
+                      {r.category.replace('-', ' ')}
+                    </span>
+                  </div>
+                  <p className="mt-4 line-clamp-2 text-xs font-semibold text-white mb-0">
+                    <Link href={`/product/${r.id}`} style={{ color: '#ffffff', textDecoration: 'none' }}>
+                      {r.title}
+                    </Link>
+                  </p>
+                </div>
+                <p className="relative z-10 mt-3 text-xs text-neutral-400 m-0">
                   <span className="text-sm font-bold text-white">${r.price}</span> / unit
                 </p>
               </li>
