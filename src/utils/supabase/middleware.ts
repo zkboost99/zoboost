@@ -28,7 +28,16 @@ export async function updateSession(request: NextRequest) {
   )
 
   // refreshing the auth token
-  await supabase.auth.getUser()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  // Protect the static admin.html page
+  if (request.nextUrl.pathname === '/admin.html') {
+    if (!user || user.app_metadata?.role !== 'admin') {
+      const url = request.nextUrl.clone()
+      url.pathname = '/admin.php'
+      return NextResponse.redirect(url)
+    }
+  }
 
   return supabaseResponse
 }

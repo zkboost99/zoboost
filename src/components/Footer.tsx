@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { Gamepad2 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -29,17 +30,30 @@ export default function Footer() {
         { label: 'Blog', href: '/blog' },
       ] 
     },
+    { 
+      h: 'Legal', 
+      links: [
+        { label: 'Terms & Conditions', href: '/terms-and-conditions' },
+        { label: 'Privacy Policy', href: '/privacy-policy' },
+        { label: 'Refund Policy', href: '/refund-policy' },
+        { label: 'Cookies Policy', href: '/cookies-policy' },
+        { label: 'Disclaimer', href: '/disclaimer' },
+      ] 
+    },
   ];
 
   return (
     <footer className="bg-bg-deep text-muted-foreground border-t border-border-subtle transition-colors duration-200 mt-auto">
-      <div className="mx-auto grid max-w-[1200px] grid-cols-1 gap-10 px-4 py-12 sm:px-6 md:grid-cols-4 lg:px-8">
+      <div className="mx-auto grid max-w-[1200px] grid-cols-1 gap-10 px-4 py-12 sm:px-6 md:grid-cols-5 lg:px-8">
         <div>
-          <Link href="/" className="flex items-center gap-2" style={{ textDecoration: 'none' }}>
-            <div className="grid h-9 w-9 place-items-center rounded-md bg-amber-400 text-neutral-900">
-              <Gamepad2 className="h-5 w-5" strokeWidth={2.75} />
-            </div>
-            <span className="text-xl font-bold text-foreground">ZoroBoost</span>
+          <Link href="/" className="flex items-center" style={{ textDecoration: 'none' }}>
+            <Image 
+              src="/zoroboost-logo.png" 
+              alt="ZoroBoost Logo" 
+              width={160} 
+              height={40} 
+              className="h-8 w-auto object-contain opacity-90 hover:opacity-100 transition-all dark:bg-white/90 dark:p-1 dark:rounded-md"
+            />
           </Link>
           <p className="mt-4 max-w-xs text-sm text-muted-foreground">
             Join us today to level up your gaming experience with premium Discord services!
@@ -78,12 +92,10 @@ export default function Footer() {
           <p>
             © {new Date().getFullYear()}. The ZoroBoost website is operated by ZoroBoost Ltd.
           </p>
-          <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-muted-foreground">
-            <Link href="/terms-and-conditions" className="hover:text-amber-400 transition-colors" style={{ textDecoration: 'none' }}>Terms & Conditions</Link>
-            <Link href="/privacy-policy" className="hover:text-amber-400 transition-colors" style={{ textDecoration: 'none' }}>Privacy Policy</Link>
-            <Link href="/refund-policy" className="hover:text-amber-400 transition-colors" style={{ textDecoration: 'none' }}>Refund Policy</Link>
-            <Link href="/cookies-policy" className="hover:text-amber-400 transition-colors" style={{ textDecoration: 'none' }}>Cookies Policy</Link>
-            <Link href="/disclaimer" className="hover:text-amber-400 transition-colors" style={{ textDecoration: 'none' }}>Disclaimer</Link>
+          <div className="flex items-center text-muted-foreground">
+            <p className="m-0">
+              Developed by <a href="https://udesigner.net" target="_blank" rel="noopener noreferrer" className="text-amber-400 hover:text-amber-500 font-bold transition-colors" style={{ textDecoration: 'none' }}>UDESIGNER</a>
+            </p>
           </div>
         </div>
       </div>

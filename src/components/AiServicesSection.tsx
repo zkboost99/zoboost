@@ -1,11 +1,12 @@
 import React from 'react';
 import Link from 'next/link';
+import { User } from 'lucide-react';
 
 export default function AiServicesSection() {
   return (
     <div className="relative z-10 py-24 bg-bg-base/50 backdrop-blur-sm border-t border-white/5">
       <div className="max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
+        <div className="text-center mb-16 animate-fade-in-up animate-stagger-1">
           <h4 className="text-amber-400 font-bold uppercase tracking-widest text-sm mb-3">Services</h4>
           <h2 
             className="text-3xl sm:text-5xl font-black text-foreground tracking-tight m-0"
@@ -18,7 +19,7 @@ export default function AiServicesSection() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           
           {/* Card 1: Curved text + Image */}
-          <div className="relative rounded-lg overflow-hidden border border-white/10 bg-card group min-h-[300px]">
+          <div className="relative rounded-lg overflow-hidden border border-white/10 bg-card group min-h-[300px] animate-fade-in-up animate-stagger-2">
             <div className="absolute inset-0 bg-cover bg-center opacity-40 transition-opacity group-hover:opacity-60" style={{ backgroundImage: "url('/assets/img/shape/banner-7.jpg')" }} />
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
             <div className="relative z-10 p-8 flex flex-col h-full justify-center items-center text-center">
@@ -38,9 +39,9 @@ export default function AiServicesSection() {
           </div>
 
           {/* Card 2: Ai Development */}
-          <div className="rounded-lg border border-white/10 bg-card p-8 hover:bg-white/5 transition-colors group">
+          <div className="rounded-lg border border-white/10 bg-card p-8 hover:bg-white/5 transition-colors group animate-fade-in-up animate-stagger-3">
             <div className="w-16 h-16 rounded bg-white/5 border border-white/10 flex items-center justify-center mb-6 group-hover:border-amber-400/50 transition-colors">
-              <img src="/assets/img/icon/2.png" alt="AI Development" className="w-8 h-8 object-contain filter invert opacity-80 group-hover:opacity-100 transition-opacity" />
+              <img src="/assets/img/icon/2.png" alt="Server Boosting" className="w-8 h-8 object-contain filter invert opacity-80 group-hover:opacity-100 transition-opacity" />
             </div>
             <h4 className="text-xl font-bold text-foreground mb-4">
               <Link href="#" className="hover:text-amber-400 transition-colors">Server Boosting</Link>
@@ -51,9 +52,9 @@ export default function AiServicesSection() {
           </div>
 
           {/* Card 3: Data Science */}
-          <div className="rounded-lg border border-white/10 bg-card p-8 hover:bg-white/5 transition-colors group">
+          <div className="rounded-lg border border-white/10 bg-card p-8 hover:bg-white/5 transition-colors group animate-fade-in-up animate-stagger-4">
             <div className="w-16 h-16 rounded bg-white/5 border border-white/10 flex items-center justify-center mb-6 group-hover:border-amber-400/50 transition-colors">
-              <img src="/assets/img/icon/3.png" alt="Data Science" className="w-8 h-8 object-contain filter invert opacity-80 group-hover:opacity-100 transition-opacity" />
+              <img src="/assets/img/icon/3.png" alt="Premium Accounts" className="w-8 h-8 object-contain filter invert opacity-80 group-hover:opacity-100 transition-opacity" />
             </div>
             <h4 className="text-xl font-bold text-foreground mb-4">
               <Link href="#" className="hover:text-amber-400 transition-colors">Premium Accounts</Link>
@@ -63,10 +64,10 @@ export default function AiServicesSection() {
             </p>
           </div>
 
-          {/* Card 4: Machine Learning */}
-          <div className="rounded-lg border border-white/10 bg-card p-8 hover:bg-white/5 transition-colors group">
+          {/* Machine Learning */}
+          <div className="rounded-lg border border-white/10 bg-card p-8 hover:bg-white/5 transition-colors group animate-fade-in-up animate-stagger-5">
             <div className="w-16 h-16 rounded bg-white/5 border border-white/10 flex items-center justify-center mb-6 group-hover:border-amber-400/50 transition-colors">
-              <img src="/assets/img/icon/1.png" alt="Machine Learning" className="w-8 h-8 object-contain filter invert opacity-80 group-hover:opacity-100 transition-opacity" />
+              <img src="/assets/img/icon/1.png" alt="Server Members" className="w-8 h-8 object-contain filter invert opacity-80 group-hover:opacity-100 transition-opacity" />
             </div>
             <h4 className="text-xl font-bold text-foreground mb-4">
               <Link href="#" className="hover:text-amber-400 transition-colors">Server Members</Link>
@@ -76,10 +77,10 @@ export default function AiServicesSection() {
             </p>
           </div>
 
-          {/* Card 5: Chatbot Solutions */}
-          <div className="rounded-lg border border-white/10 bg-card p-8 hover:bg-white/5 transition-colors group">
+          {/* Chatbot Solutions */}
+          <div className="rounded-lg border border-white/10 bg-card p-8 hover:bg-white/5 transition-colors group animate-fade-in-up animate-stagger-6">
             <div className="w-16 h-16 rounded bg-white/5 border border-white/10 flex items-center justify-center mb-6 group-hover:border-amber-400/50 transition-colors">
-              <img src="/assets/img/icon/4.png" alt="Chatbot Solutions" className="w-8 h-8 object-contain filter invert opacity-80 group-hover:opacity-100 transition-opacity" />
+              <img src="/assets/img/icon/4.png" alt="Profile Decor" className="w-8 h-8 object-contain filter invert opacity-80 group-hover:opacity-100 transition-opacity" />
             </div>
             <h4 className="text-xl font-bold text-foreground mb-4">
               <Link href="#" className="hover:text-amber-400 transition-colors">Profile Decor</Link>
@@ -90,7 +91,7 @@ export default function AiServicesSection() {
           </div>
 
           {/* Card 6: Ai Community */}
-          <div className="relative rounded-lg overflow-hidden border border-white/10 bg-card group min-h-[300px]">
+          <div className="relative rounded-lg overflow-hidden border border-white/10 bg-card group min-h-[300px] animate-fade-in-up animate-stagger-7">
             <div className="absolute inset-0 bg-cover bg-center opacity-40 transition-opacity group-hover:opacity-60" style={{ backgroundImage: "url('/assets/img/shape/1.jpg')" }} />
             <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
             <div className="relative z-10 p-8 flex flex-col h-full justify-end">

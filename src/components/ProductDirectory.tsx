@@ -17,7 +17,13 @@ import {
   Globe,
   Star,
   Activity,
-  Heart
+  Heart,
+  User,
+  Rocket,
+  Users,
+  Palette,
+  ArrowLeftRight,
+  Gamepad2
 } from 'lucide-react';
 
 interface Currency {
@@ -204,7 +210,7 @@ export default function ProductDirectory({
         
         {/* Title */}
         <h1 
-          className="text-4xl sm:text-6xl font-black text-foreground tracking-tight leading-tight m-0 max-w-4xl drop-shadow-xl"
+          className="text-3xl sm:text-5xl md:text-6xl font-black text-foreground tracking-tight leading-tight m-0 max-w-4xl drop-shadow-xl animate-fade-in-up animate-stagger-1"
           style={{ fontFamily: "'Space Grotesk', sans-serif" }}
         >
           One Platform. Endless
@@ -213,23 +219,24 @@ export default function ProductDirectory({
         </h1>
 
         {/* Subtitle */}
-        <p className="mt-4 text-xs sm:text-sm font-normal text-muted-foreground uppercase tracking-widest">
+        <p className="mt-4 text-[10px] sm:text-sm font-normal text-muted-foreground uppercase tracking-widest px-2 animate-fade-in-up animate-stagger-2">
           Premium Accounts • Digital Services • Secure Exchanges • Instant Delivery
         </p>
 
         {/* Centered Large Rounded Search Bar */}
-        <div className="mt-8 w-full max-w-2xl px-4 relative z-20 mx-auto">
+        <div className="mt-8 w-full max-w-2xl px-2 relative z-20 mx-auto animate-fade-in-up animate-stagger-3">
           <SearchBox placeholder="Search for games, services or keys..." />
         </div>
 
         {/* Category Slots (Eldorado alignment style: rounded dark icon box with label underneath) */}
-        <div className="mt-12 flex flex-wrap items-center justify-center gap-5 sm:gap-6 max-w-4xl px-4 z-10 mx-auto">
-          {categorySlots.map((slot) => {
+        <div className="mt-10 sm:mt-12 flex flex-wrap items-center justify-center gap-x-2 gap-y-6 sm:gap-6 max-w-4xl px-2 z-10 mx-auto">
+          {categorySlots.map((slot, index) => {
+            const staggerDelayClass = `animate-stagger-${Math.min(index + 4, 8)}`;
             return (
               <Link
                 key={slot.id}
                 href={`/${slot.id}`}
-                className="flex flex-col items-center gap-2 group cursor-pointer"
+                className={`flex flex-col items-center gap-2 group cursor-pointer w-[calc(25%-6px)] sm:w-auto animate-fade-in-up ${staggerDelayClass}`}
                 style={{ textDecoration: 'none' }}
               >
                 {/* Icon box container */}
@@ -258,7 +265,7 @@ export default function ProductDirectory({
       <main className="relative z-10 mx-auto max-w-[1200px] px-4 pb-20 sm:px-6 lg:px-8">
         
         {/* Popular Items - Homepage Cards Tabs */}
-        <div className="pt-8 mb-8 text-center">
+        <div className="pt-8 mb-8 text-center animate-fade-in-up animate-stagger-4">
           <h2 
             className="text-xl sm:text-2xl font-extrabold text-foreground tracking-tight m-0 uppercase"
             style={{ fontFamily: "'Space Grotesk', sans-serif" }}
@@ -268,7 +275,7 @@ export default function ProductDirectory({
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full text-left mb-8">
-          {homepageCards && homepageCards.map((card) => {
+          {homepageCards && homepageCards.map((card, idx) => {
             const isActive = (typeof activeHomepageCardId !== 'undefined' ? activeHomepageCardId : homepageCards?.[0]?.id) === card.id;
             return (
               <div
@@ -278,7 +285,7 @@ export default function ProductDirectory({
                     window.dispatchEvent(new CustomEvent('setHomepageCardId', { detail: card.id }));
                   }
                 }}
-                className={`relative rounded-md p-4 border transition-all cursor-pointer overflow-hidden ${
+                className={`relative rounded-md p-4 border transition-all cursor-pointer overflow-hidden animate-fade-in-up animate-stagger-${Math.min(idx + 4, 8)} ${
                   isActive 
                     ? 'border-amber-400 bg-amber-400/5 shadow-md shadow-amber-400/5' 
                     : 'bg-card border-border-subtle hover:border-neutral-400/50 hover:bg-black/5'
@@ -323,7 +330,7 @@ export default function ProductDirectory({
           })}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 animate-fade-in-up animate-stagger-6">
           
           {/* Left Column */}
           <div className="bg-card border border-border-subtle rounded-lg p-6 flex flex-col gap-4">

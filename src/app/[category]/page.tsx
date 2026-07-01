@@ -116,13 +116,13 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
   }
 
   return (
-    <div className="min-h-screen bg-[#0b0e14] text-white antialiased font-sans flex flex-col">
+    <div className="min-h-screen bg-background text-foreground antialiased font-sans flex flex-col">
       <Header />
 
       {/* Hero Section */}
-      <div className="relative overflow-hidden border-b border-[#1d2736] bg-[#0f141d] pt-12 pb-16">
+      <div className="relative overflow-hidden border-b border-border-subtle bg-bg-secondary pt-16 pb-20">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(251,191,36,0.1),transparent_50%)] pointer-events-none" />
-        <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col items-center text-center">
+        <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col items-center text-center animate-fade-in-up">
           <Link 
             href="/" 
             className="inline-flex items-center gap-2 text-xs font-bold text-amber-400 hover:text-amber-300 uppercase tracking-wider mb-6 transition-colors"
@@ -130,10 +130,13 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
           >
             <ArrowLeft className="h-4 w-4" /> Back to Home
           </Link>
-          <h1 className="text-4xl sm:text-5xl font-black text-white tracking-tight m-0 drop-shadow-lg">
+          <h1 
+            className="text-4xl sm:text-5xl md:text-6xl font-black text-foreground tracking-tight m-0 drop-shadow-xl"
+            style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+          >
             {mappedCategory.title}
           </h1>
-          <p className="mt-4 text-sm text-[#8a9bb4] max-w-2xl">
+          <p className="mt-6 text-sm sm:text-base text-muted-foreground max-w-2xl leading-relaxed">
             Explore our premium collection of {mappedCategory.title.toLowerCase()}. Instant delivery and secure transactions guaranteed.
           </p>
         </div>
@@ -142,46 +145,43 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
       {/* Main Content Area */}
       <main className="flex-1 mx-auto max-w-[1200px] px-4 py-12 sm:px-6 lg:px-8 w-full">
         {products && products.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {products.map((product) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+            {products.map((product, idx) => (
               <Link 
                 href={`/product/${product.id}`}
                 key={product.id} 
-                className="group flex flex-col justify-between bg-[#19202e] border border-[#222f44] rounded-sm p-4 hover:border-amber-400/50 transition-all cursor-pointer shadow-sm"
+                className={`group flex flex-col justify-between bg-card border border-border-subtle rounded-lg p-5 hover:border-amber-400/50 hover:bg-amber-400/5 transition-all cursor-pointer shadow-md shadow-black/20 hover:shadow-amber-400/10 animate-fade-in-up animate-stagger-${Math.min(idx + 1, 8)}`}
                 style={{ textDecoration: 'none' }}
               >
                 <div className="flex justify-between items-start mb-6">
-                  <h3 className="text-sm font-medium text-[#dcdde1] leading-snug pr-4 line-clamp-2 max-w-[75%]">
+                  <h3 className="text-sm font-bold text-foreground leading-snug pr-4 line-clamp-2 max-w-[75%] group-hover:text-amber-400 transition-colors">
                     {product.title}
                   </h3>
-                  <div className="w-10 h-10 rounded-md bg-black flex-shrink-0 flex items-center justify-center p-1.5 shadow-inner">
+                  <div className="w-12 h-12 rounded-lg bg-black/40 border border-white/5 flex-shrink-0 flex items-center justify-center p-2 shadow-inner group-hover:scale-110 transition-transform duration-300">
                     <img 
                       src={product.media_url || '/lovable/discord-icon.png'} 
                       alt={product.title} 
-                      className="w-full h-full object-contain filter group-hover:scale-110 transition-transform"
+                      className="w-full h-full object-contain filter drop-shadow-md"
                     />
                   </div>
                 </div>
 
                 <div className="flex justify-between items-end">
                   <div className="flex flex-col gap-1.5">
-                    <div className="flex items-center gap-1">
-                      <span className="text-[13px] text-[#a4b1cd] font-medium">ZoroBoost</span>
-                      <svg className="w-3.5 h-3.5 text-[#00c853]" viewBox="0 0 24 24" fill="currentColor">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[12px] text-muted-foreground font-semibold uppercase tracking-wider">ZoroBoost</span>
+                      <svg className="w-3.5 h-3.5 text-emerald-400" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
                       </svg>
                     </div>
-                    <span className="text-[17px] font-extrabold text-white">${product.price?.toFixed(2) || '0.00'}</span>
+                    <span className="text-xl font-black text-white group-hover:text-amber-400 transition-colors">${product.price?.toFixed(2) || '0.00'}</span>
                   </div>
                   
                   <div className="flex flex-col items-end gap-1.5">
-                    <span className="text-[13px] text-white font-medium tracking-wide">99.9% <span className="text-[#a4b1cd]">(1k+)</span></span>
-                    <div className="flex items-center gap-1.5 text-[#a4b1cd]">
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <polyline points="12 6 12 12 16 14"></polyline>
-                      </svg>
-                      <span className="text-[12px]">{product.delivery_time || 'Instant'}</span>
+                    <span className="text-[11px] text-white font-bold tracking-widest bg-white/10 px-2 py-0.5 rounded-sm">99.9% <span className="text-muted-foreground ml-0.5">(1k+)</span></span>
+                    <div className="flex items-center gap-1.5 text-muted-foreground group-hover:text-emerald-400 transition-colors">
+                      <Zap className="w-3.5 h-3.5 fill-current" />
+                      <span className="text-[12px] font-bold">{product.delivery_time || 'Instant'}</span>
                     </div>
                   </div>
                 </div>
@@ -189,19 +189,19 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
             ))}
           </div>
         ) : (
-          <div className="bg-[#19202e] border border-[#222f44] rounded-sm p-16 flex flex-col items-center justify-center text-center shadow-lg">
-            <div className="w-20 h-20 bg-[#131924] rounded-full flex items-center justify-center mb-6">
+          <div className="bg-card border border-border-subtle rounded-lg p-16 flex flex-col items-center justify-center text-center shadow-lg animate-fade-in-up">
+            <div className="w-20 h-20 bg-background rounded-full flex items-center justify-center mb-6 shadow-inner border border-white/5">
               <svg className="h-10 w-10 text-amber-400 opacity-50" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
               </svg>
             </div>
-            <h3 className="text-2xl font-bold text-white mb-2">No Products Available</h3>
-            <p className="text-[#8a9bb4] max-w-md mb-8">
+            <h3 className="text-2xl font-bold text-foreground mb-2">No Products Available</h3>
+            <p className="text-muted-foreground max-w-md mb-8">
               We are currently out of stock or haven't added any items to this category yet. Please check back later.
             </p>
             <Link 
               href="/" 
-              className="px-6 py-3 bg-amber-400 hover:bg-amber-500 text-neutral-900 text-sm font-bold rounded shadow-md transition-colors"
+              className="px-8 py-3.5 bg-amber-400 hover:bg-amber-500 text-neutral-900 text-sm font-black uppercase tracking-wider rounded-md shadow-md transition-all hover:-translate-y-0.5"
               style={{ textDecoration: 'none' }}
             >
               Browse All Categories

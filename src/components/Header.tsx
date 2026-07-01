@@ -1,10 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import Image from 'next/image';
+
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { 
   ChevronDown, Bell, MessageSquare, ArrowLeftRight, HelpCircle, Globe, Sun, Moon, Gamepad2, X,
-  ShieldCheck, Star, Tv, Rocket, Users, BadgeCheck, Palette, Crown, Gift, Percent, Zap, Wallet
+  ShieldCheck, Star, Tv, Rocket, Users, BadgeCheck, Palette, Crown, Gift, Percent, Zap, Wallet, LogOut, User, Menu
 } from 'lucide-react';
 
 const navItems = [
@@ -62,6 +65,49 @@ export default function Header() {
   const [isCurrencyModalOpen, setIsCurrencyModalOpen] = useState(false);
   const [tempCurrencyCode, setTempCurrencyCode] = useState('USD');
   const [dbProducts, setDbProducts] = useState<any[]>([]);
+  const [user, setUser] = useState<any>(null);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [expandedMobileNav, setExpandedMobileNav] = useState<string | null>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    const initAuth = async () => {
+      try {
+        const { createClient } = await import('@/utils/supabase/client');
+        const supabase = createClient();
+        const { data: { session } } = await supabase.auth.getSession();
+        setUser(session?.user || null);
+
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+          setUser(session?.user || null);
+        });
+        return () => subscription.unsubscribe();
+      } catch (e) {}
+    };
+    initAuth();
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      const { createClient } = await import('@/utils/supabase/client');
+      const supabase = createClient();
+      await supabase.auth.signOut();
+      setIsDropdownOpen(false);
+      router.refresh();
+    } catch (e) {}
+  };
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -151,53 +197,100 @@ export default function Header() {
       {/* Top Bar */}
       <div className="mx-auto flex h-16 max-w-[1200px] items-center gap-4 px-4 sm:gap-6 sm:px-6 lg:px-8">
         
-        {/* Brand Logo */}
-        <Link href="/" className="flex shrink-0 items-center gap-2" style={{ textDecoration: 'none' }}>
-          <div className="grid h-9 w-9 place-items-center rounded-md bg-amber-400 text-neutral-900">
-            <Gamepad2 className="h-5 w-5" strokeWidth={2.75} />
-          </div>
-          <span className="text-xl font-bold tracking-tight text-foreground">ZoroBoost</span>
-        </Link>
+        <div className="flex items-center gap-3">
+          {/* Mobile Menu Toggle */}
+          <button 
+            className="md:hidden text-foreground hover:text-amber-400 border-none bg-transparent p-1 cursor-pointer flex items-center justify-center"
+            onClick={() => setIsMobileMenuOpen(true)}
+          >
+            <Menu className="w-6 h-6" />
+          </button>
+          
+          <Link href="/" className="flex shrink-0 items-center" style={{ textDecoration: 'none' }}>
+            <Image 
+              src="/zoroboost-logo.png" 
+              alt="ZoroBoost Logo" 
+              width={180} 
+              height={45} 
+              className="h-9 w-auto object-contain dark:bg-white/90 dark:p-1 dark:rounded-md transition-colors"
+              priority
+            />
+          </Link>
+        </div>
 
         {/* Central Search Box removed as per user request */}
 
         {/* Right Nav Controls */}
         <div className="ml-auto flex items-center gap-4 text-muted-foreground">
-          <button 
-            aria-label="Swap" 
-            className="relative hover:text-foreground cursor-pointer bg-transparent border-none"
-            onClick={(e) => { e.preventDefault(); e.stopPropagation(); document.dispatchEvent(new CustomEvent('openFeedback', { detail: { type: 'suggestion', rect: e.currentTarget.getBoundingClientRect() } })); }}
-          >
-            <ArrowLeftRight className="h-5 w-5" />
-            <span className="absolute -right-1 -top-1 h-2 w-2 rounded-full bg-amber-400" />
-          </button>
           
           <button 
             aria-label="Messages" 
-            className="relative hover:text-foreground cursor-pointer bg-transparent border-none"
-            onClick={(e) => { e.preventDefault(); e.stopPropagation(); document.dispatchEvent(new CustomEvent('openFeedback', { detail: { type: 'report', rect: e.currentTarget.getBoundingClientRect() } })); }}
+            className="relative hover:text-foreground cursor-pointer bg-transparent border-none hidden sm:block"
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); window.dispatchEvent(new Event('toggleLiveChat')); }}
           >
             <MessageSquare className="h-5 w-5" />
-            <span className="absolute -right-2 -top-2 grid h-4 min-w-4 place-items-center rounded-full bg-amber-400 px-1 text-[10px] font-bold text-neutral-900">
-              1
-            </span>
           </button>
           
-          <button aria-label="Notifications" className="relative hover:text-foreground cursor-pointer bg-transparent border-none">
+          <button aria-label="Notifications" className="relative hover:text-foreground cursor-pointer bg-transparent border-none hidden sm:block">
             <Bell className="h-5 w-5" />
-            <span className="absolute -right-2 -top-2 grid h-4 min-w-4 place-items-center rounded-full bg-amber-400 px-1 text-[10px] font-bold text-neutral-900">
-              2
-            </span>
           </button>
           
-          <div className="h-8 w-8 overflow-hidden rounded-full bg-gradient-to-br from-rose-400 to-amber-500 ring-2 ring-border-subtle" />
+          {user ? (
+            <div className="relative" ref={dropdownRef}>
+              <button 
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                className="h-8 w-8 overflow-hidden rounded-full ring-2 ring-border-subtle cursor-pointer p-0 border-none bg-transparent"
+              >
+                {user.user_metadata?.avatar_url ? (
+                  <img src={user.user_metadata.avatar_url} alt="Profile" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full bg-gradient-to-br from-rose-400 to-amber-500" />
+                )}
+              </button>
+
+              {isDropdownOpen && (
+                <div className="absolute right-0 mt-2 w-48 rounded-md bg-card shadow-lg ring-1 ring-black ring-opacity-5 z-50 border border-border-subtle overflow-hidden">
+                  <div className="py-1">
+                    <div className="px-4 py-2 border-b border-border-subtle">
+                      <p className="text-sm font-medium text-foreground truncate">{user.user_metadata?.full_name || 'User'}</p>
+                      <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+                    </div>
+                    <Link
+                      href="/profile"
+                      className="flex items-center px-4 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground cursor-pointer"
+                      onClick={() => setIsDropdownOpen(false)}
+                      style={{ textDecoration: 'none' }}
+                    >
+                      <User className="mr-2 h-4 w-4" />
+                      Profile
+                    </Link>
+                    <button
+                      onClick={handleLogout}
+                      className="flex w-full items-center px-4 py-2 text-sm text-red-400 hover:bg-muted hover:text-red-500 cursor-pointer border-none bg-transparent"
+                    >
+                      <LogOut className="mr-2 h-4 w-4" />
+                      Sign Out
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : (
+            <Link 
+              href="/login" 
+              className="flex items-center justify-center h-8 px-4 text-sm font-semibold text-neutral-900 bg-amber-400 hover:bg-amber-500 rounded-md transition-colors"
+              style={{ textDecoration: 'none' }}
+            >
+              Sign In
+            </Link>
+          )}
         </div>
       </div>
 
-      {/* Category Navigation Sub-bar */}
-      <div className="bg-header-sub-bg border-t border-border-subtle">
+      {/* Category Navigation Sub-bar (Desktop Only) */}
+      <div className="hidden md:block bg-header-sub-bg border-t border-border-subtle w-full">
         <div className="mx-auto flex h-12 max-w-[1200px] items-center justify-between px-4 sm:px-6 lg:px-8">
-          <nav className="flex h-full items-center gap-1">
+          <nav className="flex h-full items-center gap-1 min-w-max">
             {navItems.map((nav) => {
               let itemsToRender = [...nav.items];
               if (dbProducts.length > 0) {
@@ -314,6 +407,122 @@ export default function Header() {
         </div>
       </div>
     </header>
+
+      {/* Mobile Menu Overlay */}
+      {isMobileMenuOpen && (
+        <div className="fixed inset-0 z-[100] bg-black/80 backdrop-blur-2xl md:hidden overflow-y-auto transition-all duration-300">
+          <div className="flex items-center justify-between p-6 sticky top-0 z-10">
+            <Link href="/" className="flex shrink-0 items-center" onClick={() => setIsMobileMenuOpen(false)} style={{ textDecoration: 'none' }}>
+              <Image 
+                src="/zoroboost-logo.png" 
+                alt="ZoroBoost Logo" 
+                width={180} 
+                height={45} 
+                className="h-8 w-auto object-contain dark:bg-white/90 dark:p-1 dark:rounded-md transition-colors"
+                priority
+              />
+            </Link>
+            <button 
+              className="p-2 -mr-2 text-white/60 hover:text-white transition-colors cursor-pointer bg-transparent border-none rounded-full hover:bg-white/10"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              <X className="w-7 h-7" strokeWidth={1.5} />
+            </button>
+          </div>
+
+          <div className="px-6 py-2 flex flex-col min-h-[calc(100vh-80px)]">
+            <div className="flex flex-col flex-1">
+              {navItems.map((nav) => {
+                let itemsToRender = [...nav.items];
+                if (dbProducts.length > 0) {
+                  const matching = dbProducts.filter(p => {
+                    const c = (p.category || '').toLowerCase();
+                    const t = (p.title || '').toLowerCase();
+                    const n = nav.label.toLowerCase();
+                    if (n === 'accounts') return c.includes('account') || t.includes('account');
+                    if (n === 'boosting') return c.includes('boost') || t.includes('boost');
+                    if (n === 'members') return c.includes('member') || t.includes('member');
+                    if (n === 'nitro') return c.includes('nitro') || t.includes('nitro');
+                    if (n === 'decorations') return c.includes('decoration') || t.includes('decoration');
+                    return false;
+                  });
+                  if (matching.length > 0) {
+                    itemsToRender = matching.map((p, i) => ({
+                      label: p.title,
+                      desc: '',
+                      href: `/product/${p.id}`,
+                      icon: nav.items[i % nav.items.length].icon,
+                      color: nav.items[i % nav.items.length].color,
+                      bg: nav.items[i % nav.items.length].bg
+                    }));
+                  }
+                }
+
+                const isExpanded = expandedMobileNav === nav.label;
+
+                return (
+                  <div key={nav.label} className="border-b border-white/[0.08] last:border-0">
+                    <button 
+                      className="w-full flex items-center justify-between py-6 text-white cursor-pointer border-none bg-transparent group"
+                      onClick={() => setExpandedMobileNav(isExpanded ? null : nav.label)}
+                    >
+                      <span className={`text-3xl font-light tracking-wide transition-colors ${isExpanded ? 'text-amber-400' : 'text-white'}`}>
+                        {nav.label}
+                      </span>
+                      <div className={`w-8 h-8 rounded-full border flex items-center justify-center transition-all duration-300 ${isExpanded ? 'border-amber-400 bg-amber-400/10 text-amber-400 rotate-180' : 'border-white/20 text-white/50'}`}>
+                        <ChevronDown className="w-4 h-4" />
+                      </div>
+                    </button>
+                    
+                    <div 
+                      className={`overflow-hidden transition-all duration-400 ease-in-out ${isExpanded ? 'max-h-[500px] opacity-100 mb-6' : 'max-h-0 opacity-0'}`}
+                    >
+                      <div className="flex flex-col gap-2 pl-4 border-l border-white/10 ml-2">
+                        {itemsToRender.map((item, idx) => (
+                          <Link 
+                            key={idx}
+                            href={item.href}
+                            onClick={() => setIsMobileMenuOpen(false)}
+                            className="flex items-center gap-4 py-3 text-white/60 hover:text-amber-400 transition-colors no-underline group/link"
+                          >
+                            <span className="text-lg font-medium tracking-wide group-hover/link:translate-x-2 transition-transform duration-300">
+                              {item.label}
+                            </span>
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className="pb-10 pt-8 mt-auto border-t border-white/[0.08]">
+              <div className="flex gap-3 mb-3">
+                <button 
+                  onClick={() => { setIsMobileMenuOpen(false); window.dispatchEvent(new CustomEvent('openLiveChat')); }}
+                  className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-full bg-white/5 text-white hover:bg-white/10 transition-colors border border-white/10 font-semibold text-sm cursor-pointer"
+                >
+                  <HelpCircle className="w-4 h-4 text-amber-400" /> Support
+                </button>
+                <button 
+                  onClick={() => { setIsMobileMenuOpen(false); openCurrencyModal(); }}
+                  className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-full bg-white/5 text-white hover:bg-white/10 transition-colors border border-white/10 font-semibold text-sm cursor-pointer"
+                >
+                  <Globe className="w-4 h-4 text-blue-400" /> Currency
+                </button>
+              </div>
+              <button 
+                onClick={() => { toggleTheme(); }}
+                className="w-full flex items-center justify-center gap-2 py-3.5 rounded-full bg-white/5 text-white hover:bg-white/10 transition-colors border border-white/10 font-semibold text-sm cursor-pointer"
+              >
+                {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-300" /> : <Moon className="w-4 h-4 text-neutral-300" />}
+                {theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Currency Modal */}
       {isCurrencyModalOpen && (
