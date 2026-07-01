@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useRef } from 'react';
-import { injectGenieKeyframes } from '@/utils/genie';
 
 interface ProductDescriptionSectionProps {
   product: {
@@ -18,13 +17,9 @@ interface ProductDescriptionSectionProps {
 export default function ProductDescriptionSection({ product }: ProductDescriptionSectionProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
-  const btnRef = useRef<HTMLLabelElement>(null);
+  const btnRef = useRef<HTMLButtonElement>(null);
 
   const openModal = () => {
-    if (btnRef.current) {
-      const rect = btnRef.current.getBoundingClientRect();
-      injectGenieKeyframes(rect, 500, 500, 'desc-genie');
-    }
     setIsOpen(true);
     setIsClosing(false);
   };
@@ -34,59 +29,76 @@ export default function ProductDescriptionSection({ product }: ProductDescriptio
     setTimeout(() => {
       setIsOpen(false);
       setIsClosing(false);
-    }, 400); // match genie-close animation duration
+    }, 300);
   };
 
   return (
     <>
-      <p className="premium-details-desc">
+      <p className="text-sm text-muted-foreground leading-relaxed">
         {product.description}
       </p>
 
       {/* macOS Modal Trigger */}
-      <label ref={btnRef} className="macos-modal-trigger-btn" onClick={openModal}>
+      <button 
+        ref={btnRef} 
+        className="mt-4 inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold bg-bg-secondary text-amber-600 dark:text-amber-500 rounded-lg border border-border-subtle hover:bg-neutral-500/10 cursor-pointer transition-all"
+        onClick={openModal}
+      >
         <i className="fas fa-file-alt"></i> View Long Description
-      </label>
+      </button>
 
       {/* macOS Modal Structure */}
       {(isOpen || isClosing) && (
-        <div className="macos-modal-overlay" onClick={closeModal} style={{ opacity: isClosing ? 0 : 1, transition: 'opacity 0.4s ease' }}>
-          <div className={`macos-window feedback-window ${isClosing ? 'genie-close-anim' : 'genie-open-anim'}`} onClick={(e) => e.stopPropagation()} style={{ width: '90%', maxWidth: '500px' }}>
-            <div className="feedback-modal-header suggestion-header">
-              <div className="macos-controls-feedback">
-                <div className="macos-btn close" onClick={closeModal}></div>
-              </div>
-              <div className="header-content">
-                <i className="fas fa-file-alt"></i>
+        <div 
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 transition-opacity duration-300"
+          onClick={closeModal}
+        >
+          <div 
+            className="w-full max-w-lg bg-card border border-border-subtle rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] transition-transform duration-300 scale-100" 
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="bg-bg-secondary border-b border-border-subtle p-5 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <i className="fas fa-file-alt text-2xl text-amber-500"></i>
                 <div>
-                  <h3>{product.title}</h3>
-                  <p>Detailed product overview and instructions</p>
+                  <h3 className="text-sm font-bold text-foreground m-0">{product.title}</h3>
+                  <p className="text-xs text-muted-foreground m-0">Detailed product overview and instructions</p>
                 </div>
               </div>
+              <button 
+                onClick={closeModal}
+                className="w-8 h-8 rounded-full bg-neutral-500/10 hover:bg-neutral-500/25 flex items-center justify-center border-none text-foreground cursor-pointer transition-all"
+                aria-label="Close modal"
+              >
+                <i className="fas fa-times"></i>
+              </button>
             </div>
             
-            <div className="feedback-modal-body" style={{ color: '#fff', fontSize: '14.5px', lineHeight: '1.7' }}>
-              <h4 style={{ fontWeight: '700', marginBottom: '12px', color: '#6366f1' }}>Overview & Features</h4>
-              <p style={{ marginBottom: '15px' }}>
+            {/* Modal Body */}
+            <div className="p-6 text-sm text-foreground leading-relaxed overflow-y-auto">
+              <h4 className="font-bold text-amber-600 dark:text-amber-500 mb-3 text-base">Overview & Features</h4>
+              <p className="mb-4 text-foreground/90">
                 Thank you for choosing ZoroBoost. Here is the detailed description and instructions for <strong>{product.title}</strong>:
               </p>
-              <ul style={{ paddingLeft: '20px', listStyleType: 'disc', marginBottom: '20px', color: '#ccc' }}>
+              <ul className="pl-5 list-disc mb-5 text-muted-foreground space-y-1">
                 <li><strong>Category:</strong> {product.category}</li>
                 <li><strong>Price:</strong> ${product.price}</li>
                 <li><strong>Delivery Process:</strong> {product.delivery_method} ({product.delivery_time})</li>
                 <li><strong>Service Status:</strong> {product.status || 'Active'}</li>
               </ul>
-              <p style={{ marginBottom: '15px' }}>
+              <p className="mb-4 text-foreground/90">
                 Our {product.category} service is fully optimized for speed, reliability, and account safety. Once your payment is verified, our automated systems and support agents will immediately process your order.
               </p>
-              <p style={{ fontWeight: '600', color: '#6366f1', marginBottom: '8px' }}>
+              <p className="font-bold text-amber-600 dark:text-amber-500 mb-2">
                 Order Implementation Guidelines:
               </p>
-              <p style={{ marginBottom: '15px' }}>
+              <p className="mb-4 text-foreground/90">
                 Please make sure that the details you provide (like server link or username) are 100% correct. If you face any issues or need custom configurations, feel free to contact our support team on Discord.
               </p>
-              <div style={{ background: 'rgba(99, 102, 241, 0.1)', padding: '12px', borderRadius: '8px', border: '1px solid rgba(99, 102, 241, 0.2)', fontSize: '13px', color: '#a5b4fc' }}>
-                <i className="fas fa-info-circle"></i> <strong>Important Note:</strong> This is a premium digital service. Refills and refunds are covered under our ZoroBoost Refund Policy.
+              <div className="bg-amber-500/5 border border-amber-400/20 p-4 rounded-xl text-xs text-amber-600 dark:text-amber-500 flex gap-2 items-start mt-4">
+                <i className="fas fa-info-circle mt-0.5 shrink-0"></i> 
+                <span><strong>Important Note:</strong> This is a premium digital service. Refills and refunds are covered under our ZoroBoost Refund Policy.</span>
               </div>
             </div>
           </div>

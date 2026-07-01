@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import LiveChatWidget from "@/components/LiveChatWidget";
 
 export const metadata: Metadata = {
   title: "ZoroBoost — Discord Accounts, Boosts, Members & Customizations",
@@ -12,13 +13,31 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <link rel="icon" href="/site icon.png" type="image/png" />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var theme = localStorage.getItem('theme');
+                  if (theme === 'light') {
+                    document.documentElement.classList.add('light');
+                  } else {
+                    document.documentElement.classList.remove('light');
+                  }
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
       </head>
-      <body className="antialiased min-h-screen bg-[#0f0f10]">
+      <body className="antialiased min-h-screen bg-background text-foreground transition-colors duration-200">
         {children}
+        <LiveChatWidget />
       </body>
     </html>
   );

@@ -1,31 +1,31 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Header from './Header';
 import Footer from './Footer';
-import {
-  HelpCircle,
-  ChevronLeft,
-  ChevronRight,
-  MessageCircle,
-  Sparkles,
-  Crown,
-  Target,
-  Swords,
-  Shield,
-  Joystick,
-  Star,
-  Ghost,
-  Flame,
-  Trophy,
-  Dice5,
-  Coins,
-  Rocket,
-  Gamepad2,
+import SearchBox from './SearchBox';
+import AiServicesSection from '@/components/AiServicesSection';
+import { 
+  Sparkles, 
+  Crown, 
+  Coins, 
+  Tv, 
+  ArrowRight,
+  ShieldCheck,
+  Zap,
   Globe,
-  Wand2,
+  Star,
+  Activity,
+  Heart
 } from 'lucide-react';
-import type { LucideIcon } from 'lucide-react';
+
+interface Currency {
+  code: string;
+  symbol: string;
+  label: string;
+  rate: number;
+}
 
 interface Product {
   id: string;
@@ -51,312 +51,407 @@ interface Post {
 interface ProductDirectoryProps {
   products: Product[];
   posts: Post[];
+  homepageCards: any[];
+  moneyExchange: any[];
+  netflixProducts: any[];
 }
 
-type Entry = { label: string; icon: LucideIcon; tint: string };
+export default function ProductDirectory({ 
+  products, 
+  posts, 
+  homepageCards, 
+  moneyExchange, 
+  netflixProducts 
+}: ProductDirectoryProps) {
+  // Define 7 mockup category slots exactly matching mockup
+  const categorySlots = [
+    { id: 'discord-accounts', label: 'Accounts', icon: 'https://img.icons8.com/plumpy/24/people-skin-type-7.png' },
+    { id: 'server-boosts', label: 'Boosting', icon: 'https://img.icons8.com/plumpy/24/launched-rocket.png' },
+    { id: 'server-members', label: 'Members', icon: 'https://img.icons8.com/plumpy/24/crowd.png' },
+    { id: 'discord-nitro', label: 'Nitro', icon: 'https://img.icons8.com/plumpy/24/gas.png' },
+    { id: 'decorations', label: 'Decorations', icon: 'https://img.icons8.com/plumpy/24/christmas-bulb--v1.png' },
+    { id: 'netflix', label: 'Netflix', icon: 'https://img.icons8.com/plumpy/24/netflix.png' },
+    { id: 'money-exchange', label: 'Exchange', icon: 'https://img.icons8.com/plumpy/24/currency-exchange.png' },
+  ];
 
-const popularAccounts: Entry[] = [
-  { label: "Battle Royale X", icon: Crown, tint: "bg-orange-500" },
-  { label: "Auto Heist V", icon: Target, tint: "bg-emerald-700" },
-  { label: "Tactical Strike", icon: Swords, tint: "bg-rose-500" },
-  { label: "Siege Tactics", icon: Shield, tint: "bg-neutral-800" },
-  { label: "Block World", icon: Joystick, tint: "bg-sky-500" },
-  { label: "Hero League", icon: Star, tint: "bg-indigo-600" },
-  { label: "Pixel Quest", icon: Wand2, tint: "bg-amber-500" },
-  { label: "Old Realm Online", icon: Trophy, tint: "bg-yellow-600" },
-  { label: "Monster Hunter Go", icon: Ghost, tint: "bg-red-500" },
-  { label: "Shadow Raiders", icon: Flame, tint: "bg-purple-600" },
-];
+  const [activeSlotId, setActiveSlotId] = useState<string>('discord-accounts');
+  const [activeHomepageCardId, setActiveHomepageCardId] = useState<string | undefined>(undefined);
+  const [currency, setCurrency] = useState<Currency>({ code: 'USD', symbol: '$', label: 'USD - $', rate: 1 });
+  const [isCurrencyModalOpen, setIsCurrencyModalOpen] = useState(false);
+  const [chatOpen, setChatOpen] = useState(false);
 
-const popularCurrencies: Entry[] = [
-  { label: "Football Coins", icon: Dice5, tint: "bg-emerald-600" },
-  { label: "Exile Path Currency", icon: Coins, tint: "bg-stone-700" },
-  { label: "Old Realm Gold", icon: Coins, tint: "bg-yellow-600" },
-  { label: "Block World Cash", icon: Coins, tint: "bg-sky-500" },
-  { label: "SMP Donations", icon: Coins, tint: "bg-rose-400" },
-];
+  useEffect(() => {
+    const stored = localStorage.getItem('selected_currency');
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        setCurrency(parsed);
+      } catch (e) {}
+    }
 
-const popularBoosting: Entry[] = [
-  { label: "Tactical Strike", icon: Rocket, tint: "bg-neutral-900" },
-  { label: "Battle Brawl", icon: Sparkles, tint: "bg-cyan-500" },
-  { label: "Football Pro", icon: Trophy, tint: "bg-emerald-600" },
-  { label: "Rocket Arena", icon: Gamepad2, tint: "bg-blue-700" },
-];
+    const openModalHandler = () => {
+      setIsCurrencyModalOpen(true);
+    };
 
-const popularItems: Entry[] = [
-  { label: "Garden Grower 2", icon: Sparkles, tint: "bg-lime-500" },
-  { label: "Brain Heist", icon: Ghost, tint: "bg-pink-300" },
-];
+    const currencyChangeHandler = (e: CustomEvent) => {
+      setCurrency(e.detail);
+    };
+
+    const handleChatState = (e: any) => {
+      if (e.detail) {
+        setChatOpen(e.detail.isOpen);
+      }
+    };
+
+    const handleHomepageCardIdChange = (e: any) => {
+      setActiveHomepageCardId(e.detail);
+    };
+
+    window.addEventListener('openCurrencyModal', openModalHandler);
+    window.addEventListener('currencyChanged' as any, currencyChangeHandler);
+    window.addEventListener('liveChatStateChanged' as any, handleChatState);
+    window.addEventListener('setHomepageCardId' as any, handleHomepageCardIdChange);
+
+    return () => {
+      window.removeEventListener('openCurrencyModal', openModalHandler);
+      window.removeEventListener('currencyChanged' as any, currencyChangeHandler);
+      window.removeEventListener('liveChatStateChanged' as any, handleChatState);
+      window.removeEventListener('setHomepageCardId' as any, handleHomepageCardIdChange);
+    };
+  }, []);
+
+  const formatPrice = (usdPrice: number) => {
+    return `${currency.symbol}${(usdPrice * currency.rate).toFixed(2)}`;
+  };
 
 
-export default function ProductDirectory({ products }: ProductDirectoryProps) {
-  // Map our products dynamically to the "Recently viewed" section
-  const recently = products.slice(0, 4);
+  // Filter products based on active category slot
+  const getFilteredItems = () => {
+    if (activeSlotId === 'netflix') {
+      return netflixProducts.map(p => ({
+        id: p.id,
+        title: `Netflix (${p.account_type})`,
+        category: 'Netflix Premium',
+        price: p.price,
+        media_url: p.media_url,
+        linkUrl: '#'
+      }));
+    }
+    if (activeSlotId === 'money-exchange') {
+      return moneyExchange.map(offer => ({
+        id: offer.id,
+        title: `${offer.giving_currency} ➔ ${offer.getting_currency}`,
+        category: `Rate: ${offer.exchange_rate}`,
+        price: parseFloat(offer.reserve_stock.replace(/[^0-9.]/g, '')) || 0,
+        media_url: offer.media_url,
+        linkUrl: '#'
+      }));
+    }
+
+    return products.filter(p => {
+      const cat = p.category.toLowerCase();
+      const title = p.title.toLowerCase();
+      
+      if (activeSlotId === 'discord-accounts') {
+        return cat.includes('account') || cat.includes('acc') || title.includes('account');
+      }
+      if (activeSlotId === 'server-boosts') {
+        return cat.includes('boost') || title.includes('boost');
+      }
+      if (activeSlotId === 'server-members') {
+        return cat.includes('member') || title.includes('member');
+      }
+      if (activeSlotId === 'discord-nitro') {
+        return cat.includes('nitro') || title.includes('nitro');
+      }
+      if (activeSlotId === 'decorations') {
+        return cat.includes('decor') || cat.includes('avatar') || cat.includes('profile') || title.includes('decoration');
+      }
+      return false;
+    }).map(p => ({
+      id: p.id,
+      title: p.title,
+      category: p.category,
+      price: p.price,
+      media_url: p.media_url,
+      linkUrl: `/product/${p.id}`
+    }));
+  };
+
+  const filteredListings = getFilteredItems();
+
+  // Get Top Row (4 Vertical/Square Cards)
+  const topRowListings = filteredListings.slice(0, 4);
+
+  // If we have fewer than 4 items, backfill with default items so layout looks gorgeous
+  const defaultAccounts = products.slice(0, 4).map(p => ({
+    id: p.id,
+    title: p.title,
+    category: p.category,
+    price: p.price,
+    media_url: p.media_url,
+    linkUrl: `/product/${p.id}`
+  }));
+
+  const displayListings = topRowListings.length > 0 ? topRowListings : defaultAccounts;
 
   return (
-    <div className="min-h-screen bg-[#0f0f10] text-neutral-100 antialiased font-sans">
-      
-      {/* Header (TopBar & CategoryNav) */}
+    <div className="relative min-h-screen overflow-hidden">
       <Header />
 
-      {/* Hero Section */}
-      <section className="relative overflow-hidden">
-        <img
-          src="/lovable/brainrot-bg.webp"
-          alt=""
-          aria-hidden="true"
-          className="absolute inset-0 h-full w-full object-cover"
-        />
-        {/* Full-width smooth bottom fade blur */}
-        <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-[#0f0f10] via-[#0f0f10]/80 to-transparent pointer-events-none" />
+      {/* Hero Section (Mockup 1 Style) */}
+      <section className="relative pt-20 pb-16 px-4 z-10 max-w-[1200px] mx-auto text-center flex flex-col items-center">
+        
+        {/* Title */}
+        <h1 
+          className="text-4xl sm:text-6xl font-black text-foreground tracking-tight leading-tight m-0 max-w-4xl drop-shadow-xl"
+          style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+        >
+          One Platform. Endless
+          <br />
+          Digital Services.
+        </h1>
 
-        <div className="relative mx-auto w-full flex min-h-[460px] max-w-[1200px] items-end px-4 py-16 sm:px-6 lg:px-8">
-          <div className="max-w-md pb-28">
-            <h1 className="text-4xl font-extrabold leading-[1.05] tracking-tight text-white drop-shadow-md sm:text-5xl" style={{ color: '#ffffff' }}>
-              Complete your
-              <br />
-              Discord set
-            </h1>
-            <p className="mt-4 text-sm font-medium text-white/90">
-              The safest player-to-player Discord services marketplace
-            </p>
-            <button 
-              onClick={() => {
-                const el = document.getElementById('listings');
-                if (el) el.scrollIntoView({ behavior: 'smooth' });
-              }}
-              className="mt-6 inline-flex items-center justify-center rounded-[4px] bg-amber-400 px-10 py-3 text-sm font-bold text-neutral-900 shadow-md transition hover:bg-amber-300 border-none cursor-pointer"
-            >
-              Shop Now
-            </button>
-          </div>
-          <img
-            src="/lovable/brainrot-hero.webp"
-            alt="Voxel character collection"
-            className="pointer-events-none absolute bottom-[29%] right-[4%] hidden h-[50%] w-auto object-contain md:block"
-          />
+        {/* Subtitle */}
+        <p className="mt-4 text-xs sm:text-sm font-normal text-muted-foreground uppercase tracking-widest">
+          Premium Accounts • Digital Services • Secure Exchanges • Instant Delivery
+        </p>
+
+        {/* Centered Large Rounded Search Bar */}
+        <div className="mt-8 w-full max-w-2xl px-4 relative z-20 mx-auto">
+          <SearchBox placeholder="Search for games, services or keys..." />
+        </div>
+
+        {/* Category Slots (Eldorado alignment style: rounded dark icon box with label underneath) */}
+        <div className="mt-12 flex flex-wrap items-center justify-center gap-5 sm:gap-6 max-w-4xl px-4 z-10 mx-auto">
+          {categorySlots.map((slot) => {
+            return (
+              <Link
+                key={slot.id}
+                href={`/${slot.id}`}
+                className="flex flex-col items-center gap-2 group cursor-pointer"
+                style={{ textDecoration: 'none' }}
+              >
+                {/* Icon box container */}
+                <div 
+                  className="w-14 h-14 rounded-lg flex items-center justify-center border transition-all duration-300 shadow-md group-hover:scale-105 bg-card border-border-subtle group-hover:border-amber-400 group-hover:bg-amber-400/5"
+                >
+                  <img 
+                    src={slot.icon} 
+                    alt="" 
+                    className="category-slot-icon w-6 h-6 object-contain brightness-0 invert opacity-70 group-hover:opacity-100 transition-opacity" 
+                  />
+                </div>
+                {/* Label text underneath */}
+                <span 
+                  className="text-[10px] sm:text-xs font-bold uppercase tracking-wider transition-colors text-muted-foreground group-hover:text-foreground"
+                >
+                  {slot.label}
+                </span>
+              </Link>
+            );
+          })}
         </div>
       </section>
 
-      {/* Main Content Area */}
-      <main className="mx-auto max-w-[1200px] px-4 pb-16 sm:px-6 lg:px-8" id="listings">
+      {/* Main Content (2-Column Lists Style) */}
+      <main className="relative z-10 mx-auto max-w-[1200px] px-4 pb-20 sm:px-6 lg:px-8">
         
-        {/* Recently viewed section */}
-        <section className="-mt-32 pt-8 relative z-10">
+        {/* Popular Items - Homepage Cards Tabs */}
+        <div className="pt-8 mb-8 text-center">
+          <h2 
+            className="text-xl sm:text-2xl font-extrabold text-foreground tracking-tight m-0 uppercase"
+            style={{ fontFamily: "'Space Grotesk', sans-serif" }}
+          >
+            Browse Categories
+          </h2>
+        </div>
 
-          <ul className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4" style={{ listStyle: 'none', padding: 0 }}>
-            {recently.map((r) => (
-              <li
-                key={r.id}
-                className="relative overflow-hidden rounded-md bg-[#1c1c1f] p-4 min-h-[185px] flex flex-col justify-between ring-1 ring-white/5 transition hover:ring-white/10"
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full text-left mb-8">
+          {homepageCards && homepageCards.map((card) => {
+            const isActive = (typeof activeHomepageCardId !== 'undefined' ? activeHomepageCardId : homepageCards?.[0]?.id) === card.id;
+            return (
+              <div
+                key={card.id}
+                onClick={() => {
+                  if (typeof window !== 'undefined') {
+                    window.dispatchEvent(new CustomEvent('setHomepageCardId', { detail: card.id }));
+                  }
+                }}
+                className={`relative rounded-md p-4 border transition-all cursor-pointer overflow-hidden ${
+                  isActive 
+                    ? 'border-amber-400 bg-amber-400/5 shadow-md shadow-amber-400/5' 
+                    : 'bg-card border-border-subtle hover:border-neutral-400/50 hover:bg-black/5'
+                }`}
               >
-                {/* Faint card header background texture & glow */}
-                <div className="absolute inset-x-0 top-0 h-1/2 overflow-hidden rounded-t-md pointer-events-none opacity-[0.06]">
-                  <img 
-                    src="/lovable/brainrot-bg.webp" 
-                    alt="" 
-                    className="w-full h-full object-cover scale-150 origin-top-right filter blur-[1px]" 
-                  />
-                </div>
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.05),transparent_60%)] pointer-events-none" />
-
-                <div className="relative z-10">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className="grid h-9 w-9 place-items-center rounded-md bg-indigo-500 text-xs font-bold text-white">
-                        MV
-                      </div>
-                      <span className="text-sm font-semibold text-white">Boost Hub</span>
+                {/* Background glow for active */}
+                {isActive && <div className="absolute top-0 right-0 w-24 h-24 bg-amber-400/10 blur-2xl rounded-full pointer-events-none" />}
+                
+                <div className="flex items-start justify-between mb-3 relative z-10">
+                  <div className="flex items-center gap-2">
+                    <div className={`w-8 h-8 rounded flex items-center justify-center shadow-sm ${
+                      card.icon_type === 'discord' ? 'bg-[#5865F2]' : 
+                      card.icon_type === 'money' ? 'bg-emerald-500' : 
+                      card.icon_type === 'netflix' ? 'bg-[#E50914]' : 
+                      'bg-pink-500'
+                    }`}>
+                      <img 
+                        src={
+                          card.icon_type === 'discord' ? 'https://img.icons8.com/plumpy/24/discord-logo.png' : 
+                          card.icon_type === 'netflix' ? 'https://img.icons8.com/plumpy/24/netflix.png' : 
+                          card.icon_type === 'money' ? 'https://img.icons8.com/plumpy/24/currency-exchange.png' : 
+                          'https://img.icons8.com/plumpy/24/coming-soon.png'
+                        } 
+                        onError={(e) => e.currentTarget.style.display='none'} 
+                        alt="" 
+                        className="w-5 h-5 brightness-0 invert" 
+                      />
                     </div>
-                    <span className="rounded-md bg-[#2a2a2e] px-2 py-1 text-[11px] font-bold text-white uppercase">
-                      {r.category.replace('-', ' ')}
-                    </span>
+                    <span className="font-bold text-foreground text-sm">{card.brand_name}</span>
                   </div>
-                  <p className="mt-4 line-clamp-2 text-xs font-semibold text-white mb-0">
-                    <Link href={`/product/${r.id}`} style={{ color: '#ffffff', textDecoration: 'none' }}>
-                      {r.title}
-                    </Link>
-                  </p>
+                  <span className="bg-secondary border border-border-subtle px-2 py-0.5 rounded text-[9px] uppercase font-bold tracking-wider text-foreground whitespace-nowrap">
+                    {card.category_tag}
+                  </span>
                 </div>
-                <p className="relative z-10 mt-3 text-xs text-neutral-400 m-0">
-                  <span className="text-sm font-bold text-white">${r.price}</span> / unit
-                </p>
-              </li>
-            ))}
-          </ul>
-        </section>
+                <p className="text-xs text-muted-foreground font-medium truncate relative z-10">{card.title}</p>
+                <div className="mt-3 flex items-end justify-between relative z-10">
+                  <span className="font-bold text-sm text-foreground">{card.price_text}</span>
+                  {isActive && <span className="bg-amber-400 text-neutral-900 px-2 py-0.5 rounded text-[9px] font-black uppercase">Active</span>}
+                </div>
+              </div>
+            );
+          })}
+        </div>
 
-        {/* 4 Popular Grid Cards */}
-        <div className="mt-8 grid grid-cols-1 gap-5 lg:grid-cols-2">
-          <CategoryCard title="Popular Accounts" entries={popularAccounts} twoCol />
-          <CategoryCard title="Popular Currencies" entries={popularCurrencies} twoCol />
-          <CategoryCard title="Popular Boosting Services" entries={popularBoosting} twoCol />
-          <CategoryCard title="Popular Items" entries={popularItems} twoCol />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          
+          {/* Left Column */}
+          <div className="bg-card border border-border-subtle rounded-lg p-6 flex flex-col gap-4">
+            <h2 className="text-lg font-extrabold text-foreground tracking-tight m-0">
+              {(() => {
+                const currentId = typeof activeHomepageCardId !== 'undefined' ? activeHomepageCardId : homepageCards?.[0]?.id;
+                const activeCard = homepageCards?.find(c => c.id === currentId);
+                const type = activeCard?.icon_type || 'discord';
+                if (type === 'discord') return 'Popular Boosting Services';
+                if (type === 'money') return 'Live Exchange Rates';
+                if (type === 'netflix') return 'Netflix Premium Accounts';
+                return 'Popular Services';
+              })()}
+            </h2>
+            <div className="flex flex-col gap-1">
+              {(() => {
+                const currentId = typeof activeHomepageCardId !== 'undefined' ? activeHomepageCardId : homepageCards?.[0]?.id;
+                const activeCard = homepageCards?.find(c => c.id === currentId);
+                const type = activeCard?.icon_type || 'discord';
+                let items: any[] = [];
+                
+                if (type === 'discord') items = products.filter(p => p.category.toLowerCase().includes('boost')).slice(0, 4);
+                else if (type === 'money') items = moneyExchange.slice(0, 4).map(ex => ({ id: ex.id, title: `${ex.giving_currency} ➔ ${ex.getting_currency}`, category: `Rate: ${ex.exchange_rate}`, price: parseFloat(ex.reserve_stock) || 0 }));
+                else if (type === 'netflix') items = netflixProducts.slice(0, 4).map(n => ({ id: n.id, title: `Netflix (${n.account_type})`, category: 'Premium Streaming', price: n.price }));
+                else items = products.slice(0, 4);
+
+                return items.map((p) => (
+                  <Link href={`/product/${p.id}`} key={p.id} className="group flex items-center justify-between p-2.5 rounded-xl hover:bg-white/5 transition-colors cursor-pointer border border-transparent hover:border-white/5 text-decoration-none" style={{ textDecoration: 'none' }}>
+                    <div className="flex items-center gap-3 overflow-hidden">
+                      <div className="w-10 h-10 rounded-lg bg-bg-secondary flex-shrink-0 flex items-center justify-center p-1.5 border border-white/5">
+                        <img src={p.media_url || '/assets/img/blog/1.jpg'} alt="" className="w-full h-full object-contain filter group-hover:scale-110 transition-transform" />
+                      </div>
+                      <div className="flex flex-col min-w-0">
+                        <span className="text-sm font-bold text-foreground truncate group-hover:text-amber-400 transition-colors">{p.title}</span>
+                        <span className="text-[10px] uppercase font-bold text-muted-foreground mt-0.5 truncate">{p.category}</span>
+                      </div>
+                    </div>
+                    <div className="flex flex-col items-end flex-shrink-0 pl-2">
+                      <span className="text-sm font-black text-foreground">{formatPrice(p.price || 0)}</span>
+                      {p.discount_value && p.discount_type && (
+                        <span className="text-[10px] text-muted-foreground line-through">{formatPrice((p.price || 0) + p.discount_value)}</span>
+                      )}
+                    </div>
+                  </Link>
+                ));
+              })()}
+            </div>
+          </div>
+
+          {/* Right Column */}
+          <div className="bg-card border border-border-subtle rounded-lg p-6 flex flex-col gap-4">
+            <h2 className="text-lg font-extrabold text-foreground tracking-tight m-0">
+              {(() => {
+                const currentId = typeof activeHomepageCardId !== 'undefined' ? activeHomepageCardId : homepageCards?.[0]?.id;
+                const activeCard = homepageCards?.find(c => c.id === currentId);
+                const type = activeCard?.icon_type || 'discord';
+                if (type === 'discord') return 'Popular Items';
+                if (type === 'money') return 'Top Reserves';
+                if (type === 'netflix') return 'Available Addons';
+                return 'Featured Content';
+              })()}
+            </h2>
+            <div className="flex flex-col gap-1">
+              {(() => {
+                const currentId = typeof activeHomepageCardId !== 'undefined' ? activeHomepageCardId : homepageCards?.[0]?.id;
+                const activeCard = homepageCards?.find(c => c.id === currentId);
+                const type = activeCard?.icon_type || 'discord';
+                let items: any[] = [];
+                
+                if (type === 'discord') items = products.filter(p => !p.category.toLowerCase().includes('boost')).slice(0, 4);
+                else if (type === 'money') items = moneyExchange.slice(4, 8).map(ex => ({ id: ex.id, title: `${ex.giving_currency} ➔ ${ex.getting_currency}`, category: `Rate: ${ex.exchange_rate}`, price: parseFloat(ex.reserve_stock) || 0 }));
+                else if (type === 'netflix') items = [];
+                else items = products.slice(4, 8);
+
+                if (items.length === 0) return <div className="text-sm text-muted-foreground py-4 text-center">No items available.</div>;
+
+                return items.map((p) => (
+                  <Link href={`/product/${p.id}`} key={p.id} className="group flex items-center justify-between p-2.5 rounded-xl hover:bg-white/5 transition-colors cursor-pointer border border-transparent hover:border-white/5 text-decoration-none" style={{ textDecoration: 'none' }}>
+                    <div className="flex items-center gap-3 overflow-hidden">
+                      <div className="w-10 h-10 rounded-lg bg-bg-secondary flex-shrink-0 flex items-center justify-center p-1.5 border border-white/5">
+                        <img src={p.media_url || '/assets/img/blog/1.jpg'} alt="" className="w-full h-full object-contain filter group-hover:scale-110 transition-transform" />
+                      </div>
+                      <div className="flex flex-col min-w-0">
+                        <span className="text-sm font-bold text-foreground truncate group-hover:text-amber-400 transition-colors">{p.title}</span>
+                        <span className="text-[10px] uppercase font-bold text-muted-foreground mt-0.5 truncate">{p.category}</span>
+                      </div>
+                    </div>
+                    <div className="flex flex-col items-end flex-shrink-0 pl-2">
+                      <span className="text-sm font-black text-foreground">{formatPrice(p.price || 0)}</span>
+                      {p.discount_value && p.discount_type && (
+                        <span className="text-[10px] text-muted-foreground line-through">{formatPrice((p.price || 0) + p.discount_value)}</span>
+                      )}
+                    </div>
+                  </Link>
+                ));
+              })()}
+            </div>
+          </div>
+
         </div>
 
       </main>
 
-      {/* Safe and Easy Trading */}
-      <SafeTrading />
+      {/* Floating Chat Trigger */}
+      <button
+        aria-label="Toggle chat"
+        onClick={(e) => { e.preventDefault(); e.stopPropagation(); window.dispatchEvent(new CustomEvent('toggleLiveChat')); }}
+        className="fixed bottom-5 right-5 z-50 grid h-12 w-12 place-items-center rounded-full text-white shadow-lg border-none cursor-pointer hover:scale-105 transition-transform"
+        style={{ background: 'linear-gradient(135deg,#d97706,#f59e0b)', boxShadow: '0 4px 18px rgba(217,119,6,0.45)' }}
+      >
+        {chatOpen ? (
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        ) : (
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          </svg>
+        )}
+      </button>
 
-      {/* Trust Cards */}
-      <TrustCards />
-
-      {/* Payments Bar */}
-      <PaymentsBar />
+      {/* AI Services Section */}
+      <AiServicesSection />
 
       {/* Footer */}
       <Footer />
 
-      {/* Floating chat */}
-      <button
-        aria-label="Open chat"
-        onClick={(e) => { e.preventDefault(); e.stopPropagation(); document.dispatchEvent(new CustomEvent('openFeedback', { detail: { type: 'suggestion', rect: e.currentTarget.getBoundingClientRect() } })); }}
-        className="fixed bottom-5 right-5 z-50 grid h-12 w-12 place-items-center rounded-full bg-sky-500 text-white shadow-lg hover:bg-sky-400 border-none cursor-pointer"
-      >
-        <MessageCircle className="h-6 w-6" />
-      </button>
-
     </div>
-  );
-}
-
-/* Category Card Component */
-function CategoryCard({
-  title,
-  entries,
-  twoCol,
-}: {
-  title: string;
-  entries: Entry[];
-  twoCol?: boolean;
-}) {
-  return (
-    <section className="rounded-md bg-[#1c1c1f] p-6 ring-1 ring-white/5 sm:p-7">
-      <h2 className="text-lg font-bold text-white m-0">{title}</h2>
-      <ul
-        className={`mt-5 grid gap-x-8 gap-y-3 ${
-          twoCol ? 'sm:grid-cols-2' : 'grid-cols-1'
-        }`}
-        style={{ listStyle: 'none', padding: 0, margin: 0 }}
-      >
-        {entries.map((e, idx) => (
-          <li key={idx}>
-            <a
-              href="#"
-              className="group flex items-center gap-3 rounded-md py-1.5 transition hover:bg-white/5"
-              style={{ textDecoration: 'none' }}
-            >
-              <span
-                className={`grid h-9 w-9 shrink-0 place-items-center rounded-md ${e.tint} text-white shadow-sm`}
-              >
-                <e.icon className="h-5 w-5" />
-              </span>
-              <span className="truncate text-sm font-medium text-neutral-200 group-hover:text-white">
-                {e.label}
-              </span>
-            </a>
-          </li>
-        ))}
-      </ul>
-    </section>
-  );
-}
-
-/* Safe Trading Component */
-function SafeTrading() {
-  return (
-    <section className="bg-[#15161a]">
-      <div className="mx-auto grid max-w-[1200px] grid-cols-1 items-center gap-10 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:px-8 lg:py-20">
-        <div className="max-w-md">
-          <h2 className="text-2xl font-bold text-white sm:text-[28px] m-0">Safe and Easy Trading</h2>
-          <div className="mt-6 space-y-5 text-sm leading-6 text-neutral-300">
-            <p>
-              Trade without fear — ZoroBoost guarantees that all trades are legit and keeps you
-              safe from scammers.
-            </p>
-            <p>
-              It's quick and easy — find the best product for your Discord server, make a payment,
-              receive your order, and get back to playing.
-            </p>
-            <p>Join us today to level up your gaming experience!</p>
-          </div>
-        </div>
-        <div className="relative flex justify-center lg:justify-end">
-          <img
-            src="/lovable/phones.webp"
-            alt="Mobile app preview"
-            className="w-full max-w-[560px] object-contain"
-          />
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* Trust Cards Component */
-function TrustCards() {
-  return (
-    <section className="bg-[#0a0a0c]">
-      <div className="mx-auto grid max-w-[1200px] grid-cols-1 gap-5 px-4 py-10 sm:px-6 md:grid-cols-2 lg:px-8">
-        <article className="flex items-center gap-5 rounded-md bg-[#f3e5c7] p-6 sm:p-7">
-          <div className="grid h-24 w-24 shrink-0 place-items-center rounded-md bg-amber-300/40">
-            <Shield className="h-14 w-14 text-amber-700" strokeWidth={2} />
-          </div>
-          <div className="min-w-0">
-            <h3 className="text-lg font-bold text-neutral-900 m-0">Money-Back Guarantee</h3>
-            <p className="mt-1 text-sm text-neutral-700 mb-0">
-              Receive your order or get a refund. Feel safe with full trading protection!
-            </p>
-            <button className="mt-4 inline-flex items-center rounded-md bg-amber-400 px-4 py-2 text-xs font-bold text-neutral-900 hover:bg-amber-300 border-none cursor-pointer">
-              Learn more
-            </button>
-          </div>
-        </article>
-        <article className="flex items-center gap-5 rounded-md bg-[#c8e6a0] p-6 sm:p-7">
-          <div className="grid h-24 w-24 shrink-0 place-items-center rounded-md bg-lime-300/50">
-            <HelpCircle className="h-14 w-14 text-emerald-800" strokeWidth={2} />
-          </div>
-          <div className="min-w-0">
-            <h3 className="text-lg font-bold text-neutral-900 m-0">24/7 Live Support</h3>
-            <p className="mt-1 text-sm text-neutral-700 mb-0">
-              ZoroBoost support works around the clock. Contact us at any time!
-            </p>
-            <button className="mt-4 inline-flex items-center rounded-md bg-amber-400 px-4 py-2 text-xs font-bold text-neutral-900 hover:bg-amber-300 border-none cursor-pointer">
-              Chat now
-            </button>
-          </div>
-        </article>
-      </div>
-    </section>
-  );
-}
-
-/* Payments Bar Component */
-function PaymentsBar() {
-  const pays = [
-    '/lovable/Visa.svg',
-    '/lovable/Mastercard.svg',
-    '/lovable/Amex.svg',
-    '/lovable/Discover.svg',
-    '/lovable/BTC.svg',
-    '/lovable/GooglePay.svg',
-    '/lovable/ApplePay.svg'
-  ];
-  return (
-    <section className="bg-[#0a0a0c]">
-      <div className="mx-auto flex max-w-[1200px] flex-col items-center justify-between gap-4 px-4 py-6 sm:px-6 md:flex-row lg:px-8">
-        <div className="flex flex-wrap items-center gap-2">
-          {pays.map((p, i) => (
-            <img key={i} src={p} alt="" className="h-7 w-auto" />
-          ))}
-          <span className="ml-2 text-xs font-semibold text-neutral-400">+15 more</span>
-        </div>
-        <button className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-[#15161a] px-4 py-2 text-xs font-semibold text-neutral-200 hover:border-white/20 border-none cursor-pointer">
-          <Globe className="h-4 w-4" />
-          English | USD - $
-        </button>
-      </div>
-    </section>
   );
 }

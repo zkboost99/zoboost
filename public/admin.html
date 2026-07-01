@@ -1631,14 +1631,36 @@ select.fi { appearance: none; cursor: pointer;
 
     <div class="nav-group-title">Catalog</div>
     <div class="nav-item">
-      <div class="nav-link" data-tip="Items" onclick="openSub('items-sub',this)">
+      <div class="nav-link" data-tip="Discord Items" onclick="openSub('items-sub',this)">
         <div class="nav-icon"><i class="fas fa-box"></i></div>
-        <span class="nav-label">Items</span>
+        <span class="nav-label">Discord Items</span>
         <i class="fas fa-chevron-right nav-arrow"></i>
       </div>
       <div class="sub-nav" id="items-sub">
-        <div class="sub-link" onclick="nav('all-items',this)">All Items</div>
-        <div class="sub-link" onclick="nav('add-item',this)">Add Item</div>
+        <div class="sub-link" onclick="nav('all-items',this)">All Discord Items</div>
+        <div class="sub-link" onclick="nav('add-item',this)">Add Discord Item</div>
+      </div>
+    </div>
+    <div class="nav-item">
+      <div class="nav-link" data-tip="Money Exchange" onclick="openSub('exchange-sub',this)">
+        <div class="nav-icon"><i class="fas fa-coins"></i></div>
+        <span class="nav-label">Money Exchange</span>
+        <i class="fas fa-chevron-right nav-arrow"></i>
+      </div>
+      <div class="sub-nav" id="exchange-sub">
+        <div class="sub-link" onclick="nav('all-exchange',this)">All Exchange Offers</div>
+        <div class="sub-link" onclick="nav('add-exchange',this)">Add Exchange Offer</div>
+      </div>
+    </div>
+    <div class="nav-item">
+      <div class="nav-link" data-tip="Netflix Accounts" onclick="openSub('netflix-sub',this)">
+        <div class="nav-icon"><i class="fas fa-tv"></i></div>
+        <span class="nav-label">Netflix Accounts</span>
+        <i class="fas fa-chevron-right nav-arrow"></i>
+      </div>
+      <div class="sub-nav" id="netflix-sub">
+        <div class="sub-link" onclick="nav('all-netflix',this)">All Netflix Items</div>
+        <div class="sub-link" onclick="nav('add-netflix',this)">Add Netflix Item</div>
       </div>
     </div>
     <div class="nav-item">
@@ -1650,6 +1672,12 @@ select.fi { appearance: none; cursor: pointer;
       <div class="sub-nav" id="posts-sub">
         <div class="sub-link" onclick="nav('all-posts',this)">All Posts</div>
         <div class="sub-link" onclick="nav('add-post',this)">Add Post</div>
+      </div>
+    </div>
+    <div class="nav-item">
+      <div class="nav-link" data-tip="Homepage Cards" onclick="nav('homepage-cards',this)">
+        <div class="nav-icon"><i class="fas fa-table-cells-large"></i></div>
+        <span class="nav-label">Homepage Cards</span>
       </div>
     </div>
 
@@ -1963,6 +1991,169 @@ select.fi { appearance: none; cursor: pointer;
       </div>
     </section>
 
+    <!-- ═══ ALL EXCHANGE OFFERS ═══ -->
+    <section class="section" id="s-all-exchange">
+      <div class="pg-head">
+        <div class="pg-head-r">
+          <button class="btn bp" onclick="nav('add-exchange',null)"><i class="fas fa-plus"></i> Add Exchange Offer</button>
+        </div>
+      </div>
+      <div style="margin-top: 16px; background: var(--wh); border-radius: var(--r-md); border: 1px solid var(--b1); overflow: hidden;">
+        <table class="otable" style="width: 100%; border-collapse: collapse;">
+          <thead>
+            <tr style="border-bottom: 1px solid var(--b1); background: var(--bg-main);">
+              <th style="padding: 14px 16px; text-align: left; font-size: 12px; font-weight: bold; color: var(--t-sub);">ICON</th>
+              <th style="padding: 14px 16px; text-align: left; font-size: 12px; font-weight: bold; color: var(--t-sub);">GIVING</th>
+              <th style="padding: 14px 16px; text-align: left; font-size: 12px; font-weight: bold; color: var(--t-sub);">GETTING</th>
+              <th style="padding: 14px 16px; text-align: left; font-size: 12px; font-weight: bold; color: var(--t-sub);">EXCHANGE RATE</th>
+              <th style="padding: 14px 16px; text-align: left; font-size: 12px; font-weight: bold; color: var(--t-sub);">RESERVE STOCK</th>
+              <th style="padding: 14px 16px; text-align: left; font-size: 12px; font-weight: bold; color: var(--t-sub);">PRICE / FEE</th>
+              <th style="padding: 14px 16px; text-align: right; font-size: 12px; font-weight: bold; color: var(--t-sub);">ACTIONS</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-money-exchange">
+            <!-- Populated by JS -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ═══ ADD/EDIT EXCHANGE OFFER ═══ -->
+    <section class="section" id="s-add-exchange">
+      <input type="hidden" id="edit-exchange-id" />
+      <div class="form-box" style="padding: 32px 28px; max-width: 800px; margin: 0 auto;">
+        <h3 class="fb-title" id="exchange-form-title">Add Exchange Offer</h3>
+        <p id="exchange-form-subtitle" style="font-size: 13px; color: var(--t-sub); margin-bottom: 24px; margin-top: -8px;">Create a new currency exchange rate offer</p>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+          <div class="fg">
+            <label class="fl">GIVING CURRENCY</label>
+            <input class="fi" type="text" id="exchange-giving-currency" placeholder="e.g. Wise USD, PayPal, Binance Pay" required>
+          </div>
+          <div class="fg">
+            <label class="fl">GETTING CURRENCY</label>
+            <input class="fi" type="text" id="exchange-getting-currency" placeholder="e.g. EasyPaisa, Wise USD, Binance USDT" required>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+          <div class="fg">
+            <label class="fl">EXCHANGE RATE</label>
+            <input class="fi" type="text" id="exchange-rate-val" placeholder="e.g. 1 USD = 280 PKR, 1 Wise = 0.95 PayPal" required>
+          </div>
+          <div class="fg">
+            <label class="fl">RESERVE STOCK</label>
+            <input class="fi" type="text" id="exchange-reserve-stock" placeholder="e.g. $1,200 available, 50k PKR reserve" required>
+          </div>
+        </div>
+
+        <div class="fg" style="margin-bottom: 20px;">
+          <label class="fl">PRICE TEXT / FEE DETAILS</label>
+          <input class="fi" type="text" id="exchange-price-text" placeholder="e.g. Fee: 2%, Min: $10, Fixed fee $2" required>
+        </div>
+
+        <div class="fg" style="margin-bottom: 24px;">
+          <label class="fl">CUSTOM ICON (IMAGE UPLOAD)</label>
+          <label class="f-up" id="exchange-icon-upload-container" style="display: block; cursor: pointer; border: 2px dashed var(--border-strong); padding: 24px; text-align: center; border-radius: var(--radius-sm); background: var(--wh); position: relative; min-height: 120px; display: flex; flex-direction: column; align-items: center; justify-content: center; background-size: contain; background-repeat: no-repeat; background-position: center;">
+            <input type="file" id="exchange-icon-upload" accept="image/png, image/jpeg, image/webp" style="display: none;">
+            <input type="hidden" id="exchange-icon-url" />
+            <div class="f-up-icon" id="exchange-icon-preview-icon" style="font-size: 28px; color: var(--brand); margin-bottom: 8px;"><i class="fas fa-cloud-arrow-up"></i></div>
+            <div class="ut" id="exchange-icon-status-text" style="font-size: 13px; color: var(--t-sub); font-weight: 500;">Click to upload custom currency icon or drag and drop</div>
+          </label>
+        </div>
+
+        <div style="display: flex; gap: 12px;">
+          <button class="btn bp" id="btn-save-exchange" onclick="saveExchangeOffer()">Save Offer</button>
+          <button class="btn bs" onclick="nav('all-exchange',null)">Cancel</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ ALL NETFLIX ITEMS ═══ -->
+    <section class="section" id="s-all-netflix">
+      <div class="pg-head">
+        <div class="pg-head-r">
+          <button class="btn bp" onclick="nav('add-netflix',null)"><i class="fas fa-plus"></i> Add Netflix Item</button>
+        </div>
+      </div>
+      <div style="margin-top: 16px; background: var(--wh); border-radius: var(--r-md); border: 1px solid var(--b1); overflow: hidden;">
+        <table class="otable" style="width: 100%; border-collapse: collapse;">
+          <thead>
+            <tr style="border-bottom: 1px solid var(--b1); background: var(--bg-main);">
+              <th style="padding: 14px 16px; text-align: left; font-size: 12px; font-weight: bold; color: var(--t-sub);">THUMBNAIL</th>
+              <th style="padding: 14px 16px; text-align: left; font-size: 12px; font-weight: bold; color: var(--t-sub);">ACCOUNT TYPE</th>
+              <th style="padding: 14px 16px; text-align: left; font-size: 12px; font-weight: bold; color: var(--t-sub);">DURATION</th>
+              <th style="padding: 14px 16px; text-align: left; font-size: 12px; font-weight: bold; color: var(--t-sub);">PRICE</th>
+              <th style="padding: 14px 16px; text-align: left; font-size: 12px; font-weight: bold; color: var(--t-sub);">STOCK</th>
+              <th style="padding: 14px 16px; text-align: left; font-size: 12px; font-weight: bold; color: var(--t-sub);">DELIVERY</th>
+              <th style="padding: 14px 16px; text-align: left; font-size: 12px; font-weight: bold; color: var(--t-sub);">BADGE</th>
+              <th style="padding: 14px 16px; text-align: right; font-size: 12px; font-weight: bold; color: var(--t-sub);">ACTIONS</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-netflix-products">
+            <!-- Populated by JS -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ═══ ADD/EDIT NETFLIX ITEM ═══ -->
+    <section class="section" id="s-add-netflix">
+      <input type="hidden" id="edit-netflix-id" />
+      <div class="form-box" style="padding: 32px 28px; max-width: 800px; margin: 0 auto;">
+        <h3 class="fb-title" id="netflix-form-title">Add Netflix Item</h3>
+        <p id="netflix-form-subtitle" style="font-size: 13px; color: var(--t-sub); margin-bottom: 24px; margin-top: -8px;">Create a new Netflix account product listing</p>
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+          <div class="fg">
+            <label class="fl">ACCOUNT TYPE</label>
+            <input class="fi" type="text" id="netflix-account-type" placeholder="e.g. 1 Screen (Shared), Private Full Account" required>
+          </div>
+          <div class="fg">
+            <label class="fl">DURATION</label>
+            <input class="fi" type="text" id="netflix-duration" placeholder="e.g. 1 Month, 3 Months, 1 Year" required>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+          <div class="fg">
+            <label class="fl">PRICE ($)</label>
+            <input class="fi" type="number" step="0.01" id="netflix-price" placeholder="e.g. 3.50" required>
+          </div>
+          <div class="fg">
+            <label class="fl">STOCK QUANTITY</label>
+            <input class="fi" type="number" id="netflix-stock" placeholder="e.g. 20" required>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+          <div class="fg">
+            <label class="fl">DELIVERY METHOD</label>
+            <input class="fi" type="text" id="netflix-delivery-method" placeholder="e.g. Instant Delivery, 15 Mins Delivery" required>
+          </div>
+          <div class="fg">
+            <label class="fl">PRODUCT BADGE (OPTIONAL)</label>
+            <input class="fi" type="text" id="netflix-badge-text" placeholder="e.g. Popular, Hot Seller">
+          </div>
+        </div>
+
+        <div class="fg" style="margin-bottom: 24px;">
+          <label class="fl">THUMBNAIL IMAGE (R2 UPLOAD)</label>
+          <label class="f-up" id="netflix-media-upload-container" style="display: block; cursor: pointer; border: 2px dashed var(--border-strong); padding: 24px; text-align: center; border-radius: var(--radius-sm); background: var(--wh); position: relative; min-height: 120px; display: flex; flex-direction: column; align-items: center; justify-content: center; background-size: contain; background-repeat: no-repeat; background-position: center;">
+            <input type="file" id="netflix-media-upload" accept="image/png, image/jpeg, image/webp" style="display: none;">
+            <input type="hidden" id="netflix-media-url" />
+            <div class="f-up-icon" id="netflix-media-preview-icon" style="font-size: 28px; color: var(--brand); margin-bottom: 8px;"><i class="fas fa-cloud-arrow-up"></i></div>
+            <div class="ut" id="netflix-media-status-text" style="font-size: 13px; color: var(--t-sub); font-weight: 500;">Click to upload Netflix thumbnail or drag and drop</div>
+          </label>
+        </div>
+
+        <div style="display: flex; gap: 12px;">
+          <button class="btn bp" id="btn-save-netflix" onclick="saveNetflixProduct()">Save Item</button>
+          <button class="btn bs" onclick="nav('all-netflix',null)">Cancel</button>
+        </div>
+      </div>
+    </section>
+
     <!-- ═══ ALL ORDERS ═══ -->
     <section class="section" id="s-all-orders">
       <div class="pg-head">
@@ -2201,6 +2392,12 @@ select.fi { appearance: none; cursor: pointer;
                   <div class="cs-option" data-val="Nitro Account" data-img="https://pub-bc67e2c069bd4bbeac1a9624c01f79db.r2.dev/category-icons/nitro-account.png">
                     <img src="https://pub-bc67e2c069bd4bbeac1a9624c01f79db.r2.dev/category-icons/nitro-account.png" alt=""><span>Nitro Account</span>
                   </div>
+                  <div class="cs-option" data-val="Money Exchange" data-img="https://img.icons8.com/color/96/money-exchange.png">
+                    <img src="https://img.icons8.com/color/96/money-exchange.png" alt=""><span>Money Exchange</span>
+                  </div>
+                  <div class="cs-option" data-val="Netflix" data-img="https://img.icons8.com/color/96/netflix.png">
+                    <img src="https://img.icons8.com/color/96/netflix.png" alt=""><span>Netflix</span>
+                  </div>
                 </div>
                 <input type="hidden" name="category" id="category-input">
               </div>
@@ -2324,6 +2521,7 @@ select.fi { appearance: none; cursor: pointer;
         <div class="pg-head-r">
           <div class="table-tabs" style="display:flex;gap:10px;background:var(--wh);border:1px solid var(--b1);padding:4px;border-radius:10px;">
             <div class="t-tab active" id="tab-btn-messages" onclick="switchContactTab('messages')" style="padding:6px 14px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;">Messages</div>
+            <div class="t-tab" id="tab-btn-buyer-chat" onclick="switchContactTab('buyer-chat')" style="padding:6px 14px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;color:var(--m1)">Buyer Chat</div>
             <div class="t-tab" id="tab-btn-tickets" onclick="switchContactTab('tickets')" style="padding:6px 14px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;color:var(--m1)">Tickets</div>
           </div>
         </div>
@@ -2332,6 +2530,12 @@ select.fi { appearance: none; cursor: pointer;
       <div id="contact-tab-messages">
         <div class="ccards" id="ccards-container">
           <!-- Customer inquiries populated dynamically -->
+        </div>
+      </div>
+
+      <div id="contact-tab-buyer-chat" style="display:none;">
+        <div class="ccards" id="ccards-buyer-container">
+          <!-- Buyer support chats populated dynamically -->
         </div>
       </div>
 
@@ -2446,6 +2650,76 @@ select.fi { appearance: none; cursor: pointer;
             <!-- Bug reports will be populated here by JS -->
           </tbody>
         </table>
+      </div>
+    </section>
+
+    <!-- ═══ HOMEPAGE CARDS ═══ -->
+    <section class="section" id="s-homepage-cards">
+      <div class="fcard" style="margin-bottom: 24px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+          <h3 class="fb-title" style="margin: 0;">Active Homepage Cards</h3>
+          <button class="btn bp" onclick="openAddCardModal()"><i class="fas fa-plus"></i> Add Card</button>
+        </div>
+        <div class="tbl-wrap">
+          <table class="tbl">
+            <thead>
+              <tr>
+                <th style="padding:14px 16px; font-size:11px; font-weight:800; color:var(--t-sub); text-transform:uppercase; letter-spacing:0.05em; border-bottom:1.5px solid rgba(17,20,45,0.06); text-align:left;">Brand</th>
+                <th style="padding:14px 16px; font-size:11px; font-weight:800; color:var(--t-sub); text-transform:uppercase; letter-spacing:0.05em; border-bottom:1.5px solid rgba(17,20,45,0.06); text-align:left;">Icon</th>
+                <th style="padding:14px 16px; font-size:11px; font-weight:800; color:var(--t-sub); text-transform:uppercase; letter-spacing:0.05em; border-bottom:1.5px solid rgba(17,20,45,0.06); text-align:left;">Tag</th>
+                <th style="padding:14px 16px; font-size:11px; font-weight:800; color:var(--t-sub); text-transform:uppercase; letter-spacing:0.05em; border-bottom:1.5px solid rgba(17,20,45,0.06); text-align:left;">Title</th>
+                <th style="padding:14px 16px; font-size:11px; font-weight:800; color:var(--t-sub); text-transform:uppercase; letter-spacing:0.05em; border-bottom:1.5px solid rgba(17,20,45,0.06); text-align:left;">Price Text</th>
+                <th style="padding:14px 16px; font-size:11px; font-weight:800; color:var(--t-sub); text-transform:uppercase; letter-spacing:0.05em; border-bottom:1.5px solid rgba(17,20,45,0.06); text-align:right;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="tbody-homepage-cards">
+              <!-- Populated by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div id="homepage-card-form-box" class="form-box" style="display: none; padding: 32px 28px; margin-top: 24px;">
+        <h3 class="fb-title" id="card-form-title">Edit Homepage Card</h3>
+        <p id="card-form-subtitle" style="font-size: 13px; color: var(--t-sub); margin-bottom: 24px; margin-top: -8px;">Modify card information</p>
+        <input type="hidden" id="edit-card-id" />
+        
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+          <div class="fg">
+            <label class="fl">BRAND NAME</label>
+            <input class="fi" type="text" id="card-brand-name" placeholder="e.g. Discord, Netflix..." required>
+          </div>
+          <div class="fg">
+            <label class="fl">CATEGORY TAG</label>
+            <input class="fi" type="text" id="card-category-tag" placeholder="e.g. discord services, Streaming..." required>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+          <div class="fg">
+            <label class="fl">PRICE TEXT</label>
+            <input class="fi" type="text" id="card-price-text" placeholder="e.g. Starting from $2..." required>
+          </div>
+          <div class="fg">
+            <label class="fl">CARD TITLE / FEATURE DETAILS</label>
+            <input class="fi" type="text" id="card-title" placeholder="e.g. boosting, aged accounts, decoration etc..." required>
+          </div>
+        </div>
+
+        <div class="fg" style="margin-bottom: 24px;">
+          <label class="fl">CARD ICON (IMAGE UPLOAD)</label>
+          <label class="f-up" id="card-icon-upload-container" style="display: block; cursor: pointer; border: 2px dashed var(--border-strong); padding: 24px; text-align: center; border-radius: var(--radius-sm); background: var(--wh); position: relative; min-height: 120px; display: flex; flex-direction: column; align-items: center; justify-content: center; background-size: contain; background-repeat: no-repeat; background-position: center;">
+            <input type="file" id="card-icon-upload" accept="image/png, image/jpeg, image/webp" style="display: none;">
+            <input type="hidden" id="card-icon-url" />
+            <div class="f-up-icon" id="card-icon-preview-icon" style="font-size: 28px; color: var(--brand); margin-bottom: 8px;"><i class="fas fa-cloud-arrow-up"></i></div>
+            <div class="ut" id="card-icon-status-text" style="font-size: 13px; color: var(--t-sub); font-weight: 500;">Click to upload custom icon image or drag and drop</div>
+          </label>
+        </div>
+
+        <div style="display: flex; gap: 12px;">
+          <button class="btn bp" id="btn-save-card" onclick="saveHomepageCard()">Save Card</button>
+          <button class="btn bs" onclick="closeCardForm()">Cancel</button>
+        </div>
       </div>
     </section>
 
@@ -2812,8 +3086,12 @@ function renderDock() {
 
 const TITLES = {
   dashboard:      '<h2>Good morning, Admin 👋</h2><p>Here\'s an overview of your store performance today.</p>',
-  'all-items':    '<h2>Items <span class="sep">/</span> <span class="sub">All Items</span></h2><p>Manage your product catalog</p>',
-  'add-item':     '<h2>Items <span class="sep">/</span> <span class="sub">Add Item</span></h2><p>Create a new product listing</p>',
+  'all-items':    '<h2>Discord Items <span class="sep">/</span> <span class="sub">All Items</span></h2><p>Manage your Discord product catalog</p>',
+  'add-item':     '<h2>Discord Items <span class="sep">/</span> <span class="sub">Add Item</span></h2><p>Create a new Discord product listing</p>',
+  'all-exchange': '<h2>Money Exchange <span class="sep">/</span> <span class="sub">All Offers</span></h2><p>Manage currency exchange rates and stock</p>',
+  'add-exchange': '<h2>Money Exchange <span class="sep">/</span> <span class="sub">Add/Edit Offer</span></h2><p>Create or edit currency exchange rates</p>',
+  'all-netflix':  '<h2>Netflix Accounts <span class="sep">/</span> <span class="sub">All Listings</span></h2><p>Manage Netflix premium product catalog</p>',
+  'add-netflix':  '<h2>Netflix Accounts <span class="sep">/</span> <span class="sub">Add/Edit Listing</span></h2><p>Create or edit Netflix account products</p>',
   'all-posts':    '<h2>Posts <span class="sep">/</span> <span class="sub">All Posts</span></h2><p>Manage your blog articles</p>',
   'add-post':     '<h2>Posts <span class="sep">/</span> <span class="sub">Add Post</span></h2><p>Write and publish an article</p>',
   'purchased-orders':  '<h2>Orders <span class="sep">/</span> <span class="sub">Purchased Orders</span></h2><p>View and manage all customer orders</p>',
@@ -2826,7 +3104,8 @@ const TITLES = {
   reports:        '<h2>Reports</h2><p>Analytics and performance metrics</p>',
   suggestions:    '<h2>Suggestions</h2><p>Community feature requests</p>',
   settings:       '<h2>Settings</h2><p>Manage panel preferences</p>',
-  'bug-reports':  '<h2>Bug Reports</h2><p>User reported issues</p>'
+  'bug-reports':  '<h2>Bug Reports</h2><p>User reported issues</p>',
+  'homepage-cards': '<h2>Homepage Cards</h2><p>Manage the featured cards on your homepage</p>'
 };
 
 function nav(id, el) {
@@ -2845,6 +3124,11 @@ function nav(id, el) {
 
   document.getElementById('pgTitle').innerHTML = TITLES[id] || `<h2>${id}</h2>`;
   if (id === 'dashboard')         setTimeout(initCharts, 60);
+  if (id === 'homepage-cards')    setTimeout(loadHomepageCards, 30);
+  if (id === 'all-exchange')      setTimeout(loadMoneyExchange, 30);
+  if (id === 'add-exchange')      setTimeout(clearExchangeForm, 10);
+  if (id === 'all-netflix')       setTimeout(loadNetflixProducts, 30);
+  if (id === 'add-netflix')       setTimeout(clearNetflixForm, 10);
   if (id === 'reports')           setTimeout(initBar, 60);
   if (id === 'all-orders')        setTimeout(initAllOrders, 30);
   if (id === 'completed-orders')  setTimeout(() => renderStatusOrders('Completed', 'tbody-completed'), 30);
@@ -3985,138 +4269,164 @@ function getRandomColor(name) {
 
 function renderContacts() {
   const messagesContainer = document.getElementById('ccards-container');
+  const buyerContainer = document.getElementById('ccards-buyer-container');
   const tbodyTickets = document.getElementById('tbody-tickets');
   
   const tickets = [];
-  const messages = [];
+  const normalMessages = [];
+  const buyerMessages = [];
   
   ALL_CONTACTS.forEach(c => {
     let isTicket = false;
+    let isBuyer = false;
     c.parsedMessage = c.message;
     try {
       const parsed = JSON.parse(c.message);
-      if (parsed && parsed.type === 'ticket') {
-        isTicket = true;
-        c.parsedMessage = parsed;
-      } else {
-        c.parsedMessage = parsed;
+      c.parsedMessage = parsed;
+      if (parsed) {
+        if (parsed.type === 'ticket') {
+          isTicket = true;
+        } else if (parsed.type === 'chat' && parsed.isBuyer) {
+          isBuyer = true;
+        }
       }
     } catch (e) {}
     
     if (isTicket) {
       tickets.push(c);
+    } else if (isBuyer) {
+      buyerMessages.push(c);
     } else {
-      messages.push(c);
+      normalMessages.push(c);
     }
   });
 
-  // Render Messages
-  if (messagesContainer) {
-    if (messages.length === 0) {
-      messagesContainer.innerHTML = `<div style="text-align:center;padding:40px;color:var(--m2);grid-column:1/-1;"><i class="fas fa-inbox" style="font-size:28px;display:block;margin-bottom:10px"></i>No inquiries found.</div>`;
-    } else {
-      messagesContainer.innerHTML = messages.map(m => {
-        // Render Live Chat Room
-        if (m.parsedMessage && typeof m.parsedMessage === 'object' && m.parsedMessage.type === 'chat') {
-          const chatHistory = m.parsedMessage.messages || [];
-          const chatStreamHtml = chatHistory.map(msg => {
-            const isUser = msg.sender === 'user';
-            const align = isUser ? 'flex-start' : 'flex-end';
-            const bg = isUser ? 'rgba(99, 102, 241, 0.08)' : '#F0F2F8';
-            const color = isUser ? '#6C5CE7' : '#11142D';
-            const label = isUser ? 'User' : 'Admin';
-            return `
-              <div style="display:flex; justify-content:${isUser ? 'flex-start' : 'flex-end'}; width:100%; margin-bottom: 8px;">
-                <div style="max-width:80%; padding:8px 12px; border-radius:10px; background:${bg}; color:${color}; font-size:12px; line-height:1.4; box-shadow: 0 1px 2px rgba(0,0,0,0.02); text-align: left;">
-                  <strong style="display:block; font-size:10px; color:${isUser ? '#6C5CE7' : '#11142D'}; margin-bottom:2px;">${label}</strong>
-                  <div>${msg.text}</div>
-                  <div style="font-size:9px; color:var(--t-sub); text-align:right; margin-top:3px;">${msg.time}</div>
-                </div>
-              </div>
-            `;
-          }).join('');
-
-          let statusBadge = m.status === 'Unread' 
-            ? `<span class="badge er" style="margin-left:auto;flex-shrink:0">Unread</span>`
-            : `<span class="badge ok" style="margin-left:auto;flex-shrink:0">Read</span>`;
-
-          // Automatically scroll down each chat window
-          setTimeout(() => {
-            const chatBoxEl = document.getElementById(`chat-stream-${m.id}`);
-            if (chatBoxEl) chatBoxEl.scrollTop = chatBoxEl.scrollHeight;
-          }, 50);
-
+  const generateCardsHtml = (items) => {
+    if (items.length === 0) {
+      return `<div style="text-align:center;padding:40px;color:var(--m2);grid-column:1/-1;"><i class="fas fa-inbox" style="font-size:28px;display:block;margin-bottom:10px"></i>No inquiries found.</div>`;
+    }
+    return items.map(m => {
+      // Render Live Chat Room
+      if (m.parsedMessage && typeof m.parsedMessage === 'object' && m.parsedMessage.type === 'chat') {
+        const chatHistory = m.parsedMessage.messages || [];
+        const chatStreamHtml = chatHistory.map(msg => {
+          const isUser = msg.sender === 'user';
+          const align = isUser ? 'flex-start' : 'flex-end';
+          const bg = isUser ? 'rgba(99, 102, 241, 0.08)' : '#F0F2F8';
+          const color = isUser ? '#6C5CE7' : '#11142D';
+          const label = isUser ? 'User' : 'Admin';
           return `
-            <div class="ccard" id="contact-${m.id}" style="display:flex; flex-direction:column; min-height: 380px; border: 1.5px solid var(--brand-light); border-radius: 12px; padding: 16px;">
-              <div class="chead" style="border-bottom: 1px solid rgba(17,20,45,0.06); padding-bottom: 12px; display:flex; align-items:center; gap:12px;">
-                <div class="cav" style="background:${getRandomColor(m.name || 'User')}; width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700;">${(m.name || 'U')[0].toUpperCase()}</div>
-                <div>
-                  <div class="cname" style="font-weight:800; color:var(--brand); display:flex; align-items:center; gap:6px;">${m.name || 'Anonymous'} <span style="font-size:10px; font-weight:600; background:rgba(99,102,241,0.08); color:var(--brand); padding:2px 6px; border-radius:4px;">Live Chat</span></div>
-                  <div class="cemail" style="font-size:11px; color:var(--t-sub)">${m.email || 'N/A'}</div>
-                </div>
-                ${statusBadge}
-              </div>
-              
-              <!-- Chat scroll area -->
-              <div id="chat-stream-${m.id}" style="flex: 1; min-height: 180px; max-height: 220px; overflow-y: auto; padding: 12px 0; display: flex; flex-direction: column; border-bottom: 1px solid rgba(17,20,45,0.06);">
-                ${chatStreamHtml}
-              </div>
-              
-              <!-- Reply Input area -->
-              <div style="padding-top:12px; display:flex; flex-direction:column; gap:8px;">
-                <div style="display:flex; gap:8px; align-items:center;">
-                  <input type="text" id="reply-input-${m.id}" placeholder="Type support reply..." style="flex:1; height:36px; padding:0 12px; border-radius:8px; border:1px solid var(--border); font-size:12.5px; background:var(--surface-2); color:var(--t-main);" onkeydown="if(event.key === 'Enter') sendChatReply('${m.id}')" />
-                  <button class="btn bs" onclick="sendChatReply('${m.id}')" style="background:var(--brand); color:#fff; border:none; padding:0 14px; height:36px; border-radius:8px; font-weight:700; cursor:pointer;"><i class="fas fa-paper-plane"></i></button>
-                </div>
-                
-                <div style="display:flex; justify-content:space-between; align-items:center; font-size:11px; margin-top: 4px;">
-                  <span class="cdate" style="color:var(--t-sub);">${new Date(m.created_at).toLocaleString()}</span>
-                  <div style="display:flex; gap:6px;">
-                    <button class="btn bs bsm" onclick="changeContactStatus('${m.id}', '${m.status === 'Unread' ? 'Read' : 'Unread'}')">Mark ${m.status === 'Unread' ? 'Read' : 'Unread'}</button>
-                    <button class="btn bs bsm dl" onclick="deleteContact('${m.id}')" style="color:var(--red);"><i class="fas fa-trash"></i></button>
-                  </div>
-                </div>
+            <div style="display:flex; justify-content:${isUser ? 'flex-start' : 'flex-end'}; width:100%; margin-bottom: 8px;">
+              <div style="max-width:80%; padding:8px 12px; border-radius:10px; background:${bg}; color:${color}; font-size:12px; line-height:1.4; box-shadow: 0 1px 2px rgba(0,0,0,0.02); text-align: left;">
+                <strong style="display:block; font-size:10px; color:${isUser ? '#6C5CE7' : '#11142D'}; margin-bottom:2px;">${label}</strong>
+                <div>${msg.text}</div>
+                <div style="font-size:9px; color:var(--t-sub); text-align:right; margin-top:3px;">${msg.time}</div>
               </div>
             </div>
           `;
-        }
+        }).join('');
 
-        // Render Normal Inquiry
-        let displayMsg = m.message;
-        let orderIdInfo = '';
-        if (m.parsedMessage && typeof m.parsedMessage === 'object') {
-          displayMsg = m.parsedMessage.comments || m.message;
-          if (m.parsedMessage.order_id) {
-            orderIdInfo = `<span style="font-size:11px;background:rgba(99,102,241,0.08);color:var(--brand);padding:2px 6px;border-radius:4px;font-weight:700;">Order: #${m.parsedMessage.order_id}</span>`;
-          }
-        }
-        
         let statusBadge = m.status === 'Unread' 
           ? `<span class="badge er" style="margin-left:auto;flex-shrink:0">Unread</span>`
           : `<span class="badge ok" style="margin-left:auto;flex-shrink:0">Read</span>`;
-          
+
+        // Automatically scroll down each chat window
+        setTimeout(() => {
+          const chatBoxEl = document.getElementById(`chat-stream-${m.id}`);
+          if (chatBoxEl) chatBoxEl.scrollTop = chatBoxEl.scrollHeight;
+        }, 50);
+
+        let buyerBadge = m.parsedMessage.isBuyer
+          ? `<span style="font-size:10px; font-weight:700; background:#FFFBEB; color:#B45309; border: 1px solid #FDE68A; padding:2px 6px; border-radius:4px; margin-left:6px;">Buyer</span>`
+          : '';
+
+        let orderIdInfo = m.parsedMessage.orderId 
+          ? `<span style="font-size:10px; font-weight:600; background:rgba(99,102,241,0.08); color:var(--brand); padding:2px 6px; border-radius:4px; margin-left:6px;">Order: #${m.parsedMessage.orderId}</span>`
+          : '';
+
         return `
-          <div class="ccard" id="contact-${m.id}">
-            <div class="chead">
-              <div class="cav" style="background:${getRandomColor(m.name || 'User')}">${(m.name || 'U')[0].toUpperCase()}</div>
+          <div class="ccard" id="contact-${m.id}" style="display:flex; flex-direction:column; min-height: 380px; border: 1.5px solid var(--brand-light); border-radius: 12px; padding: 16px;">
+            <div class="chead" style="border-bottom: 1px solid rgba(17,20,45,0.06); padding-bottom: 12px; display:flex; align-items:center; gap:12px;">
+              <div class="cav" style="background:${getRandomColor(m.name || 'User')}; width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700;">${(m.name || 'U')[0].toUpperCase()}</div>
               <div>
-                <div class="cname" style="display:flex;align-items:center;gap:6px;">${m.name || 'Anonymous'} ${orderIdInfo}</div>
-                <div class="cemail">${m.email || 'N/A'}</div>
+                <div class="cname" style="font-weight:800; color:var(--brand); display:flex; align-items:center; gap:6px;">
+                  ${m.name || 'Anonymous'} 
+                  <span style="font-size:10px; font-weight:600; background:rgba(99,102,241,0.08); color:var(--brand); padding:2px 6px; border-radius:4px;">Live Chat</span>
+                  ${buyerBadge}
+                  ${orderIdInfo}
+                </div>
+                <div class="cemail" style="font-size:11px; color:var(--t-sub)">${m.email || 'N/A'}</div>
               </div>
               ${statusBadge}
             </div>
-            <div class="cmsg" style="white-space:pre-wrap;word-break:break-word;">${displayMsg}</div>
-            <div class="cfoot" style="border-top:1px solid rgba(0,0,0,0.03); padding-top:12px; display:flex; justify-content:space-between; align-items:center;">
-              <span class="cdate">${new Date(m.created_at).toLocaleString()}</span>
-              <div style="display:flex;gap:6px;">
-                <button class="btn bs bsm" onclick="changeContactStatus('${m.id}', '${m.status === 'Unread' ? 'Read' : 'Unread'}')">Mark ${m.status === 'Unread' ? 'Read' : 'Unread'}</button>
-                <button class="btn bs bsm dl" onclick="deleteContact('${m.id}')"><i class="fas fa-trash"></i></button>
+            
+            <!-- Chat scroll area -->
+            <div id="chat-stream-${m.id}" style="flex: 1; min-height: 180px; max-height: 220px; overflow-y: auto; padding: 12px 0; display: flex; flex-direction: column; border-bottom: 1px solid rgba(17,20,45,0.06);">
+              ${chatStreamHtml}
+            </div>
+            
+            <!-- Reply Input area -->
+            <div style="padding-top:12px; display:flex; flex-direction:column; gap:8px;">
+              <div style="display:flex; gap:8px; align-items:center;">
+                <input type="text" id="reply-input-${m.id}" placeholder="Type support reply..." style="flex:1; height:36px; padding:0 12px; border-radius:8px; border:1px solid var(--border); font-size:12.5px; background:var(--surface-2); color:var(--t-main);" onkeydown="if(event.key === 'Enter') sendChatReply('${m.id}')" />
+                <button class="btn bs" onclick="sendChatReply('${m.id}')" style="background:var(--brand); color:#fff; border:none; padding:0 14px; height:36px; border-radius:8px; font-weight:700; cursor:pointer;"><i class="fas fa-paper-plane"></i></button>
+              </div>
+              
+              <div style="display:flex; justify-content:space-between; align-items:center; font-size:11px; margin-top: 4px;">
+                <span class="cdate" style="color:var(--t-sub);">${new Date(m.created_at).toLocaleString()}</span>
+                <div style="display:flex; gap:6px;">
+                  <button class="btn bs bsm" onclick="changeContactStatus('${m.id}', '${m.status === 'Unread' ? 'Read' : 'Unread'}')">Mark ${m.status === 'Unread' ? 'Read' : 'Unread'}</button>
+                  <button class="btn bs bsm dl" onclick="deleteContact('${m.id}')" style="color:var(--red);"><i class="fas fa-trash"></i></button>
+                </div>
               </div>
             </div>
           </div>
         `;
-      }).join('');
-    }
+      }
+
+      // Render Normal Inquiry
+      let displayMsg = m.message;
+      let orderIdInfo = '';
+      if (m.parsedMessage && typeof m.parsedMessage === 'object') {
+        displayMsg = m.parsedMessage.comments || m.message;
+        if (m.parsedMessage.order_id) {
+          orderIdInfo = `<span style="font-size:11px;background:rgba(99,102,241,0.08);color:var(--brand);padding:2px 6px;border-radius:4px;font-weight:700;">Order: #${m.parsedMessage.order_id}</span>`;
+        }
+      }
+      
+      let statusBadge = m.status === 'Unread' 
+        ? `<span class="badge er" style="margin-left:auto;flex-shrink:0">Unread</span>`
+        : `<span class="badge ok" style="margin-left:auto;flex-shrink:0">Read</span>`;
+        
+      return `
+        <div class="ccard" id="contact-${m.id}">
+          <div class="chead">
+            <div class="cav" style="background:${getRandomColor(m.name || 'User')}">${(m.name || 'U')[0].toUpperCase()}</div>
+            <div>
+              <div class="cname" style="display:flex;align-items:center;gap:6px;">${m.name || 'Anonymous'} ${orderIdInfo}</div>
+              <div class="cemail">${m.email || 'N/A'}</div>
+            </div>
+            ${statusBadge}
+          </div>
+          <div class="cmsg" style="white-space:pre-wrap;word-break:break-word;">${displayMsg}</div>
+          <div class="cfoot" style="border-top:1px solid rgba(0,0,0,0.03); padding-top:12px; display:flex; justify-content:space-between; align-items:center;">
+            <span class="cdate">${new Date(m.created_at).toLocaleString()}</span>
+            <div style="display:flex;gap:6px;">
+              <button class="btn bs bsm" onclick="changeContactStatus('${m.id}', '${m.status === 'Unread' ? 'Read' : 'Unread'}')">Mark ${m.status === 'Unread' ? 'Read' : 'Unread'}</button>
+              <button class="btn bs bsm dl" onclick="deleteContact('${m.id}')"><i class="fas fa-trash"></i></button>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  };
+
+  if (messagesContainer) {
+    messagesContainer.innerHTML = generateCardsHtml(normalMessages);
+  }
+
+  if (buyerContainer) {
+    buyerContainer.innerHTML = generateCardsHtml(buyerMessages);
   }
 
   // Render Tickets
@@ -4366,27 +4676,39 @@ function closeTicketModal() {
 
 function switchContactTab(tab) {
   const btnMsgs = document.getElementById('tab-btn-messages');
+  const btnBuyer = document.getElementById('tab-btn-buyer-chat');
   const btnTkts = document.getElementById('tab-btn-tickets');
   const viewMsgs = document.getElementById('contact-tab-messages');
+  const viewBuyer = document.getElementById('contact-tab-buyer-chat');
   const viewTkts = document.getElementById('contact-tab-tickets');
   
+  const resetTab = (btn, view) => {
+    if (btn) {
+      btn.classList.remove('active');
+      btn.style.color = 'var(--m1)';
+      btn.style.background = 'transparent';
+    }
+    if (view) view.style.display = 'none';
+  };
+
+  resetTab(btnMsgs, viewMsgs);
+  resetTab(btnBuyer, viewBuyer);
+  resetTab(btnTkts, viewTkts);
+
   if (tab === 'messages') {
     btnMsgs.classList.add('active');
     btnMsgs.style.color = 'var(--t1)';
     btnMsgs.style.background = 'rgba(99, 102, 241, 0.1)';
-    btnTkts.classList.remove('active');
-    btnTkts.style.color = 'var(--m1)';
-    btnTkts.style.background = 'transparent';
     viewMsgs.style.display = 'block';
-    viewTkts.style.display = 'none';
+  } else if (tab === 'buyer-chat') {
+    btnBuyer.classList.add('active');
+    btnBuyer.style.color = 'var(--t1)';
+    btnBuyer.style.background = 'rgba(99, 102, 241, 0.1)';
+    viewBuyer.style.display = 'block';
   } else {
     btnTkts.classList.add('active');
     btnTkts.style.color = 'var(--t1)';
     btnTkts.style.background = 'rgba(99, 102, 241, 0.1)';
-    btnMsgs.classList.remove('active');
-    btnMsgs.style.color = 'var(--m1)';
-    btnMsgs.style.background = 'transparent';
-    viewMsgs.style.display = 'none';
     viewTkts.style.display = 'block';
   }
 }
@@ -4991,6 +5313,60 @@ function filterBugsList() {
           }
         });
       }
+
+      // Card Icon R2 Upload Listener
+      const cardIconUpload = document.getElementById('card-icon-upload');
+      if (cardIconUpload) {
+        cardIconUpload.addEventListener('change', async (e) => {
+          const file = e.target.files[0];
+          if (!file) return;
+
+          const statusText = document.getElementById('card-icon-status-text');
+          const previewIcon = document.getElementById('card-icon-preview-icon');
+          const uploadContainer = document.getElementById('card-icon-upload-container');
+
+          if (statusText) statusText.innerText = 'Uploading to R2... Please wait.';
+          if (previewIcon) previewIcon.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+          const formData = new FormData();
+          formData.append('file', file);
+
+          try {
+            const response = await fetch('/api/upload', {
+              method: 'POST',
+              body: formData
+            });
+            const result = await response.json();
+            if (response.ok && result.success) {
+              document.getElementById('card-icon-url').value = result.url;
+              if (statusText) {
+                statusText.innerText = 'Upload successful!';
+                statusText.style.color = '#10B981';
+              }
+              if (previewIcon) {
+                previewIcon.innerHTML = '<i class="fas fa-check" style="color: #10B981;"></i>';
+              }
+              if (uploadContainer) {
+                uploadContainer.style.backgroundImage = `url('${result.url}')`;
+                uploadContainer.style.backgroundSize = 'contain';
+                uploadContainer.style.backgroundRepeat = 'no-repeat';
+                uploadContainer.style.backgroundPosition = 'center';
+              }
+            } else {
+              throw new Error(result.error || 'Upload failed');
+            }
+          } catch (err) {
+            console.error(err);
+            if (statusText) {
+              statusText.innerText = 'Upload failed: ' + err.message;
+              statusText.style.color = '#EF4444';
+            }
+            if (previewIcon) {
+              previewIcon.innerHTML = '<i class="fas fa-exclamation-triangle" style="color: #EF4444;"></i>';
+            }
+          }
+        });
+      }
     });
   </script>
   <script>
@@ -5267,6 +5643,636 @@ function filterBugsList() {
           } catch(err) {
             alert("Failed to save: " + err.message);
             addPostBtn.innerHTML = originalText;
+          }
+        });
+      }
+
+      // ==========================================
+      // HOMEPAGE CARDS CRUD
+      // ==========================================
+      window.HOMEPAGE_CARDS_DATA = [];
+
+      window.loadHomepageCards = async function() {
+        const tbody = document.getElementById('tbody-homepage-cards');
+        if (!tbody) return;
+        tbody.innerHTML = '<tr><td colspan="6" style="padding: 16px; text-align: center;">Loading...</td></tr>';
+        
+        try {
+          const res = await fetchData('/api/admin/homepage-cards');
+          if (res && res.cards) {
+            window.HOMEPAGE_CARDS_DATA = res.cards;
+            tbody.innerHTML = res.cards.map(c => `
+              <tr>
+                <td style="padding: 14px 16px; font-weight: 600;">${c.brand_name}</td>
+                <td style="padding: 14px 16px;">
+                  ${c.icon_type && (c.icon_type.startsWith('http') || c.icon_type.startsWith('/')) ? `<img src="${c.icon_type}" style="height:32px; width:32px; object-fit:contain; border-radius:4px; border: 1px solid var(--border-strong);">` : `<span style="text-transform: capitalize;">${c.icon_type}</span>`}
+                </td>
+                <td style="padding: 14px 16px;"><span style="background: var(--brand-light); color: var(--brand); padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold; text-transform: uppercase;">${c.category_tag}</span></td>
+                <td style="padding: 14px 16px;">${c.title}</td>
+                <td style="padding: 14px 16px; font-weight: 600;">${c.price_text}</td>
+                <td style="padding: 14px 16px; text-align: right;">
+                  <div style="display: flex; gap: 8px; justify-content: flex-end; align-items: center;">
+                    <button class="ibtn" onclick="moveCardUp('${c.id}')" title="Move Up" style="background: rgba(255,255,255,0.05); color: var(--t-sub);"><i class="fas fa-arrow-up"></i></button>
+                    <button class="ibtn" onclick="moveCardDown('${c.id}')" title="Move Down" style="background: rgba(255,255,255,0.05); color: var(--t-sub);"><i class="fas fa-arrow-down"></i></button>
+                    <button class="ibtn ed" onclick="editHomepageCard('${c.id}')" style="margin-left: 4px;"><i class="fas fa-pen"></i></button>
+                    <button class="ibtn dl" onclick="deleteHomepageCard('${c.id}')"><i class="fas fa-trash"></i></button>
+                  </div>
+                </td>
+              </tr>
+            `).join('');
+          } else {
+            tbody.innerHTML = '<tr><td colspan="6" style="padding: 16px; text-align: center;">No cards found.</td></tr>';
+          }
+        } catch (err) {
+          tbody.innerHTML = `<tr><td colspan="6" style="padding: 16px; text-align: center; color: var(--red);">Error: ${err.message}</td></tr>`;
+        }
+      }
+
+      window.moveCardUp = async (id) => {
+        const cards = window.HOMEPAGE_CARDS_DATA;
+        const idx = cards.findIndex(c => c.id === id);
+        if (idx <= 0) return;
+
+        const currentCard = cards[idx];
+        const prevCard = cards[idx - 1];
+
+        const temp = currentCard.order_index;
+        currentCard.order_index = prevCard.order_index;
+        prevCard.order_index = temp;
+
+        if (currentCard.order_index === prevCard.order_index) {
+          currentCard.order_index = idx - 1;
+          prevCard.order_index = idx;
+        }
+
+        try {
+          await Promise.all([
+            fetch('/api/admin/homepage-cards', {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ id: currentCard.id, order_index: currentCard.order_index })
+            }),
+            fetch('/api/admin/homepage-cards', {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ id: prevCard.id, order_index: prevCard.order_index })
+            })
+          ]);
+          loadHomepageCards();
+        } catch (err) {
+          alert("Failed to move card: " + err.message);
+        }
+      };
+
+      window.moveCardDown = async (id) => {
+        const cards = window.HOMEPAGE_CARDS_DATA;
+        const idx = cards.findIndex(c => c.id === id);
+        if (idx === -1 || idx >= cards.length - 1) return;
+
+        const currentCard = cards[idx];
+        const nextCard = cards[idx + 1];
+
+        const temp = currentCard.order_index;
+        currentCard.order_index = nextCard.order_index;
+        nextCard.order_index = temp;
+
+        if (currentCard.order_index === nextCard.order_index) {
+          currentCard.order_index = idx + 1;
+          nextCard.order_index = idx;
+        }
+
+        try {
+          await Promise.all([
+            fetch('/api/admin/homepage-cards', {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ id: currentCard.id, order_index: currentCard.order_index })
+            }),
+            fetch('/api/admin/homepage-cards', {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ id: nextCard.id, order_index: nextCard.order_index })
+            })
+          ]);
+          loadHomepageCards();
+        } catch (err) {
+          alert("Failed to move card: " + err.message);
+        }
+      };
+
+      window.openAddCardModal = () => {
+        document.getElementById('edit-card-id').value = '';
+        document.getElementById('card-brand-name').value = '';
+        document.getElementById('card-category-tag').value = '';
+        document.getElementById('card-price-text').value = '';
+        document.getElementById('card-title').value = '';
+        document.getElementById('card-icon-url').value = '';
+        
+        const uploadContainer = document.getElementById('card-icon-upload-container');
+        if (uploadContainer) {
+          uploadContainer.style.backgroundImage = 'none';
+        }
+        const previewIcon = document.getElementById('card-icon-preview-icon');
+        if (previewIcon) previewIcon.innerHTML = '<i class="fas fa-cloud-arrow-up"></i>';
+        const statusText = document.getElementById('card-icon-status-text');
+        if (statusText) {
+          statusText.innerText = 'Click to upload custom icon image or drag and drop';
+          statusText.style.color = 'var(--t-sub)';
+        }
+
+        document.getElementById('card-form-title').innerText = 'Add Homepage Card';
+        document.getElementById('card-form-subtitle').innerText = 'Create a new featured card on the homepage';
+        document.getElementById('homepage-card-form-box').style.display = 'block';
+        document.getElementById('homepage-card-form-box').scrollIntoView({ behavior: 'smooth' });
+      };
+
+      window.closeCardForm = () => {
+        document.getElementById('homepage-card-form-box').style.display = 'none';
+      };
+
+      window.editHomepageCard = (id) => {
+        const card = window.HOMEPAGE_CARDS_DATA.find(c => c.id === id);
+        if (!card) return;
+        document.getElementById('edit-card-id').value = card.id;
+        document.getElementById('card-brand-name').value = card.brand_name;
+        document.getElementById('card-category-tag').value = card.category_tag;
+        document.getElementById('card-price-text').value = card.price_text;
+        document.getElementById('card-title').value = card.title;
+        document.getElementById('card-icon-url').value = card.icon_type || '';
+        
+        const uploadContainer = document.getElementById('card-icon-upload-container');
+        const statusText = document.getElementById('card-icon-status-text');
+        const previewIcon = document.getElementById('card-icon-preview-icon');
+        
+        if (uploadContainer && card.icon_type && (card.icon_type.startsWith('http') || card.icon_type.startsWith('/'))) {
+          uploadContainer.style.backgroundImage = `url('${card.icon_type}')`;
+          uploadContainer.style.backgroundSize = 'contain';
+          uploadContainer.style.backgroundRepeat = 'no-repeat';
+          uploadContainer.style.backgroundPosition = 'center';
+          if (statusText) statusText.innerText = 'Custom icon loaded';
+          if (previewIcon) previewIcon.innerHTML = '<i class="fas fa-check" style="color: #10B981;"></i>';
+        } else {
+          if (uploadContainer) uploadContainer.style.backgroundImage = 'none';
+          if (statusText) statusText.innerText = 'Standard icon (' + card.icon_type + ')';
+          if (previewIcon) previewIcon.innerHTML = '<i class="fas fa-image"></i>';
+        }
+
+        document.getElementById('card-form-title').innerText = 'Edit Homepage Card';
+        document.getElementById('card-form-subtitle').innerText = 'Modify the selected card information';
+        document.getElementById('homepage-card-form-box').style.display = 'block';
+        document.getElementById('homepage-card-form-box').scrollIntoView({ behavior: 'smooth' });
+      };
+
+      window.deleteHomepageCard = async (id) => {
+        if (!confirm("Are you sure you want to delete this card?")) return;
+        try {
+          const res = await fetch('/api/admin/homepage-cards?id=' + id, { method: 'DELETE' });
+          const data = await res.json();
+          if (data.success) {
+            loadHomepageCards();
+            closeCardForm();
+          } else {
+            throw new Error(data.error);
+          }
+        } catch (err) {
+          alert("Failed to delete card: " + err.message);
+        }
+      };
+
+      window.saveHomepageCard = async () => {
+        const id = document.getElementById('edit-card-id').value;
+        const brand_name = document.getElementById('card-brand-name').value;
+        const category_tag = document.getElementById('card-category-tag').value;
+        const price_text = document.getElementById('card-price-text').value;
+        const title = document.getElementById('card-title').value;
+        const icon_type = document.getElementById('card-icon-url').value;
+
+        if (!brand_name || !category_tag || !price_text || !title || !icon_type) {
+          alert("Please fill in all required fields and upload an icon image!");
+          return;
+        }
+
+        const method = id ? 'PUT' : 'POST';
+        const payload = { brand_name, icon_type, category_tag, price_text, title, link_url: '#' };
+        if (id) payload.id = id;
+
+        const btn = document.getElementById('btn-save-card');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+
+        try {
+          const res = await fetch('/api/admin/homepage-cards', {
+            method,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+          const data = await res.json();
+          if (data.success) {
+            btn.innerHTML = '<i class="fas fa-check"></i> Saved!';
+            setTimeout(() => {
+              btn.innerHTML = originalText;
+              closeCardForm();
+              loadHomepageCards();
+            }, 1000);
+          } else {
+            throw new Error(data.error);
+          }
+        } catch (err) {
+          alert("Failed to save card: " + err.message);
+          btn.innerHTML = originalText;
+        }
+      };
+
+      // ==========================================
+      // MONEY EXCHANGE CRUD OPERATIONS
+      // ==========================================
+      window.loadMoneyExchange = async function() {
+        const tbody = document.getElementById('tbody-money-exchange');
+        if (!tbody) return;
+        tbody.innerHTML = '<tr><td colspan="7" style="padding: 24px; text-align: center;"><i class="fas fa-spinner fa-spin"></i> Loading offers...</td></tr>';
+        
+        try {
+          const res = await fetch('/api/admin/money-exchange');
+          const data = await res.json();
+          if (data.success && data.offers) {
+            if (data.offers.length === 0) {
+              tbody.innerHTML = '<tr><td colspan="7" style="padding: 24px; text-align: center; color: var(--t-sub);">No exchange offers created yet.</td></tr>';
+              return;
+            }
+            tbody.innerHTML = data.offers.map(offer => {
+              const iconHtml = offer.media_url 
+                ? `<img src="${offer.media_url}" style="width:32px; height:32px; border-radius:4px; object-fit:cover;" />` 
+                : `<div style="width:32px; height:32px; border-radius:4px; background:var(--green-light); color:var(--green); display:grid; place-items:center;"><i class="fas fa-coins"></i></div>`;
+
+              return `
+                <tr style="border-bottom: 1px solid var(--b1);">
+                  <td style="padding: 12px 16px;">${iconHtml}</td>
+                  <td style="padding: 12px 16px; font-weight: 600; color: var(--t-main);">${offer.giving_currency}</td>
+                  <td style="padding: 12px 16px; font-weight: 600; color: var(--t-main);">${offer.getting_currency}</td>
+                  <td style="padding: 12px 16px; color: var(--t-main); font-family: monospace;">${offer.exchange_rate}</td>
+                  <td style="padding: 12px 16px; color: var(--t-main); font-weight: bold;">${offer.reserve_stock}</td>
+                  <td style="padding: 12px 16px;"><span style="background:var(--brand-light); color:var(--brand); padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold;">${offer.price_text}</span></td>
+                  <td style="padding: 12px 16px; text-align: right;">
+                    <div style="display: flex; gap: 8px; justify-content: flex-end;">
+                      <button class="btn bs bsm" onclick="editExchangeOffer('${offer.id}')"><i class="fas fa-pen"></i> Edit</button>
+                      <button class="btn bd bsm" onclick="deleteExchangeOffer('${offer.id}')"><i class="fas fa-trash"></i> Delete</button>
+                    </div>
+                  </td>
+                </tr>
+              `;
+            }).join('');
+          } else {
+            throw new Error(data.error);
+          }
+        } catch (err) {
+          tbody.innerHTML = `<tr><td colspan="7" style="padding: 24px; text-align: center; color: var(--red);">Failed to load exchange offers: ${err.message}</td></tr>`;
+        }
+      };
+
+      window.clearExchangeForm = function() {
+        document.getElementById('edit-exchange-id').value = '';
+        document.getElementById('exchange-giving-currency').value = '';
+        document.getElementById('exchange-getting-currency').value = '';
+        document.getElementById('exchange-rate-val').value = '';
+        document.getElementById('exchange-reserve-stock').value = '';
+        document.getElementById('exchange-price-text').value = '';
+        document.getElementById('exchange-icon-url').value = '';
+        
+        document.getElementById('exchange-form-title').innerText = 'Add Exchange Offer';
+        document.getElementById('exchange-form-subtitle').innerText = 'Create a new currency exchange rate offer';
+        document.getElementById('btn-save-exchange').innerText = 'Save Offer';
+        
+        // Reset R2 container preview
+        const previewContainer = document.getElementById('exchange-icon-upload-container');
+        previewContainer.style.backgroundImage = 'none';
+        document.getElementById('exchange-icon-preview-icon').style.display = 'block';
+        document.getElementById('exchange-icon-status-text').style.display = 'block';
+        document.getElementById('exchange-icon-status-text').innerText = 'Click to upload custom currency icon or drag and drop';
+      };
+
+      window.editExchangeOffer = async function(id) {
+        try {
+          const res = await fetch('/api/admin/money-exchange');
+          const data = await res.json();
+          if (data.success && data.offers) {
+            const offer = data.offers.find(o => o.id === id);
+            if (offer) {
+              document.getElementById('edit-exchange-id').value = offer.id;
+              document.getElementById('exchange-giving-currency').value = offer.giving_currency;
+              document.getElementById('exchange-getting-currency').value = offer.getting_currency;
+              document.getElementById('exchange-rate-val').value = offer.exchange_rate;
+              document.getElementById('exchange-reserve-stock').value = offer.reserve_stock;
+              document.getElementById('exchange-price-text').value = offer.price_text;
+              document.getElementById('exchange-icon-url').value = offer.media_url || '';
+              
+              document.getElementById('exchange-form-title').innerText = 'Edit Exchange Offer';
+              document.getElementById('exchange-form-subtitle').innerText = `Editing offer: ${offer.giving_currency} to ${offer.getting_currency}`;
+              document.getElementById('btn-save-exchange').innerText = 'Update Offer';
+              
+              // Handle R2 image preview
+              if (offer.media_url) {
+                const previewContainer = document.getElementById('exchange-icon-upload-container');
+                previewContainer.style.backgroundImage = `url('${offer.media_url}')`;
+                document.getElementById('exchange-icon-preview-icon').style.display = 'none';
+                document.getElementById('exchange-icon-status-text').style.display = 'none';
+              }
+              
+              nav('add-exchange', null);
+            }
+          }
+        } catch (err) {
+          alert('Failed to edit offer: ' + err.message);
+        }
+      };
+
+      window.saveExchangeOffer = async function() {
+        const id = document.getElementById('edit-exchange-id').value;
+        const giving_currency = document.getElementById('exchange-giving-currency').value;
+        const getting_currency = document.getElementById('exchange-getting-currency').value;
+        const exchange_rate = document.getElementById('exchange-rate-val').value;
+        const reserve_stock = document.getElementById('exchange-reserve-stock').value;
+        const price_text = document.getElementById('exchange-price-text').value;
+        const media_url = document.getElementById('exchange-icon-url').value;
+
+        if (!giving_currency || !getting_currency || !exchange_rate || !reserve_stock || !price_text) {
+          alert("All exchange fields are strictly required!");
+          return;
+        }
+
+        const method = id ? 'PUT' : 'POST';
+        const payload = { giving_currency, getting_currency, exchange_rate, reserve_stock, price_text, media_url };
+        if (id) payload.id = id;
+
+        const btn = document.getElementById('btn-save-exchange');
+        const originalText = btn.innerText;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+
+        try {
+          const res = await fetch('/api/admin/money-exchange', {
+            method,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+          const data = await res.json();
+          if (data.success) {
+            btn.innerHTML = '<i class="fas fa-check"></i> Saved!';
+            setTimeout(() => {
+              btn.innerText = originalText;
+              nav('all-exchange', null);
+            }, 1000);
+          } else {
+            throw new Error(data.error);
+          }
+        } catch (err) {
+          alert("Failed to save offer: " + err.message);
+          btn.innerText = originalText;
+        }
+      };
+
+      window.deleteExchangeOffer = async function(id) {
+        if (!confirm("Are you sure you want to delete this exchange offer?")) return;
+        try {
+          const res = await fetch(`/api/admin/money-exchange?id=${id}`, { method: 'DELETE' });
+          const data = await res.json();
+          if (data.success) {
+            loadMoneyExchange();
+          } else {
+            throw new Error(data.error);
+          }
+        } catch (err) {
+          alert('Failed to delete offer: ' + err.message);
+        }
+      };
+
+      // Money Exchange Icon Upload listener
+      const exchangeIconInput = document.getElementById('exchange-icon-upload');
+      if (exchangeIconInput) {
+        exchangeIconInput.addEventListener('change', async (e) => {
+          const file = e.target.files[0];
+          if (!file) return;
+          
+          const statusText = document.getElementById('exchange-icon-status-text');
+          statusText.innerText = "Uploading to R2...";
+          statusText.style.display = 'block';
+          
+          const formData = new FormData();
+          formData.append('file', file);
+          
+          try {
+            const res = await fetch('/api/upload', { method: 'POST', body: formData });
+            const data = await res.json();
+            if (data.success) {
+              document.getElementById('exchange-icon-url').value = data.url;
+              statusText.innerText = "Upload Complete!";
+              
+              const previewContainer = document.getElementById('exchange-icon-upload-container');
+              previewContainer.style.backgroundImage = `url('${data.url}')`;
+              document.getElementById('exchange-icon-preview-icon').style.display = 'none';
+              statusText.style.display = 'none';
+            } else {
+              statusText.innerText = "Upload Failed: " + data.error;
+            }
+          } catch (err) {
+            statusText.innerText = "Upload Error: " + err.message;
+          }
+        });
+      }
+
+      // ==========================================
+      // NETFLIX PRODUCTS CRUD OPERATIONS
+      // ==========================================
+      window.loadNetflixProducts = async function() {
+        const tbody = document.getElementById('tbody-netflix-products');
+        if (!tbody) return;
+        tbody.innerHTML = '<tr><td colspan="8" style="padding: 24px; text-align: center;"><i class="fas fa-spinner fa-spin"></i> Loading Netflix items...</td></tr>';
+        
+        try {
+          const res = await fetch('/api/admin/netflix-products');
+          const data = await res.json();
+          if (data.success && data.products) {
+            if (data.products.length === 0) {
+              tbody.innerHTML = '<tr><td colspan="8" style="padding: 24px; text-align: center; color: var(--t-sub);">No Netflix listings created yet.</td></tr>';
+              return;
+            }
+            tbody.innerHTML = data.products.map(p => {
+              const thumbnailHtml = p.media_url 
+                ? `<img src="${p.media_url}" style="width:48px; height:32px; border-radius:4px; object-fit:cover;" />` 
+                : `<div style="width:48px; height:32px; border-radius:4px; background:var(--red-light); color:var(--red); display:grid; place-items:center; font-size:11px; font-weight:bold;">NETFLIX</div>`;
+
+              return `
+                <tr style="border-bottom: 1px solid var(--b1);">
+                  <td style="padding: 12px 16px;">${thumbnailHtml}</td>
+                  <td style="padding: 12px 16px; font-weight: 600; color: var(--t-main);">${p.account_type}</td>
+                  <td style="padding: 12px 16px; color: var(--t-main);">${p.duration}</td>
+                  <td style="padding: 12px 16px; font-weight: bold; color: var(--t-main);">$${Number(p.price).toFixed(2)}</td>
+                  <td style="padding: 12px 16px; color: var(--t-main);">${p.stock_quantity} available</td>
+                  <td style="padding: 12px 16px; color: var(--t-sub); font-size: 13px;">${p.delivery_method}</td>
+                  <td style="padding: 12px 16px;">${p.badge_text ? `<span style="background:var(--orange-light); color:var(--orange); padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold;">${p.badge_text}</span>` : '<span style="color:var(--t-muted)">None</span>'}</td>
+                  <td style="padding: 12px 16px; text-align: right;">
+                    <div style="display: flex; gap: 8px; justify-content: flex-end;">
+                      <button class="btn bs bsm" onclick="editNetflixProduct('${p.id}')"><i class="fas fa-pen"></i> Edit</button>
+                      <button class="btn bd bsm" onclick="deleteNetflixProduct('${p.id}')"><i class="fas fa-trash"></i> Delete</button>
+                    </div>
+                  </td>
+                </tr>
+              `;
+            }).join('');
+          } else {
+            throw new Error(data.error);
+          }
+        } catch (err) {
+          tbody.innerHTML = `<tr><td colspan="8" style="padding: 24px; text-align: center; color: var(--red);">Failed to load Netflix items: ${err.message}</td></tr>`;
+        }
+      };
+
+      window.clearNetflixForm = function() {
+        document.getElementById('edit-netflix-id').value = '';
+        document.getElementById('netflix-account-type').value = '';
+        document.getElementById('netflix-duration').value = '';
+        document.getElementById('netflix-price').value = '';
+        document.getElementById('netflix-stock').value = '';
+        document.getElementById('netflix-delivery-method').value = '';
+        document.getElementById('netflix-badge-text').value = '';
+        document.getElementById('netflix-media-url').value = '';
+        
+        document.getElementById('netflix-form-title').innerText = 'Add Netflix Item';
+        document.getElementById('netflix-form-subtitle').innerText = 'Create a new Netflix account product listing';
+        document.getElementById('btn-save-netflix').innerText = 'Save Item';
+        
+        // Reset R2 container preview
+        const previewContainer = document.getElementById('netflix-media-upload-container');
+        previewContainer.style.backgroundImage = 'none';
+        document.getElementById('netflix-media-preview-icon').style.display = 'block';
+        document.getElementById('netflix-media-status-text').style.display = 'block';
+        document.getElementById('netflix-media-status-text').innerText = 'Click to upload Netflix thumbnail or drag and drop';
+      };
+
+      window.editNetflixProduct = async function(id) {
+        try {
+          const res = await fetch('/api/admin/netflix-products');
+          const data = await res.json();
+          if (data.success && data.products) {
+            const p = data.products.find(item => item.id === id);
+            if (p) {
+              document.getElementById('edit-netflix-id').value = p.id;
+              document.getElementById('netflix-account-type').value = p.account_type;
+              document.getElementById('netflix-duration').value = p.duration;
+              document.getElementById('netflix-price').value = p.price;
+              document.getElementById('netflix-stock').value = p.stock_quantity;
+              document.getElementById('netflix-delivery-method').value = p.delivery_method;
+              document.getElementById('netflix-badge-text').value = p.badge_text || '';
+              document.getElementById('netflix-media-url').value = p.media_url || '';
+              
+              document.getElementById('netflix-form-title').innerText = 'Edit Netflix Item';
+              document.getElementById('netflix-form-subtitle').innerText = `Editing: Netflix (${p.account_type})`;
+              document.getElementById('btn-save-netflix').innerText = 'Update Item';
+              
+              // Handle R2 image preview
+              if (p.media_url) {
+                const previewContainer = document.getElementById('netflix-media-upload-container');
+                previewContainer.style.backgroundImage = `url('${p.media_url}')`;
+                document.getElementById('netflix-media-preview-icon').style.display = 'none';
+                document.getElementById('netflix-media-status-text').style.display = 'none';
+              }
+              
+              nav('add-netflix', null);
+            }
+          }
+        } catch (err) {
+          alert('Failed to edit product: ' + err.message);
+        }
+      };
+
+      window.saveNetflixProduct = async function() {
+        const id = document.getElementById('edit-netflix-id').value;
+        const account_type = document.getElementById('netflix-account-type').value;
+        const duration = document.getElementById('netflix-duration').value;
+        const price = document.getElementById('netflix-price').value;
+        const stock_quantity = document.getElementById('netflix-stock').value;
+        const delivery_method = document.getElementById('netflix-delivery-method').value;
+        const badge_text = document.getElementById('netflix-badge-text').value;
+        const media_url = document.getElementById('netflix-media-url').value;
+
+        if (!account_type || !duration || !price || !stock_quantity || !delivery_method) {
+          alert("All Netflix product fields are strictly required!");
+          return;
+        }
+
+        const method = id ? 'PUT' : 'POST';
+        const payload = { account_type, duration, price, stock_quantity, delivery_method, badge_text, media_url };
+        if (id) payload.id = id;
+
+        const btn = document.getElementById('btn-save-netflix');
+        const originalText = btn.innerText;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+
+        try {
+          const res = await fetch('/api/admin/netflix-products', {
+            method,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+          const data = await res.json();
+          if (data.success) {
+            btn.innerHTML = '<i class="fas fa-check"></i> Saved!';
+            setTimeout(() => {
+              btn.innerText = originalText;
+              nav('all-netflix', null);
+            }, 1000);
+          } else {
+            throw new Error(data.error);
+          }
+        } catch (err) {
+          alert("Failed to save netflix item: " + err.message);
+          btn.innerText = originalText;
+        }
+      };
+
+      window.deleteNetflixProduct = async function(id) {
+        if (!confirm("Are you sure you want to delete this Netflix listing?")) return;
+        try {
+          const res = await fetch(`/api/admin/netflix-products?id=${id}`, { method: 'DELETE' });
+          const data = await res.json();
+          if (data.success) {
+            loadNetflixProducts();
+          } else {
+            throw new Error(data.error);
+          }
+        } catch (err) {
+          alert('Failed to delete item: ' + err.message);
+        }
+      };
+
+      // Netflix Thumbnail Upload listener
+      const netflixMediaInput = document.getElementById('netflix-media-upload');
+      if (netflixMediaInput) {
+        netflixMediaInput.addEventListener('change', async (e) => {
+          const file = e.target.files[0];
+          if (!file) return;
+          
+          const statusText = document.getElementById('netflix-media-status-text');
+          statusText.innerText = "Uploading to R2...";
+          statusText.style.display = 'block';
+          
+          const formData = new FormData();
+          formData.append('file', file);
+          
+          try {
+            const res = await fetch('/api/upload', { method: 'POST', body: formData });
+            const data = await res.json();
+            if (data.success) {
+              document.getElementById('netflix-media-url').value = data.url;
+              statusText.innerText = "Upload Complete!";
+              
+              const previewContainer = document.getElementById('netflix-media-upload-container');
+              previewContainer.style.backgroundImage = `url('${data.url}')`;
+              document.getElementById('netflix-media-preview-icon').style.display = 'none';
+              statusText.style.display = 'none';
+            } else {
+              statusText.innerText = "Upload Failed: " + data.error;
+            }
+          } catch (err) {
+            statusText.innerText = "Upload Error: " + err.message;
           }
         });
       }

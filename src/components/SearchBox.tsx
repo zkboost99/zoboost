@@ -12,7 +12,7 @@ interface Product {
   media_url?: string;
 }
 
-export default function SearchBox() {
+export default function SearchBox({ className, placeholder }: { className?: string; placeholder?: string }) {
   const [query, setQuery] = useState('');
   const [suggestions, setSuggestions] = useState<Product[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -62,26 +62,28 @@ export default function SearchBox() {
   return (
     <div ref={dropdownRef} className="relative w-full">
       <form onSubmit={handleSubmit}>
-        <div className="relative">
-          <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-neutral-400" />
-          <input
-            type="search"
-            placeholder="Search ZoroBoost..."
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            onFocus={() => {
-              if (suggestions.length > 0) {
-                setShowDropdown(true);
-              }
-            }}
-            autoComplete="off"
-            className="h-10 w-full rounded-md bg-[#1c1c1f] pl-11 pr-4 text-sm text-neutral-100 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-amber-400/40 border border-white/5"
-          />
+        <div className="relative rounded-[12px] border border-neutral-200 dark:border-white/5 p-[4px] shadow-sm dark:shadow-lg bg-neutral-100/50 dark:bg-black/10 transition-all hover:bg-neutral-200/50 dark:hover:bg-black/20 focus-within:bg-neutral-200/50 dark:focus-within:bg-black/20 focus-within:border-neutral-300 dark:focus-within:border-white/10">
+          <div className="relative flex items-center h-[52px] w-full rounded-lg bg-neutral-200/60 dark:bg-[#1e1f22]">
+            <Search className="pointer-events-none absolute left-4 top-1/2 h-[22px] w-[22px] -translate-y-1/2 text-neutral-500 dark:text-[#82848f] z-10" />
+            <input
+              type="search"
+              placeholder={placeholder || "Search for games, services or keys..."}
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              onFocus={() => {
+                if (suggestions.length > 0) {
+                  setShowDropdown(true);
+                }
+              }}
+              autoComplete="off"
+              className={className || "h-full w-full bg-transparent pl-12 pr-4 text-[16px] text-neutral-900 dark:text-[#dbdee1] placeholder:text-neutral-500 dark:placeholder:text-[#82848f] placeholder:font-medium focus:outline-none rounded-lg"}
+            />
+          </div>
         </div>
 
         {showDropdown && suggestions.length > 0 && (
           <div 
-            className="absolute left-0 top-full mt-2 w-full rounded-md bg-[#1c1c1f] border border-white/5 shadow-xl z-50 max-h-[380px] overflow-y-auto"
+            className="absolute left-0 top-full mt-2 w-full rounded-md bg-search-bg border border-search-border shadow-xl z-50 max-h-[380px] overflow-y-auto"
           >
             {suggestions.map((product) => (
               <div
@@ -90,10 +92,10 @@ export default function SearchBox() {
                   router.push(`/product/${product.id}`);
                   setShowDropdown(false);
                 }}
-                className="flex items-center gap-3 px-4 py-3 border-b border-white/5 cursor-pointer hover:bg-white/5 text-left"
+                className="flex items-center gap-3 px-4 py-3 border-b border-search-border cursor-pointer hover:bg-neutral-800/5 dark:hover:bg-white/5 text-left"
               >
                 <div 
-                  className="w-9 h-9 rounded bg-[#2a2a2e] overflow-hidden flex items-center justify-center flex-shrink-0"
+                  className="w-9 h-9 rounded bg-card-active overflow-hidden flex items-center justify-center flex-shrink-0"
                 >
                   {product.media_url ? (
                     <img 
@@ -106,7 +108,7 @@ export default function SearchBox() {
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h4 className="text-sm font-semibold text-white truncate">
+                  <h4 className="text-sm font-semibold text-foreground truncate">
                     {product.title}
                   </h4>
                   <span className="text-xs text-neutral-400 font-medium">

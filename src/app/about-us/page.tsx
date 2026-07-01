@@ -1,7 +1,22 @@
 import Link from 'next/link';
+import Header from '@/components/Header';
+import Footer from '@/components/Footer';
+
 export default function AboutUs() {
   return (
     <>
+      <link href="/assets/css/bootstrap.min.css" rel="stylesheet" />
+      <link href="/assets/css/font-awesome.min.css" rel="stylesheet" />
+      <link href="/assets/css/validthemes-icon.css" rel="stylesheet" />
+      <link href="/assets/css/magnific-popup.css" rel="stylesheet" />
+      <link href="/assets/css/swiper-bundle.min.css" rel="stylesheet" />
+      <link href="/assets/css/animate.css" rel="stylesheet" />
+      <link href="/assets/css/validnavs.css" rel="stylesheet" />
+      <link href="/assets/css/helper.css" rel="stylesheet" />
+      <link href="/assets/css/unit-test.css" rel="stylesheet" />
+      <link href="/assets/css/style.css" rel="stylesheet" />
+      <link href="/style.css" rel="stylesheet" />
+      <Header />
     {/*  Start Breadcrumb  */}
     <div className="breadcrumb-area text-center bg-cover text-light bg-theme" style={{backgroundImage: "url(/assets/img/shape/banner-14.jpg)"}}>
         <div className="container">
@@ -115,6 +130,7 @@ export default function AboutUs() {
         {/*  End Process  */}
 
     </div>
+    <Footer />
     </>
   );
 }
