@@ -1601,6 +1601,287 @@ select.fi { appearance: none; cursor: pointer;
 .nitem.unr { border-left-color: var(--brand); background: rgba(108,92,231,0.015); }
 
 -->
+
+<style>
+/* Discord Chat Styles */
+.discord-chat-section {
+  padding: 32px 0;
+  max-width: 1000px;
+  margin: 0;
+  min-height: calc(100vh - 72px);
+  font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
+.eld-header-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 24px;
+  font-weight: 700;
+  color: #FFFFFF;
+  margin-bottom: 24px;
+}
+.eld-header-title i {
+  color: #FBBF24;
+}
+
+.eld-top-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.dc-tabs {
+  display: flex;
+  gap: 12px;
+}
+.dc-tab {
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  background: #202124;
+  color: #A0A0A0;
+  transition: all 0.2s;
+}
+.dc-tab:hover { background: #2B2D31; color: #FFFFFF; }
+.dc-tab.active { background: #FBBF24; color: #111214; }
+
+.dc-unread-toggle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.dc-switch {
+  position: relative;
+  display: inline-block;
+  width: 36px;
+  height: 20px;
+}
+.dc-switch input { opacity: 0; width: 0; height: 0; }
+.dc-slider {
+  position: absolute; cursor: pointer;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: #2B2D31;
+  transition: .2s; border-radius: 20px;
+}
+.dc-slider:before {
+  position: absolute; content: "";
+  height: 14px; width: 14px; left: 3px; bottom: 3px;
+  background-color: #A0A0A0;
+  transition: .2s; border-radius: 50%;
+}
+.dc-switch input:checked + .dc-slider { background-color: #5865F2; }
+.dc-switch input:checked + .dc-slider:before { transform: translateX(16px); background-color: #fff; }
+
+.dc-container {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+  height: 65vh;
+  min-height: 500px;
+}
+
+/* Left Card */
+.dc-left-card {
+  width: 320px;
+  display: flex;
+  flex-direction: column;
+  background: #1C1D21;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.dc-browser-notif {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: #232428;
+  border-bottom: 1px solid #141517;
+}
+
+.dc-search {
+  padding: 16px;
+  position: relative;
+}
+.dc-search input {
+  width: 100%;
+  background: #111214;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 12px;
+  padding-right: 36px;
+  color: #DBDEE1;
+  font-size: 13px;
+  outline: none;
+}
+.dc-search i {
+  position: absolute;
+  right: 28px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #949BA4;
+  font-size: 13px;
+}
+
+.dc-contact-list {
+  flex: 1;
+  overflow-y: auto;
+}
+.dc-contact-list::-webkit-scrollbar { width: 6px; }
+.dc-contact-list::-webkit-scrollbar-thumb { background: #111214; border-radius: 4px; }
+.dc-contact-list::-webkit-scrollbar-track { background: transparent; }
+
+.dc-contact {
+  display: flex;
+  align-items: flex-start;
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: background 0.1s;
+  border-left: 2px solid transparent;
+}
+.dc-contact:hover { background: #232428; }
+.dc-contact.active { background: #2B2D31; border-left-color: #FBBF24; }
+
+.dc-contact-av {
+  width: 36px; height: 36px; border-radius: 50%;
+  flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+  color: #fff; font-weight: 700; font-size: 14px; position: relative;
+}
+.dc-status-dot {
+  position: absolute; bottom: 0; right: 0; width: 10px; height: 10px;
+  border-radius: 50%; border: 2px solid #1C1D21;
+}
+.dc-status-dot.online { background: #23A559; }
+.dc-status-dot.offline { background: #80848E; }
+
+.dc-contact-info { flex: 1; min-width: 0; margin-left: 12px; }
+.dc-contact-top { display: flex; justify-content: space-between; margin-bottom: 2px; }
+.dc-contact-name { font-weight: 600; color: #E5E7EB; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dc-contact-time { font-size: 11px; color: #949BA4; white-space: nowrap; margin-left: 6px; }
+.dc-contact-tag { font-size: 10px; color: #949BA4; margin-bottom: 4px; }
+.dc-contact-msg { font-size: 12px; color: #B5BAC1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dc-unread-dot { width: 6px; height: 6px; border-radius: 50%; background: #5865F2; margin-top: 15px; margin-left: 8px; flex-shrink: 0; }
+
+/* Right Card */
+.dc-main-chat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.dc-right-card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #1C1D21;
+  border-radius: 12px;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.dc-chat-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid #141517;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.dc-chat-header-l { display: flex; align-items: center; gap: 12px; }
+.dc-chat-header-name { font-weight: 600; font-size: 15px; color: #FFF; }
+.dc-chat-header-tag { font-size: 12px; color: #949BA4; }
+.dc-chat-header-r i { color: #949BA4; cursor: pointer; font-size: 15px; }
+
+.dc-chat-history {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-height: 0;
+}
+.dc-chat-history::-webkit-scrollbar { width: 8px; }
+.dc-chat-history::-webkit-scrollbar-thumb { background: #111214; border-radius: 4px; }
+
+.dc-msg {
+  display: flex;
+  max-width: 85%;
+}
+.dc-msg.admin {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+}
+
+.dc-msg-content-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+.dc-msg.admin .dc-msg-content-wrapper {
+  align-items: flex-end;
+}
+
+.dc-msg-bubble {
+  padding: 12px 16px;
+  font-size: 13px;
+  line-height: 1.5;
+  margin-top: 4px;
+}
+
+/* User Message (Left) -> Bright White with dark text per Eldorado image */
+.dc-msg:not(.admin) .dc-msg-bubble {
+  background: #FFFFFF;
+  color: #111214;
+  border-radius: 0 12px 12px 12px;
+}
+/* Admin Message (Right) -> Dark Grey with white text per Eldorado image */
+.dc-msg.admin .dc-msg-bubble {
+  background: #2B2D31;
+  color: #FFFFFF;
+  border-radius: 12px 0 12px 12px;
+}
+
+.dc-msg-meta {
+  font-size: 11px;
+  color: #949BA4;
+  margin-top: 4px;
+  display: flex;
+  gap: 6px;
+}
+.dc-msg.admin .dc-msg-meta {
+  justify-content: flex-end;
+}
+
+.dc-chat-input-area {
+  padding: 16px 20px;
+  border-top: 1px solid #2B2D31;
+  background: #1C1D21;
+}
+.dc-chat-input-box {
+  background: #111214;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  padding: 10px 16px;
+}
+.dc-chat-input-box i { color: #949BA4; cursor: pointer; font-size: 16px; }
+.dc-chat-input-box i:hover { color: #DBDEE1; }
+.dc-chat-input-box input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #DBDEE1;
+  font-size: 14px;
+  padding: 0 16px;
+}
+</style>
+
 </head>
 <body>
 <div class="app">
@@ -2515,50 +2796,61 @@ select.fi { appearance: none; cursor: pointer;
       </div>
     </section>
 
-    <!-- ═══ CONTACT ═══ -->
-    <section class="section" id="s-contact">
-      <div class="pg-head">
-        <div class="pg-head-r">
-          <div class="table-tabs" style="display:flex;gap:10px;background:var(--wh);border:1px solid var(--b1);padding:4px;border-radius:10px;">
-            <div class="t-tab active" id="tab-btn-messages" onclick="switchContactTab('messages')" style="padding:6px 14px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;">Messages</div>
-            <div class="t-tab" id="tab-btn-buyer-chat" onclick="switchContactTab('buyer-chat')" style="padding:6px 14px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;color:var(--m1)">Buyer Chat</div>
-            <div class="t-tab" id="tab-btn-tickets" onclick="switchContactTab('tickets')" style="padding:6px 14px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;color:var(--m1)">Tickets</div>
-          </div>
-        </div>
-      </div>
+    <!-- ═══ CONTACT / MESSAGES (Discord Style) ═══ -->
+    <section class="section discord-chat-section" id="s-contact">
+  <!-- Title & Top Controls -->
+  <div class="eld-header-title">
+    <i class="fas fa-comment-alt"></i> Messages
+  </div>
+  
+  <div class="eld-top-bar">
+    <div class="dc-tabs">
+      <div class="dc-tab active" data-filter="All">All</div>
+      <div class="dc-tab" data-filter="Support">Support</div>
+      <div class="dc-tab" data-filter="Purchase">purchase</div>
+    </div>
+    
+    <div class="dc-unread-toggle">
+      <span style="font-size: 13px; color: #A0A0A0; font-weight: 500;">Unread messages only</span>
+      <label class="dc-switch">
+        <input type="checkbox" id="dc-unread-checkbox" onchange="renderDiscordContacts()">
+        <span class="dc-slider"></span>
+      </label>
+    </div>
+  </div>
 
-      <div id="contact-tab-messages">
-        <div class="ccards" id="ccards-container">
-          <!-- Customer inquiries populated dynamically -->
+  <div class="dc-container">
+    <!-- Left Card -->
+    <div class="dc-left-card">
+      <div class="dc-browser-notif">
+        <label class="dc-switch">
+          <input type="checkbox">
+          <span class="dc-slider"></span>
+        </label>
+        <span style="font-size: 13px; color: #DBDEE1;">Browser notifications</span>
+      </div>
+      
+      <div class="dc-search">
+        <input type="text" id="dc-search-input" placeholder="Search..." onkeyup="renderDiscordContacts()">
+        <i class="fas fa-search"></i>
+      </div>
+      
+      <div class="dc-contact-list" id="dc-contact-list">
+        <!-- Contacts will be populated here -->
+      </div>
+    </div>
+    
+    <!-- Right Card -->
+    <div class="dc-right-card">
+      <div class="dc-main-chat" id="dc-main-chat">
+        <div style="flex:1; display:flex; align-items:center; justify-content:center; flex-direction:column; color:#949BA4;">
+          <i class="fas fa-comments" style="font-size: 48px; margin-bottom: 16px; opacity: 0.2;"></i>
+          <div style="font-size: 14px;">Select a conversation to start chatting</div>
         </div>
       </div>
-
-      <div id="contact-tab-buyer-chat" style="display:none;">
-        <div class="ccards" id="ccards-buyer-container">
-          <!-- Buyer support chats populated dynamically -->
-        </div>
-      </div>
-
-      <div id="contact-tab-tickets" style="display:none;">
-        <div class="card">
-          <table class="table">
-            <thead>
-              <tr>
-                <th>Ticket ID</th>
-                <th>Department</th>
-                <th>Subject</th>
-                <th>Status</th>
-                <th>Date</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="tbody-tickets">
-              <!-- Tickets will be populated here by JS -->
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </section>
+    </div>
+  </div>
+</section>
 
     <!-- ═══ NOTIFICATIONS ═══ -->
     <section class="section" id="s-notifications">
@@ -3136,6 +3428,8 @@ function nav(id, el) {
   if (id === 'failed-orders')     setTimeout(() => renderStatusOrders('Failed',    'tbody-failed'),    30);
   if (id === 'contact') {
     setTimeout(loadContacts, 30);
+    setTimeout(function() { if (typeof window.renderDiscordContacts === 'function') window.renderDiscordContacts(); }, 500);
+    setTimeout(function() { if (typeof window.renderDiscordContacts === 'function') window.renderDiscordContacts(); }, 1500);
   }
 }
 
@@ -4213,6 +4507,7 @@ async function loadContactsSilent() {
 
       ALL_CONTACTS = data.contacts;
       renderContacts();
+      if (typeof window.renderDiscordContacts === 'function') window.renderDiscordContacts();
 
       Object.keys(activeInputs).forEach(id => {
         const input = document.getElementById(`reply-input-${id}`);
@@ -4247,6 +4542,7 @@ async function loadContacts() {
     if (data.success) {
       ALL_CONTACTS = data.contacts;
       renderContacts();
+      if (typeof window.renderDiscordContacts === 'function') window.renderDiscordContacts();
     } else {
       if (messagesContainer) messagesContainer.innerHTML = `<div style="text-align:center;padding:40px;color:var(--rd);grid-column:1/-1;">Failed to load inquiries: ${data.error}</div>`;
       if (tbodyTickets) tbodyTickets.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--rd)">Failed to load tickets: ${data.error}</td></tr>`;
@@ -4474,6 +4770,7 @@ function renderContacts() {
     }
   }
   updateSidebarBadges();
+  if (typeof window.renderDiscordContacts === 'function') window.renderDiscordContacts();
 }
 
 async function changeContactStatus(id, newStatus) {
@@ -6278,5 +6575,284 @@ function filterBugsList() {
       }
     });
   </script>
+<script>
+
+// ==================== DISCORD CHAT LOGIC ====================
+let activeDcChatId = null;
+let currentFilter = 'All';
+
+// Intercept switchContactTab so we use our new discord chat tab for 'messages'
+const originalSwitchTab = typeof switchContactTab === 'function' ? switchContactTab : function(){};
+window.switchContactTab = function(tab) {
+  if (tab === 'messages' || tab === 'buyer-chat') {
+    // Show our unified UI
+    const sContact = document.getElementById('s-contact');
+    if (sContact) sContact.style.display = 'block';
+    
+    // Hide old sub-tabs (if any still exist)
+    const oldMsgs = document.getElementById('contact-tab-messages');
+    if (oldMsgs) oldMsgs.style.display = 'none';
+    const oldBuyer = document.getElementById('contact-tab-buyer-chat');
+    if (oldBuyer) oldBuyer.style.display = 'none';
+    const oldTickets = document.getElementById('contact-tab-tickets');
+    if (oldTickets) oldTickets.style.display = 'none';
+    
+    document.querySelectorAll('.table-tabs .t-tab').forEach(b => {
+      b.classList.remove('active');
+      b.style.color = 'var(--m1)';
+      b.style.background = 'transparent';
+    });
+    
+    const activeBtn = document.getElementById('tab-btn-' + tab);
+    if(activeBtn) {
+      activeBtn.classList.add('active');
+      activeBtn.style.color = 'var(--t1)';
+      activeBtn.style.background = 'rgba(99, 102, 241, 0.1)';
+    }
+    
+    // Force a render
+    renderDiscordContacts();
+  } else {
+    // let old function handle tickets
+    originalSwitchTab(tab);
+    const sContact = document.getElementById('s-contact');
+    if (sContact) sContact.style.display = 'block';
+  }
+};
+
+window.renderDiscordContacts = function() {
+  const listContainer = document.getElementById('dc-contact-list');
+  if (!listContainer) return;
+  
+  const searchStr = (document.getElementById('dc-search-input')?.value || '').toLowerCase();
+  const unreadOnly = document.getElementById('dc-unread-checkbox')?.checked || false;
+  
+  let filtered = (typeof ALL_CONTACTS !== 'undefined' ? ALL_CONTACTS : []) || [];
+  
+  // Filter logic
+  filtered = filtered.filter(c => {
+    if (unreadOnly && c.status !== 'Unread') return false;
+    
+    const cname = (c.name || '').toLowerCase();
+    const cemail = (c.email || '').toLowerCase();
+    const cmsg = (c.message || '').toLowerCase();
+    if (searchStr && !cname.includes(searchStr) && !cemail.includes(searchStr) && !cmsg.includes(searchStr)) return false;
+    
+    // Parse message to find category
+    let type = 'Support';
+    try {
+      const p = JSON.parse(c.message);
+      if (p.isBuyer || p.orderId || p.order_id) type = 'Orders';
+      if (p.dept === 'boosting') type = 'Boosting';
+      if (p.dept === 'pre-purchase') type = 'Pre-purchase';
+    } catch(e) {}
+    
+    if (currentFilter !== 'All' && type !== currentFilter) return false;
+    
+    return true;
+  });
+  
+  if (filtered.length === 0) {
+    listContainer.innerHTML = '<div style="padding:20px;text-align:center;color:#949BA4;font-size:13px;">No messages found</div>';
+    return;
+  }
+  
+  listContainer.innerHTML = filtered.map(c => {
+    let tag = 'Support Inquiry';
+    let shortMsg = c.message;
+    try {
+      const p = JSON.parse(c.message);
+      if (p.orderId || p.order_id) tag = 'Order #' + (p.orderId || p.order_id);
+      else if (p.dept) tag = p.dept;
+      if (p.messages && p.messages.length > 0) shortMsg = p.messages[p.messages.length - 1].text;
+      else if (p.comments) shortMsg = p.comments;
+    } catch(e) {}
+    
+    let timeStr = '1d'; // simplistic relative time for UI
+    try {
+      const d = new Date(c.created_at);
+      const diff = (Date.now() - d.getTime()) / 1000 / 3600 / 24;
+      if (diff < 1) timeStr = 'Today';
+      else if (diff < 2) timeStr = 'Yesterday';
+      else timeStr = Math.floor(diff) + 'd';
+    } catch(e){}
+    
+    const isUnread = c.status === 'Unread';
+    const isActive = activeDcChatId === c.id;
+    
+    return `
+      <div class="dc-contact ${isActive ? 'active' : ''}" onclick="selectDcChat('${c.id}')">
+        <div class="dc-contact-av" style="background: ${getRandomColor(c.name || 'U')}">
+          ${(c.name || 'U')[0].toUpperCase()}
+          ${isActive ? '<div class="dc-status-dot online"></div>' : '<div class="dc-status-dot offline"></div>'}
+        </div>
+        <div class="dc-contact-info">
+          <div class="dc-contact-top">
+            <div class="dc-contact-name">${c.name || 'Anonymous'}</div>
+            <div class="dc-contact-time">${timeStr}</div>
+          </div>
+          <div class="dc-contact-tag">${tag}</div>
+          <div class="dc-contact-msg">${shortMsg}</div>
+        </div>
+        ${isUnread ? '<div class="dc-unread-dot"></div>' : ''}
+      </div>
+    `;
+  }).join('');
+};
+
+window.selectDcChat = function(id) {
+  activeDcChatId = id;
+  const c = ((typeof ALL_CONTACTS !== 'undefined' ? ALL_CONTACTS : []) || []).find(x => x.id === id);
+  if (!c) return;
+  
+  if (c.status === 'Unread') {
+    // optimistically mark read
+    c.status = 'Read';
+    if(typeof changeContactStatus === 'function') changeContactStatus(id, 'Read');
+  }
+  
+  renderDiscordContacts(); // refresh active state
+  
+  let tag = 'Support Inquiry';
+  let history = [];
+  
+  try {
+    const p = JSON.parse(c.message);
+    if (p.orderId || p.order_id) tag = 'Order for Items';
+    else if (p.dept) tag = p.dept;
+    
+    if (p.type === 'chat' && p.messages) {
+      history = p.messages;
+    } else {
+      history = [{ sender: 'user', text: p.comments || c.message, time: new Date(c.created_at).toLocaleString() }];
+    }
+  } catch(e) {
+    history = [{ sender: 'user', text: c.message, time: new Date(c.created_at).toLocaleString() }];
+  }
+  
+  const mainChat = document.getElementById('dc-main-chat');
+  
+  const historyHtml = history.map(m => {
+    const isUser = m.sender === 'user';
+    const author = isUser ? (c.name || 'Anonymous') : 'ZoroBoost Admin';
+    const authorCls = isUser ? '' : 'admin';
+    const av = isUser ? (c.name || 'U')[0].toUpperCase() : 'Z';
+    const avBg = isUser ? getRandomColor(c.name || 'U') : '#FBBF24';
+    
+    return `
+      <div class="dc-msg ${authorCls}">
+        <div class="dc-msg-av" style="background: ${avBg}; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: bold; flex-shrink: 0; ${isUser ? 'margin-right: 12px;' : 'margin-left: 12px;'}">${av}</div>
+        <div class="dc-msg-content-wrapper">
+          <div class="dc-msg-bubble">
+            ${m.text}
+          </div>
+          <div class="dc-msg-meta">
+            ${author} &bull; ${m.time || ''}
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  mainChat.innerHTML = `
+    <div class="dc-chat-header">
+      <div class="dc-chat-header-l">
+        <div class="dc-msg-av" style="background: ${getRandomColor(c.name || 'U')}; width:32px; height:32px; font-size:14px;">${(c.name || 'U')[0].toUpperCase()}</div>
+        <div>
+          <div class="dc-chat-header-name">${c.name || 'Anonymous'}</div>
+          <div class="dc-chat-header-tag">${tag}</div>
+        </div>
+      </div>
+      <div class="dc-chat-header-r">
+        <i class="fas fa-search"></i>
+      </div>
+    </div>
+    <div class="dc-chat-history" id="dc-chat-history">
+      ${historyHtml}
+    </div>
+    <div class="dc-chat-input-area">
+      <div class="dc-chat-input-box">
+        <i class="fas fa-plus-circle"></i>
+        <input type="text" id="dc-reply-input" placeholder="Message ${c.name || 'user'}..." onkeydown="if(event.key==='Enter') window.sendDcReply('${c.id}')">
+        <i class="fas fa-paper-plane" onclick="window.sendDcReply('${c.id}')" style="margin-left: 8px;"></i>
+      </div>
+    </div>
+  `;
+  
+  setTimeout(() => {
+    const hist = document.getElementById('dc-chat-history');
+    if (hist) hist.scrollTop = hist.scrollHeight;
+  }, 50);
+};
+
+window.sendDcReply = async function(id) {
+  const input = document.getElementById('dc-reply-input');
+  if (!input || !input.value.trim()) return;
+  
+  const text = input.value.trim();
+  input.value = '';
+  
+  try {
+    const c = ((typeof ALL_CONTACTS !== 'undefined' ? ALL_CONTACTS : []) || []).find(x => x.id === id);
+    if (!c) return;
+    
+    let parsed = {};
+    try { parsed = JSON.parse(c.message); } catch(e){}
+    
+    if (parsed.type !== 'chat') {
+       parsed = { type: 'chat', messages: [{ sender: 'user', text: c.message, time: new Date(c.created_at).toLocaleString() }] };
+    }
+    if(!parsed.messages) parsed.messages = [];
+    
+    parsed.messages.push({
+      sender: 'admin',
+      text: text,
+      time: new Date().toLocaleString()
+    });
+    
+    const updatedMsgStr = JSON.stringify(parsed);
+    
+    // optimistically update local state
+    c.message = updatedMsgStr;
+    selectDcChat(id); // re-render chat history
+    renderDiscordContacts(); // re-render left sidebar
+    
+    // send to API
+    await fetch('/api/admin/contacts', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, message: updatedMsgStr, status: 'Read' })
+    });
+    
+  } catch(err) {
+    console.error("Error sending reply:", err);
+    alert("Failed to send reply");
+  }
+};
+
+// Bind the tabs
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => {
+    const tabs = document.querySelectorAll('.dc-tab');
+    tabs.forEach(t => {
+      t.addEventListener('click', () => {
+        tabs.forEach(tt => tt.classList.remove('active'));
+        t.classList.add('active');
+        currentFilter = t.getAttribute('data-filter');
+        renderDiscordContacts();
+      });
+    });
+  }, 1000);
+});
+
+// Hijack renderContacts
+const originalRenderContacts = typeof renderContacts === 'function' ? renderContacts : function(){};
+window.renderContacts = function() {
+  originalRenderContacts();
+  renderDiscordContacts();
+};
+
+
+</script>
 </body>
 </html>
