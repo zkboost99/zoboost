@@ -1,344 +1,66 @@
-"use client";
+'use client';
+
+import React, { useState } from 'react';
 import Link from 'next/link';
-import { useState, useRef, useEffect } from 'react';
-import { injectGenieKeyframes } from '@/utils/genie';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 
+// Inline SVGs
+const SvgDiscord = ({ className = "w-6 h-6" }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189z"/></svg>
+);
+const SvgEnvelope = ({ className = "w-6 h-6" }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+);
+const SvgExternal = ({ className = "w-4 h-4" }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+);
+const SvgSpinner = ({ className = "w-4 h-4" }) => (
+  <svg className={`${className} animate-spin`} fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+);
+const SvgArrowRight = ({ className = "w-4 h-4" }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+);
+const SvgArrowLeft = ({ className = "w-3 h-3" }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+);
+const SvgTicket = ({ className = "w-5 h-5" }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"></path></svg>
+);
+const SvgTimes = ({ className = "w-5 h-5" }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+);
+const SvgHeadset = ({ className = "w-6 h-6" }) => (
+  <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+);
+
 export default function ContactUs() {
-  const [isTicketModalOpen, setIsTicketModalOpen] = useState(false);
-  const [isClosing, setIsClosing] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(true); // Mock login state set to true for demonstration
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [toast, setToast] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
-  const btnRef = useRef<HTMLAnchorElement>(null);
-
-  // Live Chat States & Refs
-  const liveChatBtnRef = useRef<HTMLAnchorElement>(null);
-  const chatStreamRef = useRef<HTMLDivElement>(null);
-  const [isChatOpen, setIsChatOpen] = useState(false);
-  const [isChatClosing, setIsChatClosing] = useState(false);
-  const [isChatMinimized, setIsChatMinimized] = useState(false);
-  const [chatPosition, setChatPosition] = useState({ x: 0, y: 0 });
-  const [chatMessages, setChatMessages] = useState<Array<{ sender: 'user' | 'agent'; text: string; time: string }>>([
-    {
-      sender: 'agent',
-      text: 'Hello! Welcome to ZoroBoost Live Chat. How can we help you today?',
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-    }
-  ]);
-  const [chatInput, setChatInput] = useState('');
-  const [isAgentTyping, setIsAgentTyping] = useState(false);
-  const [chatContactId, setChatContactId] = useState<string | null>(null);
-
-  // Pre-chat Form States
-  const [preChatName, setPreChatName] = useState('');
-  const [preChatEmail, setPreChatEmail] = useState('');
-  const [isFormSubmitted, setIsFormSubmitted] = useState(false);
-
-  const isDragging = useRef(false);
-  const dragStart = useRef({ x: 0, y: 0 });
-
-  // Load chat session on mount
-  useEffect(() => {
-    const savedId = localStorage.getItem('zoroboost_chat_contact_id');
-    if (savedId) {
-      setChatContactId(savedId);
-      setIsFormSubmitted(true);
-      fetch(`/api/admin/contacts?id=${savedId}`)
-        .then(res => {
-          if (res.status === 404) {
-            localStorage.removeItem('zoroboost_chat_contact_id');
-            setChatContactId(null);
-            return null;
-          }
-          return res.json();
-        })
-        .then(data => {
-          if (data && data.success && data.contact) {
-            try {
-              const parsed = JSON.parse(data.contact.message);
-              if (parsed && parsed.type === 'chat' && parsed.messages) {
-                setChatMessages(parsed.messages);
-              }
-            } catch (e) {
-              console.error("Error parsing saved chat:", e);
-            }
-          }
-        })
-        .catch(err => console.error("Error loading initial chat:", err));
-    }
-  }, []);
-
-  // Poll for admin replies
-  useEffect(() => {
-    if (!isChatOpen || !chatContactId || isChatMinimized) return;
-
-    const interval = setInterval(() => {
-      fetch(`/api/admin/contacts?id=${chatContactId}`)
-        .then(res => {
-          if (res.status === 404) {
-            localStorage.removeItem('zoroboost_chat_contact_id');
-            setChatContactId(null);
-            return null;
-          }
-          return res.json();
-        })
-        .then(data => {
-          if (data && data.success && data.contact) {
-            try {
-              const parsed = JSON.parse(data.contact.message);
-              if (parsed && parsed.type === 'chat' && parsed.messages) {
-                if (parsed.messages.length !== chatMessages.length) {
-                  setChatMessages(parsed.messages);
-                }
-              }
-            } catch (e) {
-              console.error("Error parsing polled messages:", e);
-            }
-          }
-        })
-        .catch(err => console.error("Error polling messages:", err));
-    }, 3000);
-
-    return () => clearInterval(interval);
-  }, [isChatOpen, chatContactId, isChatMinimized, chatMessages.length]);
-
-  // Scroll to bottom when messages or open states change
-  useEffect(() => {
-    if (chatStreamRef.current) {
-      chatStreamRef.current.scrollTop = chatStreamRef.current.scrollHeight;
-    }
-  }, [chatMessages, isChatOpen, isChatMinimized]);
-
-  const handleMouseDown = (e: React.MouseEvent) => {
-    if (e.button !== 0) return;
-    const target = e.target as HTMLElement;
-    if (target.closest('.macos-btn') || target.closest('button') || target.closest('input')) return;
-
-    isDragging.current = true;
-    dragStart.current = { x: e.clientX - chatPosition.x, y: e.clientY - chatPosition.y };
-
-    const handleMouseMove = (moveEvent: MouseEvent) => {
-      if (!isDragging.current) return;
-      
-      let newX = moveEvent.clientX - dragStart.current.x;
-      let newY = moveEvent.clientY - dragStart.current.y;
-      
-      const chatWidth = 380;
-      const chatHeight = 500;
-      const defaultLeft = window.innerWidth - chatWidth - 30;
-      const defaultTop = window.innerHeight - chatHeight - 100;
-      
-      const absoluteX = defaultLeft + newX;
-      const absoluteY = defaultTop + newY;
-      
-      const constrainedX = Math.max(0, Math.min(window.innerWidth - chatWidth, absoluteX));
-      const constrainedY = Math.max(0, Math.min(window.innerHeight - chatHeight, absoluteY));
-      
-      setChatPosition({
-        x: constrainedX - defaultLeft,
-        y: constrainedY - defaultTop
-      });
-    };
-
-    const handleMouseUp = () => {
-      isDragging.current = false;
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
-    };
-
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
-  };
-
-  const openChatModal = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
-    if (liveChatBtnRef.current) {
-      const rect = liveChatBtnRef.current.getBoundingClientRect();
-      injectGenieKeyframes(rect, 380, 500, 'chat-genie');
-    }
-    setIsChatOpen(true);
-    setIsChatClosing(false);
-    setIsChatMinimized(false);
-  };
-
-  const closeChatModal = () => {
-    setIsChatClosing(true);
-    setTimeout(() => {
-      setIsChatOpen(false);
-      setIsChatClosing(false);
-      
-      // Clear session from state & localStorage so the next open starts a fresh chat!
-      localStorage.removeItem('zoroboost_chat_contact_id');
-      setChatContactId(null);
-      setIsFormSubmitted(false);
-      setPreChatName('');
-      setPreChatEmail('');
-      setChatMessages([
-        {
-          sender: 'agent',
-          text: 'Hello! Welcome to ZoroBoost Live Chat. How can we help you today?',
-          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-        }
-      ]);
-    }, 400);
-  };
-
-  const handleStartChat = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!preChatName.trim() || !preChatEmail.trim()) return;
-
-    try {
-      const payload = {
-        name: preChatName.trim(),
-        email: preChatEmail.trim(),
-        message: JSON.stringify({
-          type: 'chat',
-          messages: chatMessages
-        }),
-        status: 'Unread'
-      };
-
-      const res = await fetch('/api/admin/contacts', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-
-      const data = await res.json();
-      if (data.success && data.contact) {
-        localStorage.setItem('zoroboost_chat_contact_id', data.contact.id);
-        setChatContactId(data.contact.id);
-        setIsFormSubmitted(true);
-      } else {
-        setIsFormSubmitted(true);
-      }
-    } catch (err) {
-      console.error("Error starting chat:", err);
-      setIsFormSubmitted(true);
-    }
-  };
-
-  const handleSendMessage = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!chatInput.trim()) return;
-
-    const userMsg = {
-      sender: 'user' as const,
-      text: chatInput,
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-    };
-
-    const updatedMessages = [...chatMessages, userMsg];
-    setChatMessages(updatedMessages);
-    setChatInput('');
-
-    try {
-      if (!chatContactId) {
-        const payload = {
-          name: preChatName || 'Live Chat Guest',
-          email: preChatEmail || 'live-chat@zoroboost.com',
-          message: JSON.stringify({
-            type: 'chat',
-            messages: updatedMessages
-          }),
-          status: 'Unread'
-        };
-
-        const res = await fetch('/api/admin/contacts', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-        const data = await res.json();
-        if (data.success && data.contact) {
-          setChatContactId(data.contact.id);
-          localStorage.setItem('zoroboost_chat_contact_id', data.contact.id);
-        }
-      } else {
-        const payload = {
-          id: chatContactId,
-          message: JSON.stringify({
-            type: 'chat',
-            messages: updatedMessages
-          }),
-          status: 'Unread'
-        };
-
-        await fetch('/api/admin/contacts', {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-      }
-    } catch (err) {
-      console.error("Error sending chat message:", err);
-    }
-  };
-
-
-  // Form states for submit ticket
-  const [dept, setDept] = useState('');
-  const [email, setEmail] = useState('');
-  const [subject, setSubject] = useState('');
-  const [message, setMessage] = useState('');
-
-  // Form states for contact/inquiry message
+  // General Inquiry Form State
   const [inquiryName, setInquiryName] = useState('');
   const [inquiryEmail, setInquiryEmail] = useState('');
-  const [inquiryOrderId, setInquiryOrderId] = useState('');
   const [inquiryComments, setInquiryComments] = useState('');
   const [isInquirySubmitting, setIsInquirySubmitting] = useState(false);
+  const [toast, setToast] = useState<{ type: 'success' | 'error', message: string } | null>(null);
 
-  useEffect(() => {
-    if (toast) {
-      const timer = setTimeout(() => setToast(null), 4000);
-      return () => clearTimeout(timer);
-    }
-  }, [toast]);
+  // Ticket Modal State
+  const [isTicketModalOpen, setIsTicketModalOpen] = useState(false);
+  const [ticketData, setTicketData] = useState({ name: '', email: '' });
+  const [selectedDept, setSelectedDept] = useState('General Support');
+  const [subject, setSubject] = useState('');
+  const [message, setMessage] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const openTicketModal = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
-    if (!isLoggedIn) {
-        setToast({ type: 'error', message: 'Please log in to submit a ticket.' });
-        return;
-    }
-    if (btnRef.current) {
-      const rect = btnRef.current.getBoundingClientRect();
-      injectGenieKeyframes(rect, 500, 600, 'ticket-genie');
-    }
-    setIsTicketModalOpen(true);
-    setIsClosing(false);
-  };
-
-  const closeTicketModal = () => {
-    setIsClosing(true);
-    setTimeout(() => {
-      setIsTicketModalOpen(false);
-      setIsClosing(false);
-      // Reset ticket form
-      setDept('');
-      setEmail('');
-      setSubject('');
-      setMessage('');
-    }, 400); // Wait for close animation
-  };
-
+  // --- GENERAL INQUIRY SUBMIT ---
   const handleInquirySubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (isInquirySubmitting) return;
     setIsInquirySubmitting(true);
+    setToast(null);
 
     try {
       const payload = {
         name: inquiryName,
         email: inquiryEmail,
-        message: JSON.stringify({
-          type: 'message',
-          order_id: inquiryOrderId,
-          comments: inquiryComments
-        }),
+        message: inquiryComments,
         status: 'Unread'
       };
 
@@ -350,37 +72,53 @@ export default function ContactUs() {
       const data = await res.json();
 
       if (data.success) {
-        setToast({ type: 'success', message: 'Message sent successfully! Our team will contact you ASAP.' });
+        setToast({ type: 'success', message: 'Message sent successfully! We will get back to you soon.' });
         setInquiryName('');
         setInquiryEmail('');
-        setInquiryOrderId('');
         setInquiryComments('');
       } else {
         setToast({ type: 'error', message: data.error || 'Failed to send message.' });
       }
-    } catch (err: any) {
+    } catch (err) {
       setToast({ type: 'error', message: 'Network error occurred. Please try again.' });
     } finally {
       setIsInquirySubmitting(false);
     }
   };
 
+  // --- TICKET MODAL LOGIC ---
+  const openTicketModal = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsTicketModalOpen(true);
+  };
+
+  const closeTicketModal = () => {
+    setIsTicketModalOpen(false);
+    setToast(null);
+  };
+
   const handleTicketSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (isSubmitting) return;
     setIsSubmitting(true);
+    setToast(null);
 
     try {
+      // Format payload to look like a Chat message so the Admin Panel natively displays it in Messages
       const payload = {
-        name: `Support Ticket (${dept})`,
-        email: email,
+        name: ticketData.name,
+        email: ticketData.email,
         message: JSON.stringify({
-          type: 'ticket',
-          dept: dept,
-          subject: subject,
-          message: message
+          type: 'chat',
+          dept: selectedDept, // sets the tag in admin panel
+          messages: [
+            {
+              sender: 'user',
+              text: `**Ticket: ${subject}**\n\n${message}`,
+              time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+            }
+          ]
         }),
-        status: 'Pending'
+        status: 'Unread'
       };
 
       const res = await fetch('/api/admin/contacts', {
@@ -392,7 +130,9 @@ export default function ContactUs() {
 
       if (data.success) {
         setToast({ type: 'success', message: 'Ticket submitted successfully! Our support team will respond shortly.' });
-        closeTicketModal();
+        setTimeout(() => {
+          closeTicketModal();
+        }, 2000);
       } else {
         setToast({ type: 'error', message: data.error || 'Failed to submit ticket.' });
       }
@@ -403,734 +143,279 @@ export default function ContactUs() {
     }
   };
 
+  // --- LIVE CHAT DISPATCH ---
+  const openLiveChat = (e: React.MouseEvent) => {
+    e.preventDefault();
+    window.dispatchEvent(new Event('toggleLiveChat'));
+  };
+
   return (
-    <>
-      <link href="/assets/css/bootstrap.min.css" rel="stylesheet" />
-      <link href="/assets/css/font-awesome.min.css" rel="stylesheet" />
-      <link href="/assets/css/validthemes-icon.css" rel="stylesheet" />
-      <link href="/assets/css/magnific-popup.css" rel="stylesheet" />
-      <link href="/assets/css/swiper-bundle.min.css" rel="stylesheet" />
-      <link href="/assets/css/animate.css" rel="stylesheet" />
-      <link href="/assets/css/validnavs.css" rel="stylesheet" />
-      <link href="/assets/css/helper.css" rel="stylesheet" />
-      <link href="/assets/css/unit-test.css" rel="stylesheet" />
-      <link href="/assets/css/style.css" rel="stylesheet" />
-      <link href="/style.css" rel="stylesheet" />
+    <div className="min-h-screen bg-background text-foreground antialiased font-sans flex flex-col relative">
       <Header />
-    {/*  Start Breadcrumb  */}
-    <div className="breadcrumb-area text-center bg-cover text-light bg-theme" style={{backgroundImage: "url(/assets/img/shape/banner-14.jpg)"}}>
-        <div className="container">
-            <div className="row">
-                <div className="col-lg-8 offset-lg-2">
-                    <h1>Get In Touch</h1>
-                    <ul className="breadcrumb">
-                        <li><Link href="/"><i className="fas fa-home"></i> Home</Link></li>
-                        <li>Contact Us</li>
-                    </ul>
-                </div>
-            </div>
+      
+      {/* Hero Section */}
+      <div className="relative overflow-hidden border-b border-border bg-bg-secondary pt-16 pb-20">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(255,255,255,0.05),transparent_50%)] pointer-events-none" />
+        <div className="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col items-center text-center">
+          <Link 
+            href="/" 
+            className="inline-flex items-center gap-2 text-xs font-bold text-primary hover:text-primary/80 uppercase tracking-wider mb-6 transition-colors"
+          >
+            <SvgArrowLeft /> Back to Home
+          </Link>
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-black text-foreground tracking-tight m-0 drop-shadow-xl">
+            Get In Touch
+          </h1>
+          <p className="mt-6 text-sm sm:text-base text-muted-foreground max-w-2xl leading-relaxed">
+            Need help with your order? Our support team is here to assist you 24/7.
+          </p>
         </div>
-    </div>
-    {/*  End Breadcrumb  */}
- 
-    <div id="smooth-content">
-        {/*  Start Contact Us  */}
-        <div className="contact-style-one-area overflow-hidden default-padding">
-            <div className="container">
-                <div className="contact-style-one-items" style={{backgroundImage: "url(/assets/img/shape/map.png)"}}>
-                    <div className="row align-center">
-                        <div className="contact-stye-one col-lg-5 mb-md-50 mb-xs-50">
+      </div>
 
-                            <div className="contact-style-one-info">
-                                <h2 className="split-text title">Need help with your order? Contact our support team.</h2>
-                                <ul>
-                                    <li className="wow fadeInUp">
-                                        <div className="icon">
-                                            <i className="fab fa-discord"></i>
-                                        </div>
-                                        <div className="content">
-                                            <h4>Discord Support Server</h4>
-                                            <a href="https://discord.gg/zoroboost">discord.gg/zoroboost</a>
-                                        </div>
-                                    </li>
-                                    <li className="wow fadeInUp" data-wow-delay="300ms">
-                                        <div className="icon">
-                                            <i className="fas fa-envelope-open-text"></i>
-                                        </div>
-                                        <div className="info">
-                                            <h4>Official Email</h4>
-                                            <a href="mailto:info@zoroboost.com">info@zoroboost.com</a>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        
-                        <div className="contact-stye-one col-lg-7 pl-60 pl-md-15 pl-xs-15">
-                            <div className="contact-form-card" style={{backgroundImage: "url(/assets/img/shape/3.png)"}}>
-                                    <h4 className="sub-title">Send us a message</h4>
-                                    <p>
-                                        Have a question about Server Boosts, Nitro, or bulk orders? Fill out the form and our team will get back to you ASAP.
-                                    </p>
-                                    <form onSubmit={handleInquirySubmit} className="contact-form">
-                                        <div className="row">
-                                            <div className="col-lg-12">
-                                                <div className="form-group">
-                                                    <input className="form-control" id="name" name="name" placeholder="Discord Username (e.g. wumpus#1234)" type="text" value={inquiryName} onChange={(e) => setInquiryName(e.target.value)} required disabled={isInquirySubmitting} />
-                                                    <span className="alert-error"></span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="row">
-                                            <div className="col-lg-6">
-                                                <div className="form-group">
-                                                    <input className="form-control" id="email" name="email" placeholder="Email Address*" type="email" value={inquiryEmail} onChange={(e) => setInquiryEmail(e.target.value)} required disabled={isInquirySubmitting} />
-                                                    <span className="alert-error"></span>
-                                                </div>
-                                            </div>
-                                            <div className="col-lg-6">
-                                                <div className="form-group">
-                                                    <input className="form-control" id="order_id" name="order_id" placeholder="Order ID (Optional)" type="text" value={inquiryOrderId} onChange={(e) => setInquiryOrderId(e.target.value)} disabled={isInquirySubmitting} />
-                                                    <span className="alert-error"></span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="row">
-                                            <div className="col-lg-12">
-                                                <div className="form-group comments">
-                                                    <textarea className="form-control" id="comments" name="comments" placeholder="How can we help you? *" value={inquiryComments} onChange={(e) => setInquiryComments(e.target.value)} required disabled={isInquirySubmitting}></textarea>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div className="row">
-                                            <div className="col-lg-12">
-                                                <button className="btn btn-style-one" type="submit" name="submit" id="submit" disabled={isInquirySubmitting}>
-                                                    {isInquirySubmitting ? (
-                                                      <>
-                                                        <i className="fas fa-spinner fa-spin" style={{ marginRight: '8px' }}></i> Sending...
-                                                      </>
-                                                    ) : (
-                                                      <>
-                                                        Send Message <i className="fas fa-arrow-right"></i>
-                                                      </>
-                                                    )}
-                                                </button>
-                                            </div>
-                                        </div>
-                                        {/*  Alert Message  */}
-                                        <div className="col-lg-12 alert-notification">
-                                            <div id="message" className="alert-msg"></div>
-                                        </div>
-                                    </form>
-                                </div>
-                        </div>
-                    </div>
-                </div>
+      <main className="flex-1 mx-auto max-w-[1200px] px-4 py-16 sm:px-6 lg:px-8 w-full flex flex-col gap-16 relative z-10">
+        
+        {/* Contact Form Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 items-start">
+          
+          {/* Left Info */}
+          <div className="lg:col-span-2 flex flex-col gap-8">
+            <div>
+              <h2 className="text-3xl font-extrabold text-foreground leading-tight mb-4">
+                We're here to help you.
+              </h2>
+              <p className="text-muted-foreground leading-relaxed">
+                Reach out to us through our official channels. For the fastest response, join our Discord server and open a ticket.
+              </p>
             </div>
-        </div>
-        {/*  End Contact  */}
+            
+            <div className="flex flex-col gap-6">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-full bg-blue-500/10 text-blue-500 flex items-center justify-center flex-shrink-0">
+                  <SvgDiscord />
+                </div>
+                <div>
+                  <h5 className="font-bold text-foreground text-lg mb-1">Discord Support Server</h5>
+                  <a href="https://discord.gg/zoroboost" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground text-sm flex items-center gap-2 transition-colors font-medium">
+                    discord.gg/zoroboost <SvgExternal />
+                  </a>
+                </div>
+              </div>
 
-        {/*  Start Contact Options  */}
-        <div className="contact-options-area default-padding-bottom">
-            <div className="container">
-                <div className="row">
-                    <div className="col-lg-6 col-md-6 mb-xs-30">
-                        <div className="service-style-three-item">
-                            <div className="top">
-                                <div className="icon">
-                                    <img src="/assets/img/icon/19.png" alt="Discord Support" />
-                                </div>
-                                <h4>Discord Ticket Support</h4>
-                                <p>
-                                    Join our official Discord server for instant assistance. Chat with our support team, open a support ticket, or get live help for your orders, payments, and Discord services.
-                                </p>
-                            </div>
-                            <div style={{ marginTop: '25px', display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
-                                <a href="https://discord.gg/zoroboost" target="_blank" rel="noopener noreferrer" className="btn btn-style-one" style={{ padding: '10px 20px', fontSize: '14px', borderRadius: '5px' }}>
-                                    Join Discord Server
-                                </a>
-                                <a href="mailto:info@zoroboost.com" className="btn btn-style-one" style={{ padding: '10px 20px', fontSize: '14px', borderRadius: '5px' }}>
-                                    Email Us
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-lg-6 col-md-6">
-                        <div className="service-style-three-item">
-                            <div className="top">
-                                <div className="icon">
-                                    <img src="/assets/img/icon/20.png" alt="Email Support" />
-                                </div>
-                                <h4>Live Support</h4>
-                                <p>
-                                    Need help with payments, bulk orders, partnerships, or general inquiries? Send us an email and our support team will respond as quickly as possible.
-                                </p>
-                            </div>
-                            <div style={{ marginTop: '25px', display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
-                                <a href="#" ref={liveChatBtnRef} className="btn-style-one" style={{ padding: '10px 20px', fontSize: '14px', borderRadius: '5px' }} onClick={openChatModal}>
-                                    Live Chat
-                                </a>
-                                <a href="#" ref={btnRef} className="btn btn-style-one" style={{ padding: '10px 20px', fontSize: '14px', borderRadius: '5px' }} onClick={openTicketModal}>
-                                    Submit Ticket
-                                </a>
-                            </div>
-                        </div>
-                    </div>
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-full bg-emerald-500/10 text-emerald-500 flex items-center justify-center flex-shrink-0">
+                  <SvgEnvelope />
                 </div>
-            </div>
-        </div>
-        {/*  End Contact Options  */}
-    </div>
-
-    {/* macOS Style Ticket Modal */}
-    {(isTicketModalOpen || isClosing) && (
-        <div className="macos-modal-overlay" onClick={closeTicketModal} style={{ opacity: isClosing ? 0 : 1, transition: 'opacity 0.4s ease' }}>
-            <div 
-                className="macos-window feedback-window" 
-                onClick={(e) => e.stopPropagation()}
-                style={{
-                  animation: isClosing 
-                    ? 'genie-close-ticket-genie 0.4s cubic-bezier(0.8, 0, 0.2, 1) forwards' 
-                    : 'genie-open-ticket-genie 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards'
-                }}
-            >
-                <div className="feedback-modal-header suggestion-header">
-                    <div className="macos-controls-feedback">
-                        <div className="macos-btn close" onClick={closeTicketModal}></div>
-                    </div>
-                    <div className="header-content">
-                        <i className="fas fa-ticket-alt"></i>
-                        <div>
-                            <h3>Submit a Ticket</h3>
-                            <p>Our support team is here to help you.</p>
-                        </div>
-                    </div>
+                <div>
+                  <h5 className="font-bold text-foreground text-lg mb-1">Official Email</h5>
+                  <a href="mailto:info@zoroboost.com" className="text-muted-foreground hover:text-foreground text-sm flex items-center gap-2 transition-colors font-medium">
+                    info@zoroboost.com <SvgExternal />
+                  </a>
                 </div>
-                <div className="feedback-modal-body">
-                    <form onSubmit={handleTicketSubmit}>
-                        <div className="input-row">
-                            <div className="form-group">
-                                <label>Department</label>
-                                <select className="form-control" required value={dept} onChange={(e) => setDept(e.target.value)} disabled={isSubmitting}>
-                                    <option value="" disabled>Select Department</option>
-                                    <option value="support">General Support</option>
-                                    <option value="billing">Billing & Payments</option>
-                                    <option value="technical">Technical Issue</option>
-                                </select>
-                            </div>
-                            <div className="form-group">
-                                <label>Email Address</label>
-                                <input type="email" className="form-control" placeholder="contact@email.com" value={email} onChange={(e) => setEmail(e.target.value)} required disabled={isSubmitting} />
-                            </div>
-                        </div>
-                        <div className="form-group">
-                            <label>Subject</label>
-                            <input type="text" className="form-control" placeholder="Brief subject" value={subject} onChange={(e) => setSubject(e.target.value)} required disabled={isSubmitting} />
-                        </div>
-                        <div className="form-group">
-                            <label>Message</label>
-                            <textarea className="form-control" rows={4} placeholder="Describe your issue in detail..." value={message} onChange={(e) => setMessage(e.target.value)} required disabled={isSubmitting}></textarea>
-                        </div>
-                        <button type="submit" className="feedback-submit-btn suggestion-submit" disabled={isSubmitting}>
-                          {isSubmitting ? (
-                            <>
-                              <i className="fas fa-spinner fa-spin" style={{ marginRight: '8px' }}></i> Submitting...
-                            </>
-                          ) : 'Submit Ticket'}
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    )}
-
-    {/* macOS Style Live Chat Window */}
-    {(isChatOpen || isChatClosing) && !isChatMinimized && (
-      <div 
-        className="macos-window"
-        style={{
-          position: 'fixed',
-          bottom: '100px',
-          right: '30px',
-          width: '380px',
-          height: '500px',
-          maxWidth: 'none',
-          zIndex: 9999,
-          transform: `translate(${chatPosition.x}px, ${chatPosition.y}px)`,
-          display: 'flex',
-          flexDirection: 'column',
-          background: '#ffffff',
-          borderRadius: '24px',
-          boxShadow: '0 20px 40px rgba(0, 0, 0, 0.08)',
-          border: '1px solid #f1f5f9',
-          overflow: 'hidden',
-          fontFamily: 'inherit',
-          animation: isChatClosing 
-            ? 'genie-close-chat-genie 0.4s cubic-bezier(0.8, 0, 0.2, 1) forwards' 
-            : 'genie-open-chat-genie 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards'
-        }}
-      >
-        {/* Header (Draggable) */}
-        <div 
-          onMouseDown={handleMouseDown}
-          style={{
-            padding: '15px 20px',
-            background: '#ffffff',
-            color: '#1e293b',
-            display: 'flex',
-            alignItems: 'center',
-            cursor: 'move',
-            userSelect: 'none',
-            borderBottom: '1px solid #f1f5f9',
-            justifyContent: 'space-between'
-          }}
-        >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            {/* Avatar */}
-            <div style={{
-              width: '44px',
-              height: '44px',
-              borderRadius: '12px',
-              background: 'linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              position: 'relative',
-              boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.05)'
-            }}>
-              <img src="/fav.png" alt="ZoroBoost Icon" style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '6px' }} />
-              <div style={{
-                position: 'absolute',
-                bottom: '-2px',
-                right: '-2px',
-                width: '12px',
-                height: '12px',
-                borderRadius: '50%',
-                background: '#10b981',
-                border: '2px solid #ffffff'
-              }}></div>
-            </div>
-            {/* Info */}
-            <div style={{ textAlign: 'left' }}>
-              <h3 style={{ fontSize: '16px', fontWeight: '700', margin: 0, color: '#0f172a' }}>Live Support</h3>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '5px', marginTop: '2px' }}>
-                <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#10b981' }}></div>
-                <span style={{ fontSize: '11px', color: '#64748b', fontWeight: '500' }}>Typically replies in under 1 minute</span>
               </div>
             </div>
           </div>
-          {/* Controls */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <button 
-              onClick={closeChatModal}
-              style={{ 
-                background: 'none', 
-                border: 'none', 
-                color: '#94a3b8', 
-                cursor: 'pointer', 
-                fontSize: '18px',
-                padding: '5px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
-            >
-              <i className="fas fa-times"></i>
-            </button>
-            <button 
-              onClick={() => setIsChatMinimized(true)}
-              style={{ 
-                background: 'none', 
-                border: 'none', 
-                color: '#94a3b8', 
-                cursor: 'pointer', 
-                fontSize: '16px',
-                padding: '5px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
-            >
-              <i className="fas fa-minus"></i>
-            </button>
-          </div>
-        </div>
 
-        {!isFormSubmitted ? (
-          /* Pre-chat Form */
-          <div style={{
-            flexGrow: 1,
-            padding: '20px 24px',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            alignItems: 'center',
-            gap: '12px',
-            background: '#ffffff',
-            overflowY: 'auto'
-          }}>
-            <div style={{ textAlign: 'center' }}>
-              <div style={{
-                width: '50px',
-                height: '50px',
-                borderRadius: '14px',
-                background: 'linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                margin: '0 auto 8px auto',
-                boxShadow: '0 8px 16px rgba(99, 102, 241, 0.1)'
-              }}>
-                <img src="/fav.png" alt="ZoroBoost" style={{ width: '30px', height: '30px', objectFit: 'contain' }} />
-              </div>
-              <h4 style={{ fontSize: '16px', fontWeight: '800', color: '#0f172a', margin: 0 }}>Start Live Support</h4>
-              <p style={{ fontSize: '11px', color: '#64748b', marginTop: '2px', padding: '0 10px' }}>Please fill out the form below to connect with a support representative.</p>
-            </div>
-
-            <form 
-              onSubmit={handleStartChat}
-              style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '10px' }}
-            >
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                <label style={{ fontSize: '10px', fontWeight: '700', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Full Name</label>
-                <input 
-                  type="text" 
-                  placeholder="Enter your name..." 
-                  required
-                  value={preChatName}
-                  onChange={(e) => setPreChatName(e.target.value)}
-                  style={{
-                    height: '38px',
-                    borderRadius: '8px',
-                    border: '1px solid #cbd5e1',
-                    paddingLeft: '12px',
-                    fontSize: '12.5px',
-                    background: '#ffffff',
-                    color: '#1e293b',
-                    width: '100%'
-                  }}
-                />
-              </div>
-
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                <label style={{ fontSize: '10px', fontWeight: '700', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Email Address</label>
-                <input 
-                  type="email" 
-                  placeholder="Enter your email..." 
-                  required
-                  value={preChatEmail}
-                  onChange={(e) => setPreChatEmail(e.target.value)}
-                  style={{
-                    height: '38px',
-                    borderRadius: '8px',
-                    border: '1px solid #cbd5e1',
-                    paddingLeft: '12px',
-                    fontSize: '12.5px',
-                    background: '#ffffff',
-                    color: '#1e293b',
-                    width: '100%'
-                  }}
-                />
-              </div>
-
-              <button 
-                type="submit" 
-                style={{
-                  width: '100%',
-                  height: '40px',
-                  borderRadius: '8px',
-                  background: '#4f46e5',
-                  color: '#ffffff',
-                  border: 'none',
-                  fontWeight: '700',
-                  fontSize: '13.5px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '8px',
-                  cursor: 'pointer',
-                  marginTop: '6px',
-                  boxShadow: '0 4px 12px rgba(99, 102, 241, 0.2)',
-                  transition: 'background 0.2s'
-                }}
-                onMouseOver={(e) => (e.currentTarget.style.background = '#4338ca')}
-                onMouseOut={(e) => (e.currentTarget.style.background = '#4f46e5')}
-              >
-                Start Chat <i className="fas fa-comments"></i>
-              </button>
-            </form>
-          </div>
-        ) : (
-          <>
-            {/* Message Stream */}
-            <div 
-              ref={chatStreamRef}
-              style={{
-                flexGrow: 1,
-                padding: '15px 20px',
-                overflowY: 'auto',
-                background: '#ffffff',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '16px'
-              }}
-            >
-              {/* Today Divider */}
-              <div style={{ display: 'flex', justifyContent: 'center', margin: '5px 0' }}>
-                <span style={{ 
-                  background: '#eff2fb', 
-                  color: '#4f46e5', 
-                  fontSize: '11px', 
-                  fontWeight: '600', 
-                  padding: '4px 12px', 
-                  borderRadius: '50px' 
-                }}>
-                  Today
-                </span>
-              </div>
-
-              {chatMessages.map((msg, index) => (
-                <div 
-                  key={index} 
-                  style={{
-                    display: 'flex',
-                    justifyContent: msg.sender === 'user' ? 'flex-end' : 'flex-start',
-                    width: '100%'
-                  }}
-                >
-                  {msg.sender === 'user' ? (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', alignItems: 'flex-end', maxWidth: '75%' }}>
-                      <div style={{
-                        background: '#eef2ff',
-                        border: '1px solid #e0e7ff',
-                        color: '#312e81',
-                        padding: '12px 16px',
-                        borderRadius: '16px',
-                        fontSize: '13px',
-                        lineHeight: '1.5',
-                        boxShadow: '0 2px 6px rgba(99, 102, 241, 0.03)',
-                        textAlign: 'left'
-                      }}>
-                        {msg.text}
-                      </div>
-                      <span style={{ fontSize: '10px', color: '#94a3b8', marginRight: '4px', display: 'flex', alignItems: 'center', gap: '3px' }}>
-                        {msg.time} <i className="fas fa-check-double" style={{ color: '#4f46e5', fontSize: '9px' }}></i>
-                      </span>
-                    </div>
-                  ) : (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', maxWidth: '75%' }}>
-                      <div style={{
-                        background: '#ffffff',
-                        border: '1px solid #f1f5f9',
-                        color: '#0f172a',
-                        padding: '12px 16px',
-                        borderRadius: '16px',
-                        fontSize: '13px',
-                        lineHeight: '1.5',
-                        boxShadow: '0 2px 6px rgba(0, 0, 0, 0.02)',
-                        textAlign: 'left'
-                      }}>
-                        {msg.text}
-                      </div>
-                      <span style={{ fontSize: '10px', color: '#94a3b8', marginLeft: '4px' }}>{msg.time}</span>
-                    </div>
-                  )}
+          {/* Right Form */}
+          <div className="lg:col-span-3">
+            <div className="bg-card border border-border p-8 rounded-2xl shadow-xl">
+              <h3 className="text-2xl font-bold text-foreground mb-2">Send us a message</h3>
+              <p className="text-muted-foreground text-sm mb-6">Have a question about Server Boosts, Nitro, or bulk orders? Fill out the form below.</p>
+              
+              <form onSubmit={handleInquirySubmit} className="flex flex-col gap-5">
+                <div>
+                  <input 
+                    className="w-full bg-bg-secondary border border-border rounded-lg px-4 py-3 text-sm text-foreground focus:outline-none focus:border-primary transition-colors" 
+                    type="text" placeholder="Discord Username (e.g. wumpus#1234)" 
+                    value={inquiryName} onChange={(e) => setInquiryName(e.target.value)} required disabled={isInquirySubmitting}
+                  />
                 </div>
-              ))}
-
-              {isAgentTyping && (
-                <div style={{ display: 'flex', justifyContent: 'flex-start', width: '100%' }}>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', maxWidth: '75%' }}>
-                    <div style={{
-                      background: '#ffffff',
-                      border: '1px solid #f1f5f9',
-                      color: '#94a3b8',
-                      padding: '10px 14px',
-                      borderRadius: '16px',
-                      fontSize: '12px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '8px'
-                    }}>
-                      <i className="fas fa-circle-notch fa-spin" style={{ color: '#4f46e5' }}></i> Support is typing...
-                    </div>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  <div>
+                    <input 
+                      className="w-full bg-bg-secondary border border-border rounded-lg px-4 py-3 text-sm text-foreground focus:outline-none focus:border-primary transition-colors" 
+                      type="email" placeholder="Email Address*" 
+                      value={inquiryEmail} onChange={(e) => setInquiryEmail(e.target.value)} required disabled={isInquirySubmitting}
+                    />
+                  </div>
+                  <div>
+                    <input 
+                      className="w-full bg-bg-secondary border border-border rounded-lg px-4 py-3 text-sm text-foreground focus:outline-none focus:border-primary transition-colors" 
+                      type="text" placeholder="Order ID (Optional)" 
+                      disabled={isInquirySubmitting}
+                    />
                   </div>
                 </div>
-              )}
+                
+                <div>
+                  <textarea 
+                    className="w-full bg-bg-secondary border border-border rounded-lg px-4 py-3 text-sm text-foreground focus:outline-none focus:border-primary transition-colors min-h-[120px] resize-y" 
+                    placeholder="How can we help you? *" 
+                    value={inquiryComments} onChange={(e) => setInquiryComments(e.target.value)} required disabled={isInquirySubmitting}
+                  ></textarea>
+                </div>
+                
+                <div>
+                  <button 
+                    className="w-full sm:w-auto inline-flex justify-center items-center gap-2 bg-[#ffd13b] text-neutral-900 hover:bg-[#ffc83b] font-bold px-8 py-3.5 rounded-lg transition-transform hover:-translate-y-0.5 disabled:opacity-70 disabled:cursor-not-allowed border-none" 
+                    type="submit" disabled={isInquirySubmitting}
+                  >
+                    {isInquirySubmitting ? (
+                      <><SvgSpinner /> Sending...</>
+                    ) : (
+                      <>Send Message <SvgArrowRight /></>
+                    )}
+                  </button>
+                </div>
+                
+                {toast && (
+                  <div className={`mt-4 p-4 rounded-lg text-sm font-medium ${toast.type === 'success' ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20' : 'bg-red-500/10 text-red-500 border border-red-500/20'}`}>
+                    {toast.message}
+                  </div>
+                )}
+              </form>
             </div>
-
-            {/* Message Input Box */}
-            <form 
-              onSubmit={handleSendMessage}
-              style={{
-                padding: '15px 20px',
-                borderTop: '1px solid #f1f5f9',
-                background: '#ffffff',
-                display: 'flex',
-                gap: '12px',
-                alignItems: 'center'
-              }}
-            >
-              <div style={{ position: 'relative', flexGrow: 1, display: 'flex', alignItems: 'center' }}>
-                <input 
-                  type="text" 
-                  placeholder="Type your message..." 
-                  value={chatInput}
-                  onChange={(e) => setChatInput(e.target.value)}
-                  disabled={isAgentTyping}
-                  style={{
-                    width: '100%',
-                    height: '46px',
-                    borderRadius: '12px',
-                    border: '1px solid #cbd5e1',
-                    paddingLeft: '15px',
-                    paddingRight: '40px',
-                    fontSize: '13px',
-                    background: '#ffffff',
-                    color: '#1e293b',
-                    boxShadow: 'none'
-                  }}
-                />
-                <i 
-                  className="fas fa-paperclip" 
-                  style={{ 
-                    position: 'absolute', 
-                    right: '15px', 
-                    color: '#cbd5e1', 
-                    fontSize: '15px', 
-                    cursor: 'pointer' 
-                  }}
-                ></i>
-              </div>
-              <button 
-                type="submit" 
-                disabled={isAgentTyping || !chatInput.trim()}
-                style={{
-                  width: '46px',
-                  height: '46px',
-                  borderRadius: '12px',
-                  background: '#4f46e5',
-                  color: '#ffffff',
-                  border: 'none',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  cursor: 'pointer',
-                  fontSize: '16px',
-                  flexShrink: 0
-                }}
-              >
-                <i className="fas fa-paper-plane" style={{ transform: 'rotate(-10deg)' }}></i>
-              </button>
-            </form>
-          </>
-        )}
-
-        {/* Small branding footer */}
-        <div 
-          style={{
-            padding: '10px',
-            background: '#f8fafc',
-            borderTop: '1px solid #f1f5f9',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '6px',
-            fontSize: '11px',
-            fontWeight: '600',
-            color: '#64748b'
-          }}
-        >
-          <i className="fas fa-bolt" style={{ color: '#4f46e5' }}></i> Powered by <span style={{ color: '#4f46e5', fontWeight: '700' }}>ZoroBoost</span>
-        </div>
-      </div>
-    )}
-
-    {/* Minimized Chat Pill */}
-    {isChatOpen && isChatMinimized && (
-      <div 
-        onClick={() => setIsChatMinimized(false)}
-        style={{
-          position: 'fixed',
-          bottom: '30px',
-          right: '30px',
-          width: '320px',
-          background: '#ffffff',
-          color: '#1e293b',
-          padding: '12px 18px',
-          borderRadius: '16px',
-          boxShadow: '0 8px 30px rgba(0,0,0,0.06)',
-          border: '1px solid #f1f5f9',
-          cursor: 'pointer',
-          zIndex: 99999,
-          display: 'flex',
-          alignItems: 'center',
-          gap: '12px',
-          animation: 'slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards'
-        }}
-      >
-        <div style={{
-          width: '8px',
-          height: '8px',
-          borderRadius: '50%',
-          background: '#10b981',
-          boxShadow: '0 0 8px #10b981'
-        }}></div>
-        <div style={{ flexGrow: 1 }}>
-          <div style={{ fontSize: '13px', fontWeight: '700', color: '#0f172a' }}>💬 Live Support Chat</div>
-          <div style={{ fontSize: '9px', color: '#64748b', fontWeight: '600', letterSpacing: '0.3px', marginTop: '2px' }}>
-            <i className="fas fa-bolt" style={{ color: '#4f46e5' }}></i> Powered by <span style={{ color: '#4f46e5' }}>ZoroBoost</span>
           </div>
         </div>
-        <i className="fas fa-chevron-up" style={{ fontSize: '12px', color: '#94a3b8' }}></i>
-      </div>
-    )}
 
-    <style>{`
-      @keyframes slideIn {
-        from { transform: translateY(100px); opacity: 0; }
-        to { transform: translateY(0); opacity: 1; }
-      }
-      @keyframes slideUp {
-        from { transform: translateY(50px); opacity: 0; }
-        to { transform: translateY(0); opacity: 1; }
-      }
-      .service-style-three-item {
-        transition: all 0.3s ease !important;
-      }
-      .service-style-three-item:hover {
-        background: #000000 !important;
-      }
-      .service-style-three-item:hover h4,
-      .service-style-three-item:hover p {
-        color: #ffffff !important;
-      }
-    `}</style>
+        {/* Contact Options Section */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="bg-card border border-border rounded-xl p-8 hover:border-border-subtle transition-colors flex flex-col h-full shadow-lg">
+            <div className="w-14 h-14 bg-indigo-500/10 rounded-full flex items-center justify-center text-indigo-400 mb-6 border border-indigo-500/20">
+              <SvgDiscord className="w-7 h-7" />
+            </div>
+            <h4 className="text-xl font-bold text-foreground mb-3">Discord Ticket Support</h4>
+            <p className="text-muted-foreground text-sm leading-relaxed mb-8 flex-1">
+              Join our official Discord server for instant assistance. Chat with our support team, open a support ticket, or get live help for your orders, payments, and Discord services.
+            </p>
+            <div className="flex flex-wrap gap-4 mt-auto">
+              <a href="https://discord.gg/zoroboost" target="_blank" rel="noopener noreferrer" className="bg-secondary hover:bg-secondary/80 text-foreground border border-border font-bold px-5 py-2.5 rounded text-sm transition-colors">
+                Join Discord Server
+              </a>
+              <a href="mailto:info@zoroboost.com" className="bg-secondary hover:bg-secondary/80 text-foreground font-bold px-5 py-2.5 rounded text-sm transition-colors border border-border">
+                Email Us
+              </a>
+            </div>
+          </div>
 
-    {/* Toast Notification */}
-    {toast && (
-      <div style={{
-        position: 'fixed',
-        bottom: '24px',
-        right: '24px',
-        background: toast.type === 'success' ? '#10B981' : '#EF4444',
-        color: '#fff',
-        padding: '12px 24px',
-        borderRadius: '8px',
-        boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-        zIndex: 9999,
-        display: 'flex',
-        alignItems: 'center',
-        gap: '8px',
-        animation: 'slideIn 0.3s ease forwards',
-        fontWeight: '600',
-        fontSize: '14px'
-      }}>
-        <i className={toast.type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-circle'}></i>
-        {toast.message}
-      </div>
-    )}
-    <Footer />
-    </>
+          <div className="bg-card border border-border rounded-xl p-8 hover:border-border-subtle transition-colors flex flex-col h-full shadow-lg">
+            <div className="w-14 h-14 bg-emerald-500/10 rounded-full flex items-center justify-center text-emerald-400 mb-6 border border-emerald-500/20">
+              <SvgHeadset />
+            </div>
+            <h4 className="text-xl font-bold text-foreground mb-3">Live Support</h4>
+            <p className="text-muted-foreground text-sm leading-relaxed mb-8 flex-1">
+              Need help with payments, bulk orders, partnerships, or general inquiries? Use our live chat feature for immediate assistance or submit a ticket directly.
+            </p>
+            <div className="flex flex-wrap gap-4 mt-auto">
+              <button onClick={openLiveChat} className="bg-secondary hover:bg-secondary/80 text-foreground border border-border font-bold px-5 py-2.5 rounded text-sm transition-colors cursor-pointer">
+                Live Chat
+              </button>
+              <button onClick={openTicketModal} className="bg-secondary hover:bg-secondary/80 text-foreground font-bold px-5 py-2.5 rounded text-sm transition-colors border border-border cursor-pointer">
+                Submit Ticket
+              </button>
+            </div>
+          </div>
+        </div>
+      </main>
+      
+      <Footer />
+
+      {/* Tailwind Fixed Modal for Tickets */}
+      {isTicketModalOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200" onClick={closeTicketModal}>
+          <div 
+            className="bg-card border border-border w-full max-w-lg rounded-xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-bg-secondary/50">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center">
+                  <SvgTicket />
+                </div>
+                <div>
+                  <h3 className="font-bold text-foreground m-0">Submit a Ticket</h3>
+                  <p className="text-xs text-muted-foreground m-0">Our support team is here to help.</p>
+                </div>
+              </div>
+              <button onClick={closeTicketModal} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
+                <SvgTimes />
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-6">
+              <form onSubmit={handleTicketSubmit} className="flex flex-col gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1.5">Name</label>
+                    <input 
+                      type="text" required 
+                      className="w-full bg-bg-secondary border border-border rounded-md px-3 py-2 text-sm text-foreground focus:outline-none focus:border-primary"
+                      value={ticketData.name} onChange={(e) => setTicketData({...ticketData, name: e.target.value})}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1.5">Email</label>
+                    <input 
+                      type="email" required 
+                      className="w-full bg-bg-secondary border border-border rounded-md px-3 py-2 text-sm text-foreground focus:outline-none focus:border-primary"
+                      value={ticketData.email} onChange={(e) => setTicketData({...ticketData, email: e.target.value})}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1.5">Department</label>
+                  <select 
+                    className="w-full bg-bg-secondary border border-border rounded-md px-3 py-2 text-sm text-foreground focus:outline-none focus:border-primary"
+                    value={selectedDept} onChange={(e) => setSelectedDept(e.target.value)}
+                  >
+                    <option value="General Support">General Support</option>
+                    <option value="Billing / Payment">Billing & Payments</option>
+                    <option value="Boosting Order">Server Boosting Order</option>
+                    <option value="Account Order">Discord Accounts</option>
+                    <option value="Other">Other Issues</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1.5">Subject</label>
+                  <input 
+                    type="text" required placeholder="Brief summary of your issue..."
+                    className="w-full bg-bg-secondary border border-border rounded-md px-3 py-2 text-sm text-foreground focus:outline-none focus:border-primary"
+                    value={subject} onChange={(e) => setSubject(e.target.value)}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider mb-1.5">Message</label>
+                  <textarea 
+                    required minLength={10} rows={4} placeholder="Please provide all relevant details..."
+                    className="w-full bg-bg-secondary border border-border rounded-md px-3 py-2 text-sm text-foreground focus:outline-none focus:border-primary resize-y"
+                    value={message} onChange={(e) => setMessage(e.target.value)}
+                  ></textarea>
+                </div>
+
+                <div className="pt-2">
+                  <button 
+                    type="submit" disabled={isSubmitting}
+                    className="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground font-bold py-2.5 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isSubmitting ? <><SvgSpinner className="w-4 h-4" /> Submitting...</> : 'Submit Ticket'}
+                  </button>
+                </div>
+                
+                {toast && (
+                  <div className={`mt-2 p-3 rounded-md text-sm font-medium text-center ${toast.type === 'success' ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20' : 'bg-red-500/10 text-red-500 border border-red-500/20'}`}>
+                    {toast.message}
+                  </div>
+                )}
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }

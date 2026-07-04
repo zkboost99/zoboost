@@ -291,15 +291,14 @@ export default function LiveChatWidget() {
     const close = () => { closeWidget(); };
     const toggle = () => {
       setIsOpen(current => {
-        if (current) {
-          closeWidget();
-        } else {
-          setIsOpen(true);
+        if (!current) {
           setIsClosing(false);
           setIsMinimized(false);
           setView('home');
           setActiveTab('home');
+          return true;
         }
+        setTimeout(() => closeWidget(), 0);
         return current;
       });
     };
