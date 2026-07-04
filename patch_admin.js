@@ -1,88 +1,68 @@
 const fs = require('fs');
-let html = fs.readFileSync('public/admin.html', 'utf8');
+let html = fs.readFileSync('public/admin.html', 'utf-8');
 
-// 1. Add ID to the file input and a hidden input for the URL
-html = html.replace(
-  '<input type="file" accept="image/png, image/jpeg">',
-  '<input type="file" id="product-media-upload" accept="image/png, image/jpeg">\n              <input type="hidden" id="product-media-url" name="product_media_url">'
-);
-
-// 2. Add ID to the label elements to update UI during upload
-html = html.replace(
-  '<div class="ut">Click to upload or drag and drop</div>',
-  '<div class="ut" id="upload-status-text">Click to upload or drag and drop</div>'
-);
-
-// 3. Inject JS at the bottom
-const jsLogic = `
-  <script>
-    // --- CLOUDFLARE R2 UPLOAD INTEGRATION ---
-    document.addEventListener('DOMContentLoaded', () => {
-      const fileInput = document.getElementById('product-media-upload');
-      const statusText = document.getElementById('upload-status-text');
-      const urlHiddenInput = document.getElementById('product-media-url');
-      const iconContainer = document.querySelector('.f-up-icon');
-
-      if (fileInput) {
-        fileInput.addEventListener('change', async (e) => {
-          const file = e.target.files[0];
-          if (!file) return;
-
-          // Update UI to show uploading state
-          if (statusText) statusText.innerText = 'Uploading... Please wait.';
-          if (iconContainer) iconContainer.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-
-          const formData = new FormData();
-          formData.append('file', file);
-
-          try {
-            const response = await fetch('/api/upload', {
-              method: 'POST',
-              body: formData,
-            });
-
-            const result = await response.json();
-
-            if (response.ok && result.success) {
-              if (urlHiddenInput) urlHiddenInput.value = result.url;
-              if (statusText) {
-                statusText.innerText = 'Upload successful!';
-                statusText.style.color = '#10B981'; // Green
-              }
-              if (iconContainer) {
-                iconContainer.innerHTML = '<i class="fas fa-check" style="color: #10B981;"></i>';
-              }
-              // Show a small preview if it's an image
-              const previewArea = document.querySelector('.f-up');
-              if (previewArea) {
-                 previewArea.style.backgroundImage = \`url('\${result.url}')\`;
-                 previewArea.style.backgroundSize = 'cover';
-                 previewArea.style.backgroundPosition = 'center';
-              }
-            } else {
-              throw new Error(result.error || 'Upload failed');
-            }
-          } catch (err) {
-            console.error(err);
-            if (statusText) {
-              statusText.innerText = 'Upload failed. Please try again.';
-              statusText.style.color = '#EF4444'; // Red
-            }
-            if (iconContainer) {
-              iconContainer.innerHTML = '<i class="fas fa-xmark" style="color: #EF4444;"></i>';
-            }
-          }
-        });
-      }
-    });
-  </script>
-</body>`;
-
-if (!html.includes('CLOUDFLARE R2 UPLOAD INTEGRATION')) {
-  const parts = html.split('</body>');
-  html = parts.slice(0, -1).join('</body>') + jsLogic + parts[parts.length - 1];
-  fs.writeFileSync('public/admin.html', html);
-  console.log('Successfully wired admin.html for R2 uploads!');
-} else {
-  console.log('Already wired.');
+// 1. Notification Sound
+if (!html.includes('id="chatSound"')) {
+  html = html.replace('</body>', \<audio id="chatSound" src="https://assets.mixkit.co/sfx/preview/mixkit-software-interface-start-2574.mp3" preload="auto"></audio>\n</body>\);
 }
+
+// 2. Browser Notifications
+const desktopNotifLogic = \
+  if (Notification.permission === 'granted' && typeof msg === 'string') {
+    new Notification('New Message', { body: msg, icon: '/favicon.ico' });
+  } else if (Notification.permission !== 'denied') {
+    Notification.requestPermission();
+  }
+\;
+
+// Replace audio and desktop notifs inside parse message logic if not present
+if (!html.includes('Notification.permission')) {
+  html = html.replace('function playNotificationSound() {', \
+function playNotificationSound(msg) {
+  const audio = document.getElementById('chatSound');
+  const soundToggleIcon = document.getElementById('soundToggleIcon');
+  if (audio && (!soundToggleIcon || soundToggleIcon.classList.contains('fa-volume-up'))) {
+    audio.play().catch(e => console.log('Audio error:', e));
+  }
+  \
+}\nfunction oldPlaySound() {\);
+}
+
+// 3. Quick Replies
+const quick_replies = \
+const quickReplies = {
+  '/hello': 'Hello! How can I help you today?',
+  '/refund': 'Please provide your order ID and the reason for your refund request. Note that refunds are subject to our terms of service.',
+  '/payment': 'We accept credit cards, crypto, and PayPal for payments.',
+  '/thanks': 'Thank you for choosing ZoroBoost! Let us know if you need anything else.'
+};
+
+document.addEventListener('input', function(e) {
+  if (e.target && e.target.id === 'dc-chat-input' || e.target.classList.contains('chat-input-field')) {
+    const val = e.target.value;
+    if (val.startsWith('/') && quickReplies[val]) {
+      e.target.value = quickReplies[val];
+    }
+  }
+});
+
+// Copy message logic
+document.addEventListener('click', function(e) {
+  const copyBtn = e.target.closest('.copy-msg-btn');
+  if (copyBtn) {
+    const text = copyBtn.getAttribute('data-text');
+    if (text) {
+      navigator.clipboard.writeText(text);
+      copyBtn.innerHTML = '<i class="fas fa-check" style="color: #22c55e;"></i>';
+      setTimeout(() => copyBtn.innerHTML = '<i class="far fa-copy"></i>', 2000);
+    }
+  }
+});
+\;
+
+if (!html.includes('const quickReplies')) {
+  html = html.replace('window.renderDiscordContacts = function() {', quick_replies + '\nwindow.renderDiscordContacts = function() {');
+}
+
+fs.writeFileSync('public/admin.html', html, 'utf-8');
+console.log('Admin features added');

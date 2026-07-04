@@ -701,7 +701,13 @@ export default function LiveChatWidget() {
                 <div key={i} style={{ display: 'flex', justifyContent: isUser ? 'flex-end' : 'flex-start' }}>
                   {!isUser && <div style={{ width: 26, height: 26, borderRadius: 8, background: 'linear-gradient(135deg,#d97706,#f59e0b)', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', flexShrink: 0, marginRight: 8, alignSelf: 'flex-end' }}><img src="/fav.png" alt="ZB" style={{ width: 17, objectFit: 'contain' }} /></div>}
                   <div style={{ maxWidth: '75%', padding: '9px 13px', borderRadius: isUser ? '16px 16px 4px 16px' : '16px 16px 16px 4px', background: isUser ? 'linear-gradient(135deg,#d97706,#b45309)' : '#fff', color: isUser ? '#fff' : '#1e293b', fontSize: 13, lineHeight: 1.45, boxShadow: '0 1px 3px rgba(0,0,0,0.07)', textAlign: 'left' }}>
-                    <div>{msg.text}</div>
+                    <div>
+                      {msg.text.split(/(https?:\/\/[^\s]+)/g).map((part, i) => 
+                        /(https?:\/\/[^\s]+)/g.test(part) ? 
+                        <a key={i} href={part} target="_blank" rel="noopener noreferrer" style={{ color: 'inherit', textDecoration: 'underline', wordBreak: 'break-all' }}>{part}</a> : 
+                        <span key={i}>{part}</span>
+                      )}
+                    </div>
                     <div style={{ fontSize: 9.5, color: isUser ? 'rgba(255,255,255,0.6)' : '#94a3b8', textAlign: 'right', marginTop: 4 }}>{msg.time}</div>
                   </div>
                 </div>
