@@ -71,13 +71,13 @@ export default function ProductDirectory({
 }: ProductDirectoryProps) {
   // Define 7 mockup category slots exactly matching mockup
   const categorySlots = [
-    { id: 'discord-accounts', label: 'Accounts', icon: 'https://img.icons8.com/plumpy/24/people-skin-type-7.png' },
-    { id: 'server-boosts', label: 'Boosting', icon: 'https://img.icons8.com/plumpy/24/launched-rocket.png' },
-    { id: 'server-members', label: 'Members', icon: 'https://img.icons8.com/plumpy/24/crowd.png' },
-    { id: 'discord-nitro', label: 'Nitro', icon: 'https://img.icons8.com/plumpy/24/gas.png' },
-    { id: 'decorations', label: 'Decorations', icon: 'https://img.icons8.com/plumpy/24/christmas-bulb--v1.png' },
-    { id: 'netflix', label: 'Netflix', icon: 'https://img.icons8.com/plumpy/24/netflix.png' },
+    { id: 'discord-marketplace', label: 'Discord', icon: 'https://img.icons8.com/plumpy/24/discord-logo.png' },
     { id: 'money-exchange', label: 'Exchange', icon: 'https://img.icons8.com/plumpy/24/currency-exchange.png' },
+    { id: 'netflix', label: 'Netflix', icon: 'https://img.icons8.com/plumpy/24/netflix.png' },
+    { id: 'top-ups', label: 'Top Ups', icon: 'https://img.icons8.com/plumpy/24/controller.png' },
+    { id: 'coming-soon-1', label: 'Coming Soon', icon: 'https://img.icons8.com/plumpy/24/coming-soon.png', comingSoon: true },
+    { id: 'coming-soon-2', label: 'Coming Soon', icon: 'https://img.icons8.com/plumpy/24/coming-soon.png', comingSoon: true },
+    { id: 'coming-soon-3', label: 'Coming Soon', icon: 'https://img.icons8.com/plumpy/24/coming-soon.png', comingSoon: true },
   ];
 
   const [activeSlotId, setActiveSlotId] = useState<string>('discord-accounts');
@@ -232,6 +232,25 @@ export default function ProductDirectory({
         <div className="mt-10 sm:mt-12 flex flex-wrap items-center justify-center gap-x-2 gap-y-6 sm:gap-6 max-w-4xl px-2 z-10 mx-auto">
           {categorySlots.map((slot, index) => {
             const staggerDelayClass = `animate-stagger-${Math.min(index + 4, 8)}`;
+            if ((slot as any).comingSoon) {
+              return (
+                <div
+                  key={slot.id}
+                  className={`flex flex-col items-center gap-2 group cursor-not-allowed w-[calc(25%-6px)] sm:w-auto animate-fade-in-up ${staggerDelayClass}`}
+                >
+                  <div className="w-14 h-14 rounded-lg flex items-center justify-center border transition-all duration-300 shadow-md bg-card border-border-subtle group-hover:bg-neutral-800/50 group-hover:border-neutral-700">
+                    <img 
+                      src={slot.icon} 
+                      alt="" 
+                      className="category-slot-icon w-6 h-6 object-contain brightness-0 invert opacity-40 group-hover:opacity-60 transition-opacity" 
+                    />
+                  </div>
+                  <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-muted-foreground/60">
+                    {slot.label}
+                  </span>
+                </div>
+              );
+            }
             return (
               <Link
                 key={slot.id}

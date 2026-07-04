@@ -48,11 +48,11 @@ export default function Footer() {
         <div>
           <Link href="/" className="flex items-center" style={{ textDecoration: 'none' }}>
             <Image 
-              src="/zoroboost-logo.png" 
+              src="/ZoroBoost Logo.png" 
               alt="ZoroBoost Logo" 
               width={160} 
               height={40} 
-              className="h-8 w-auto object-contain opacity-90 hover:opacity-100 transition-all dark:bg-white/90 dark:p-1 dark:rounded-md"
+              className="h-8 w-auto object-contain opacity-90 hover:opacity-100 transition-all"
             />
           </Link>
           <p className="mt-4 max-w-xs text-sm text-muted-foreground">

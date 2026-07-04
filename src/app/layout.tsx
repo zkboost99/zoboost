@@ -1,3 +1,4 @@
+
 import Script from 'next/script';
 import type { Metadata } from "next";
 import "./globals.css";
@@ -19,6 +20,8 @@ export default function RootLayout({
         <link rel="icon" href="/site icon.png" type="image/png" />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
         <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+      </head>
+      <body className="antialiased min-h-screen bg-background text-foreground transition-colors duration-200">
         <Script
           id="theme-switcher"
           strategy="beforeInteractive"
@@ -37,8 +40,6 @@ export default function RootLayout({
             `,
           }}
         />
-      </head>
-      <body className="antialiased min-h-screen bg-background text-foreground transition-colors duration-200">
         {children}
         <LiveChatWidget />
       </body>

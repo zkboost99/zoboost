@@ -208,11 +208,11 @@ export default function Header() {
           
           <Link href="/" className="flex shrink-0 items-center" style={{ textDecoration: 'none' }}>
             <Image 
-              src="/zoroboost-logo.png" 
+              src="/ZoroBoost Logo.png" 
               alt="ZoroBoost Logo" 
               width={180} 
               height={45} 
-              className="h-9 w-auto object-contain dark:bg-white/90 dark:p-1 dark:rounded-md transition-colors"
+              className="h-9 w-auto object-contain transition-colors"
               priority
             />
           </Link>
@@ -414,11 +414,11 @@ export default function Header() {
           <div className="flex items-center justify-between p-6 sticky top-0 z-10">
             <Link href="/" className="flex shrink-0 items-center" onClick={() => setIsMobileMenuOpen(false)} style={{ textDecoration: 'none' }}>
               <Image 
-                src="/zoroboost-logo.png" 
+                src="/ZoroBoost Logo.png" 
                 alt="ZoroBoost Logo" 
                 width={180} 
                 height={45} 
-                className="h-8 w-auto object-contain dark:bg-white/90 dark:p-1 dark:rounded-md transition-colors"
+                className="h-8 w-auto object-contain transition-colors"
                 priority
               />
             </Link>
