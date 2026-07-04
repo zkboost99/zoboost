@@ -1606,10 +1606,12 @@ select.fi { appearance: none; cursor: pointer;
 /* Discord Chat Styles */
 .discord-chat-section {
   padding: 32px 0;
-  max-width: 1000px;
+  max-width: 100%;
   margin: 0;
   min-height: calc(100vh - 72px);
   font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  background: linear-gradient(rgba(17, 18, 20, 0.7), rgba(17, 18, 20, 0.7)), url('https://pub-bc67e2c069bd4bbeac1a9624c01f79db.r2.dev/uploads/69e58f3f-3bd9-420d-b17a-5fdd1eb9aef6.png') center/cover fixed no-repeat;
+  border-radius: 12px;
 }
 
 .eld-header-title {
@@ -1682,6 +1684,7 @@ select.fi { appearance: none; cursor: pointer;
   gap: 24px;
   height: 65vh;
   min-height: 500px;
+  max-width: 1000px;
 }
 
 /* Left Card */
@@ -1689,9 +1692,12 @@ select.fi { appearance: none; cursor: pointer;
   width: 320px;
   display: flex;
   flex-direction: column;
-  background: #1C1D21;
+  background: rgba(28, 29, 33, 0.6);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   border-radius: 12px;
   overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
 .dc-browser-notif {
@@ -1699,8 +1705,8 @@ select.fi { appearance: none; cursor: pointer;
   align-items: center;
   gap: 12px;
   padding: 16px;
-  background: #232428;
-  border-bottom: 1px solid #141517;
+  background: rgba(35, 36, 40, 0.6);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
 }
 
 .dc-search {
@@ -1709,8 +1715,8 @@ select.fi { appearance: none; cursor: pointer;
 }
 .dc-search input {
   width: 100%;
-  background: #111214;
-  border: none;
+  background: rgba(17, 18, 20, 0.7);
+  border: 1px solid rgba(255,255,255,0.05);
   border-radius: 6px;
   padding: 10px 12px;
   padding-right: 36px;
@@ -1743,8 +1749,8 @@ select.fi { appearance: none; cursor: pointer;
   transition: background 0.1s;
   border-left: 2px solid transparent;
 }
-.dc-contact:hover { background: #232428; }
-.dc-contact.active { background: #2B2D31; border-left-color: #FBBF24; }
+.dc-contact:hover { background: rgba(35, 36, 40, 0.6); }
+.dc-contact.active { background: rgba(43, 45, 49, 0.7); border-left-color: #FBBF24; }
 
 .dc-contact-av {
   width: 36px; height: 36px; border-radius: 50%;
@@ -1779,15 +1785,18 @@ select.fi { appearance: none; cursor: pointer;
   flex: 1;
   display: flex;
   flex-direction: column;
-  background: #1C1D21;
+  background: rgba(28, 29, 33, 0.6);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   border-radius: 12px;
   overflow: hidden;
   min-height: 0;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
 .dc-chat-header {
   padding: 16px 20px;
-  border-bottom: 1px solid #141517;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1859,11 +1868,12 @@ select.fi { appearance: none; cursor: pointer;
 
 .dc-chat-input-area {
   padding: 16px 20px;
-  border-top: 1px solid #2B2D31;
-  background: #1C1D21;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  background: transparent;
 }
 .dc-chat-input-box {
-  background: #111214;
+  background: rgba(17, 18, 20, 0.8);
+  border: 1px solid rgba(255,255,255,0.05);
   border-radius: 8px;
   display: flex;
   align-items: center;
@@ -1881,7 +1891,7 @@ select.fi { appearance: none; cursor: pointer;
   padding: 0 16px;
 }
 </style>
-
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 </head>
 <body>
 <div class="app">
@@ -2055,7 +2065,7 @@ select.fi { appearance: none; cursor: pointer;
       <div class="tb-icon-btn" id="soundToggleBtn" onclick="toggleNotificationSound()" style="color: var(--brand); transition: all 0.2s;" title="Sound Notifications">
         <i id="soundToggleIcon" class="fas fa-volume-up"></i>
       </div>
-      <div class="tb-icon-btn" id="tbChatBtn" onclick="toggleChatDropdown(event)">
+      <div class="tb-icon-btn" id="tbChatBtn" onclick="handleTopChatIconClick(event)">
         <i class="far fa-comment-dots"></i>
         <div class="tb-chat-badge" id="tbChatBadge" style="display: none;">0</div>
         <div class="chat-dropdown" id="tbChatDropdown" onclick="event.stopPropagation()">
@@ -2806,8 +2816,8 @@ select.fi { appearance: none; cursor: pointer;
   <div class="eld-top-bar">
     <div class="dc-tabs">
       <div class="dc-tab active" data-filter="All">All</div>
-      <div class="dc-tab" data-filter="Support">Support</div>
-      <div class="dc-tab" data-filter="Purchase">purchase</div>
+      <div class="dc-tab" data-filter="Support" style="display: flex; align-items: center;">Support <span id="badge-tab-support" style="display:none; background: #eab308; color: #fff; border-radius: 10px; padding: 2px 6px; font-size: 10px; margin-left: 6px; font-weight: bold;">0</span></div>
+      <div class="dc-tab" data-filter="Purchase" style="display: flex; align-items: center;">Purchase <span id="badge-tab-purchase" style="display:none; background: #22c55e; color: #fff; border-radius: 10px; padding: 2px 6px; font-size: 10px; margin-left: 6px; font-weight: bold;">0</span></div>
     </div>
     
     <div class="dc-unread-toggle">
@@ -4431,8 +4441,31 @@ document.addEventListener('DOMContentLoaded', () => {
   // Set initial count values
   updateSidebarBadges();
   
-  // Start background silent polling globally every 3 seconds
-  setInterval(loadContactsSilent, 3000);
+  // Start background silent polling as fallback every 10 seconds
+  setInterval(loadContactsSilent, 10000);
+
+  // ── Supabase Realtime: instant contact updates via WebSocket ──
+  try {
+    const SUPABASE_URL = 'https://zepfgxyuzblxebqutbvi.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InplcGZneHl1emJseGVicXV0YnZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0Njg0MjMsImV4cCI6MjA5ODA0NDQyM30.PEVXDyWR-20vAuOeDAySPZ4yLlClnQS_4XOcW7RtMcw';
+    const _sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    _sbClient
+      .channel('admin-contacts-realtime')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'contacts' },
+        (payload) => {
+          console.log('[Realtime] contacts change:', payload.eventType);
+          loadContactsSilent();
+        }
+      )
+      .subscribe((status) => {
+        console.log('[Realtime] subscription status:', status);
+      });
+  } catch (e) {
+    console.warn('[Realtime] Failed to set up realtime subscription, falling back to polling:', e);
+  }
 });
 
 /* ─── CONTACT TABS & TICKETS ─── */
@@ -5013,8 +5046,8 @@ function switchContactTab(tab) {
 document.getElementById('tab-btn-messages').style.background = 'rgba(99, 102, 241, 0.1)';
 
 /* ─── FEEDBACK: SUGGESTIONS & REPORTS ─── */
-let ALL_SUGGESTIONS = [];
-let ALL_BUG_REPORTS = [];
+var ALL_SUGGESTIONS = [];
+var ALL_BUG_REPORTS = [];
 
 async function loadSuggestions() {
   const container = document.getElementById('sglist-container');
@@ -6620,6 +6653,68 @@ window.switchContactTab = function(tab) {
   }
 };
 
+window.updateChatNotifications = function() {
+  if (typeof ALL_CONTACTS === 'undefined') return;
+  let unreadSupport = 0;
+  let unreadPurchase = 0;
+  
+  ALL_CONTACTS.forEach(c => {
+    if (c.status === 'Unread') {
+      let type = 'Support';
+      try {
+        const p = JSON.parse(c.message);
+        if (p.isBuyer || p.orderId || p.order_id) type = 'Purchase';
+      } catch(e) {}
+      if (type === 'Purchase') unreadPurchase++;
+      else type = 'Support', unreadSupport++;
+    }
+  });
+  
+  const totalUnread = unreadSupport + unreadPurchase;
+  const tbBadge = document.getElementById('tbChatBadge');
+  if (tbBadge) {
+    if (totalUnread > 0) {
+      tbBadge.innerText = totalUnread;
+      tbBadge.style.display = 'flex';
+      tbBadge.style.background = '#3b82f6';
+    } else {
+      tbBadge.style.display = 'none';
+    }
+  }
+  
+  const supportBadge = document.getElementById('badge-tab-support');
+  if (supportBadge) {
+    if (unreadSupport > 0) {
+      supportBadge.innerText = unreadSupport;
+      supportBadge.style.display = 'inline-block';
+    } else {
+      supportBadge.style.display = 'none';
+    }
+  }
+  
+  const purchaseBadge = document.getElementById('badge-tab-purchase');
+  if (purchaseBadge) {
+    if (unreadPurchase > 0) {
+      purchaseBadge.innerText = unreadPurchase;
+      purchaseBadge.style.display = 'inline-block';
+    } else {
+      purchaseBadge.style.display = 'none';
+    }
+  }
+};
+
+window.handleTopChatIconClick = function(event) {
+  event.stopPropagation();
+  if (typeof toggleChatDropdown === 'function') {
+    toggleChatDropdown(event);
+  } else {
+    const dd = document.getElementById('tbChatDropdown');
+    if (dd) {
+      dd.style.display = dd.style.display === 'block' ? 'none' : 'block';
+    }
+  }
+};
+
 window.renderDiscordContacts = function() {
   const listContainer = document.getElementById('dc-contact-list');
   if (!listContainer) return;
@@ -6642,7 +6737,7 @@ window.renderDiscordContacts = function() {
     let type = 'Support';
     try {
       const p = JSON.parse(c.message);
-      if (p.isBuyer || p.orderId || p.order_id) type = 'Orders';
+      if (p.isBuyer || p.orderId || p.order_id) type = 'Purchase';
       if (p.dept === 'boosting') type = 'Boosting';
       if (p.dept === 'pre-purchase') type = 'Pre-purchase';
     } catch(e) {}
@@ -6652,6 +6747,8 @@ window.renderDiscordContacts = function() {
     return true;
   });
   
+  if (typeof updateChatNotifications === 'function') updateChatNotifications();
+
   if (filtered.length === 0) {
     listContainer.innerHTML = '<div style="padding:20px;text-align:center;color:#949BA4;font-size:13px;">No messages found</div>';
     return;
@@ -6716,9 +6813,13 @@ window.selectDcChat = function(id) {
   let tag = 'Support Inquiry';
   let history = [];
   
+  let orderIdToFetch = null;
   try {
     const p = JSON.parse(c.message);
-    if (p.orderId || p.order_id) tag = 'Order for Items';
+    if (p.orderId || p.order_id) {
+      orderIdToFetch = p.orderId || p.order_id;
+      tag = 'Order #' + orderIdToFetch;
+    }
     else if (p.dept) tag = p.dept;
     
     if (p.type === 'chat' && p.messages) {
@@ -6746,8 +6847,11 @@ window.selectDcChat = function(id) {
           <div class="dc-msg-bubble">
             ${m.text}
           </div>
-          <div class="dc-msg-meta">
-            ${author} &bull; ${m.time || ''}
+          <div class="dc-msg-meta" style="display: flex; align-items: center; gap: 8px;">
+            <span>${author} &bull; ${m.time || ''}</span>
+            <span class="copy-msg-btn" data-text="${m.text.replace(/"/g, '&quot;')}" title="Copy message" style="cursor: pointer; color: #949BA4; font-size: 11px;">
+              <i class="far fa-copy"></i>
+            </span>
           </div>
         </div>
       </div>
@@ -6757,14 +6861,14 @@ window.selectDcChat = function(id) {
   mainChat.innerHTML = `
     <div class="dc-chat-header">
       <div class="dc-chat-header-l">
-        <div class="dc-msg-av" style="background: ${getRandomColor(c.name || 'U')}; width:32px; height:32px; font-size:14px;">${(c.name || 'U')[0].toUpperCase()}</div>
-        <div>
+        <div class="dc-msg-av" style="background: ${getRandomColor(c.name || 'U')}; width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: bold; font-size: 16px; flex-shrink: 0;">${(c.name || 'U')[0].toUpperCase()}</div>
+        <div style="display: flex; flex-direction: column; justify-content: center;">
           <div class="dc-chat-header-name">${c.name || 'Anonymous'}</div>
-          <div class="dc-chat-header-tag">${tag}</div>
+          <div class="dc-chat-header-tag" style="margin-top: 2px;">${c.email ? c.email + ' &bull; ' : ''}${tag}</div>
         </div>
       </div>
       <div class="dc-chat-header-r">
-        <i class="fas fa-search"></i>
+        <input type="text" placeholder="Search in chat..." onkeyup="window.filterActiveChatMessages(this.value)" style="background: transparent; border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; color: #fff; padding: 4px 8px; font-size: 12px; outline: none; width: 140px;">
       </div>
     </div>
     <div class="dc-chat-history" id="dc-chat-history">
@@ -6772,8 +6876,11 @@ window.selectDcChat = function(id) {
     </div>
     <div class="dc-chat-input-area">
       <div class="dc-chat-input-box">
-        <i class="fas fa-plus-circle"></i>
-        <input type="text" id="dc-reply-input" placeholder="Message ${c.name || 'user'}..." onkeydown="if(event.key==='Enter') window.sendDcReply('${c.id}')">
+        <label style="cursor: pointer; margin: 0; display: flex; align-items: center;">
+          <i class="fas fa-plus-circle" id="dc-upload-icon-${c.id}"></i>
+          <input type="file" style="display: none;" onchange="window.uploadDcFile(event, '${c.id}')">
+        </label>
+        <input type="text" id="dc-reply-input" placeholder="Message ${c.name || 'user'}..." onkeydown="if(event.key==='Enter') window.sendDcReply('${c.id}')" oninput="window.handleQuickReply(this)">
         <i class="fas fa-paper-plane" onclick="window.sendDcReply('${c.id}')" style="margin-left: 8px;"></i>
       </div>
     </div>
@@ -6783,14 +6890,96 @@ window.selectDcChat = function(id) {
     const hist = document.getElementById('dc-chat-history');
     if (hist) hist.scrollTop = hist.scrollHeight;
   }, 50);
+
+  if (orderIdToFetch) {
+    setTimeout(async () => {
+      try {
+        const SUPABASE_URL = 'https://zepfgxyuzblxebqutbvi.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InplcGZneHl1emJseGVicXV0YnZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI0Njg0MjMsImV4cCI6MjA5ODA0NDQyM30.PEVXDyWR-20vAuOeDAySPZ4yLlClnQS_4XOcW7RtMcw';
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/orders?id=eq.${orderIdToFetch}&select=*,products(*)`, {
+          headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY }
+        });
+        const orderData = await res.json();
+        if (orderData && orderData.length > 0 && orderData[0].products) {
+          const product = orderData[0].products;
+          const pName = product.title || 'Unknown Product';
+          const pUrl = '/product/' + product.id;
+          const headerTag = document.querySelector('.dc-chat-header-tag');
+          if (headerTag) {
+            headerTag.innerHTML = `${c.email ? c.email + ' &bull; ' : ''}Order #${orderIdToFetch} &bull; <strong>Product:</strong> ${pName} &bull; <a href="${pUrl}" target="_blank" style="color: #60A5FA; text-decoration: underline;">View Product <i class="fas fa-external-link-alt" style="font-size: 10px;"></i></a>`;
+          }
+        }
+      } catch (e) {
+        console.warn("Failed to fetch order details", e);
+      }
+    }, 100);
+  }
 };
 
-window.sendDcReply = async function(id) {
-  const input = document.getElementById('dc-reply-input');
-  if (!input || !input.value.trim()) return;
+window.filterActiveChatMessages = function(keyword) {
+  const historyBox = document.getElementById('dc-chat-history');
+  if (!historyBox) return;
+  const msgs = historyBox.querySelectorAll('.dc-msg');
+  const lowerKw = keyword.toLowerCase();
+  msgs.forEach(msg => {
+    const text = msg.querySelector('.dc-msg-bubble')?.innerText || '';
+    if (text.toLowerCase().includes(lowerKw)) {
+      msg.style.display = 'flex';
+    } else {
+      msg.style.display = 'none';
+    }
+  });
+};
+
+window.handleQuickReply = function(inputEl) {
+  const quickReplies = {
+    '/hello': 'Hello! How can I help you today?',
+    '/refund': 'Please provide your order ID and the reason for your refund request. Note that refunds are subject to our terms of service.',
+    '/payment': 'We accept credit cards, crypto, and PayPal for payments.',
+    '/thanks': 'Thank you for choosing ZoroBoost! Let us know if you need anything else.'
+  };
+  const val = inputEl.value;
+  if (val.startsWith('/') && quickReplies[val]) {
+    inputEl.value = quickReplies[val];
+  }
+};
+
+window.uploadDcFile = async function(event, id) {
+  const file = event.target.files[0];
+  if (!file) return;
   
-  const text = input.value.trim();
-  input.value = '';
+  const icon = document.getElementById(`dc-upload-icon-${id}`);
+  if (icon) icon.className = 'fas fa-spinner fa-spin';
+  
+  const formData = new FormData();
+  formData.append('file', file);
+  
+  try {
+    const res = await fetch('/api/upload', { method: 'POST', body: formData });
+    const data = await res.json();
+    if (icon) icon.className = 'fas fa-plus-circle';
+    
+    if (data.success && data.url) {
+      await window.sendDcReply(id, `File Uploaded: ${data.url}`);
+    } else {
+      alert("Upload failed: " + (data.error || "Unknown error"));
+    }
+  } catch (err) {
+    if (icon) icon.className = 'fas fa-plus-circle';
+    console.error("Upload error:", err);
+    alert("Upload failed.");
+  }
+};
+
+window.sendDcReply = async function(id, textOverride = null) {
+  let text = textOverride;
+  const input = document.getElementById('dc-reply-input');
+  
+  if (!text) {
+    if (!input || !input.value.trim()) return;
+    text = input.value.trim();
+  }
+  if (input && !textOverride) input.value = '';
   
   try {
     const c = ((typeof ALL_CONTACTS !== 'undefined' ? ALL_CONTACTS : []) || []).find(x => x.id === id);
@@ -6850,9 +7039,79 @@ const originalRenderContacts = typeof renderContacts === 'function' ? renderCont
 window.renderContacts = function() {
   originalRenderContacts();
   renderDiscordContacts();
+  if (typeof activeDcChatId !== 'undefined' && activeDcChatId) {
+    const dcInput = document.getElementById('dc-reply-input');
+    const hasFocus = document.activeElement === dcInput;
+    const currentVal = dcInput ? dcInput.value : '';
+    
+    selectDcChat(activeDcChatId);
+    
+    const newDcInput = document.getElementById('dc-reply-input');
+    if (newDcInput) {
+      newDcInput.value = currentVal;
+      if (hasFocus) newDcInput.focus();
+    }
+  }
 };
 
 
+</script>
+<!-- Realtime Safe Additions -->
+<audio id="chatSound" src="https://assets.mixkit.co/sfx/preview/mixkit-software-interface-start-2574.mp3" preload="auto"></audio>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // Request Notification permission
+  if (Notification.permission !== 'denied' && Notification.permission !== 'granted') {
+    Notification.requestPermission();
+  }
+
+  // Quick Replies
+  const quickReplies = {
+    '/hello': 'Hello! How can I help you today?',
+    '/refund': 'Please provide your order ID and the reason for your refund request. Note that refunds are subject to our terms of service.',
+    '/payment': 'We accept credit cards, crypto, and PayPal for payments.',
+    '/thanks': 'Thank you for choosing ZoroBoost! Let us know if you need anything else.'
+  };
+
+  document.addEventListener('input', function(e) {
+    if (e.target && (e.target.id === 'dc-chat-input' || e.target.classList.contains('chat-input-field'))) {
+      const val = e.target.value;
+      if (val.startsWith('/') && quickReplies[val]) {
+        e.target.value = quickReplies[val];
+      }
+    }
+  });
+
+  // Copy Message Logic
+  document.addEventListener('click', function(e) {
+    const copyBtn = e.target.closest('.copy-msg-btn');
+    if (copyBtn) {
+      const text = copyBtn.getAttribute('data-text');
+      if (text) {
+        navigator.clipboard.writeText(text);
+        const originalHTML = copyBtn.innerHTML;
+        copyBtn.innerHTML = '<i class="fas fa-check" style="color: #22c55e;"></i>';
+        setTimeout(() => copyBtn.innerHTML = originalHTML, 2000);
+      }
+    }
+  });
+  
+  // Override playNotificationSound if it exists to add desktop notifs and actual sound
+  if (typeof playNotificationSound !== 'undefined') {
+    const oldPlay = window.playNotificationSound;
+    window.playNotificationSound = function(msg) {
+      oldPlay(msg);
+      const audio = document.getElementById('chatSound');
+      const soundToggleIcon = document.getElementById('soundToggleIcon');
+      if (audio && (!soundToggleIcon || soundToggleIcon.classList.contains('fa-volume-up'))) {
+        audio.play().catch(e => console.log('Audio error:', e));
+      }
+      if (Notification.permission === 'granted') {
+        new Notification('New Message', { body: 'You have a new message!', icon: '/favicon.ico' });
+      }
+    };
+  }
+});
 </script>
 </body>
 </html>
