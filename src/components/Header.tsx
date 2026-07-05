@@ -408,8 +408,8 @@ export default function Header() {
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 className="h-8 w-8 overflow-hidden rounded-full ring-2 ring-border-subtle cursor-pointer p-0 border-none bg-transparent"
               >
-                {user.user_metadata?.avatar_url ? (
-                  <img src={user.user_metadata.avatar_url} alt="Profile" className="w-full h-full object-cover" />
+                {user.user_metadata?.custom_avatar_url || user.user_metadata?.avatar_url ? (
+                  <img src={user.user_metadata.custom_avatar_url || user.user_metadata.avatar_url} alt="Profile" className="w-full h-full object-cover" />
                 ) : (
                   <div className="w-full h-full bg-gradient-to-br from-rose-400 to-amber-500" />
                 )}
@@ -419,7 +419,7 @@ export default function Header() {
                 <div className="absolute right-0 mt-2 w-48 rounded-md bg-card shadow-lg ring-1 ring-black ring-opacity-5 z-50 border border-border-subtle overflow-hidden">
                   <div className="py-1">
                     <div className="px-4 py-2 border-b border-border-subtle">
-                      <p className="text-sm font-medium text-foreground truncate">{user.user_metadata?.full_name || 'User'}</p>
+                      <p className="text-sm font-medium text-foreground truncate">{user.user_metadata?.custom_full_name || user.user_metadata?.full_name || 'User'}</p>
                       <p className="text-xs text-muted-foreground truncate">{user.email}</p>
                     </div>
                     {[

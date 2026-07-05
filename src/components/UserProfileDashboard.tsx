@@ -31,15 +31,15 @@ export default function UserProfileDashboard({
   const [user, setUser] = useState(initialUser);
 
   // Form states
-  const [fullName, setFullName] = useState(initialUser.user_metadata?.full_name || '');
+  const [fullName, setFullName] = useState(initialUser.user_metadata?.custom_full_name || initialUser.user_metadata?.full_name || '');
   const [username, setUsername] = useState(initialUser.user_metadata?.username || '');
-  const [avatarUrl, setAvatarUrl] = useState(initialUser.user_metadata?.avatar_url || '');
+  const [avatarUrl, setAvatarUrl] = useState(initialUser.user_metadata?.custom_avatar_url || initialUser.user_metadata?.avatar_url || '');
   const [isUpdating, setIsUpdating] = useState(false);
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
   const [toastMessage, setToastMessage] = useState<{ type: 'success'|'error', text: string } | null>(null);
 
   // Derived user info
-  const displayName = user.user_metadata?.full_name || user.email?.split('@')[0] || 'User';
+  const displayName = user.user_metadata?.custom_full_name || user.user_metadata?.full_name || user.email?.split('@')[0] || 'User';
 
 
   const TABS = [
@@ -115,7 +115,13 @@ export default function UserProfileDashboard({
     try {
       const supabase = createClient();
       const { data, error } = await supabase.auth.updateUser({
-        data: { full_name: fullName, username: username, avatar_url: avatarUrl }
+        data: { 
+          full_name: fullName, 
+          custom_full_name: fullName, 
+          username: username, 
+          avatar_url: avatarUrl, 
+          custom_avatar_url: avatarUrl 
+        }
       });
       if (error) throw error;
       
@@ -146,8 +152,8 @@ export default function UserProfileDashboard({
         <div className="bg-card border border-border-subtle rounded-xl overflow-hidden sticky top-24">
           <div className="p-6 border-b border-border-subtle flex flex-col items-center text-center">
             <div className="w-20 h-20 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-3xl font-bold text-neutral-900 shadow-lg shadow-amber-400/20 mb-4 overflow-hidden">
-              {user.user_metadata?.avatar_url ? (
-                <img src={user.user_metadata.avatar_url} alt="Profile" className="w-full h-full object-cover" />
+              {user.user_metadata?.custom_avatar_url || user.user_metadata?.avatar_url ? (
+                <img src={user.user_metadata.custom_avatar_url || user.user_metadata.avatar_url} alt="Profile" className="w-full h-full object-cover" />
               ) : (
                 displayName.charAt(0).toUpperCase()
               )}
@@ -209,7 +215,7 @@ export default function UserProfileDashboard({
                 <div className="space-y-4">
                   <div>
                     <p className="text-xs text-muted-foreground uppercase tracking-wider font-bold mb-1">Full Name</p>
-                    <p className="text-foreground font-medium">{user.user_metadata?.full_name || 'Not provided'}</p>
+                    <p className="text-foreground font-medium">{user.user_metadata?.custom_full_name || user.user_metadata?.full_name || 'Not provided'}</p>
                   </div>
                   <div>
                     <p className="text-xs text-muted-foreground uppercase tracking-wider font-bold mb-1">Email Address</p>
@@ -612,8 +618,8 @@ export default function UserProfileDashboard({
                   <label className="block text-xs font-bold text-muted-foreground uppercase mb-2">Profile Picture</label>
                   <div className="flex items-center gap-4">
                     <div className="w-16 h-16 rounded-full bg-bg-secondary border border-border-subtle flex items-center justify-center overflow-hidden">
-                      {avatarUrl || user.user_metadata?.avatar_url ? (
-                        <img src={avatarUrl || user.user_metadata.avatar_url} alt="Profile" className="w-full h-full object-cover" />
+                      {avatarUrl || user.user_metadata?.custom_avatar_url || user.user_metadata?.avatar_url ? (
+                        <img src={avatarUrl || user.user_metadata.custom_avatar_url || user.user_metadata.avatar_url} alt="Profile" className="w-full h-full object-cover" />
                       ) : (
                         <User className="w-6 h-6 text-muted-foreground" />
                       )}
