@@ -47,7 +47,6 @@ export default function UserProfileDashboard({
     { id: 'orders', label: 'My Orders', icon: Package },
     { id: 'support', label: 'Support & Chat', icon: MessageSquare },
     { id: 'notifications', label: 'Notifications', icon: Bell },
-    { id: 'security', label: 'Security', icon: Shield },
     { id: 'settings', label: 'Account Settings', icon: Settings },
     { id: 'activity', label: 'Recent Activity', icon: Activity },
   ];
@@ -549,63 +548,7 @@ export default function UserProfileDashboard({
           </div>
         )}
 
-        {/* SECURITY TAB */}
-        {activeTab === 'security' && (
-          <div className="animate-fade-in-up">
-            <h1 className="text-2xl font-black text-foreground mb-8 tracking-tight" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>Security</h1>
-            
-            <div className="bg-card border border-border-subtle rounded-xl p-6 max-w-2xl">
-              <h3 className="text-lg font-bold text-foreground mb-4">Change Password</h3>
-              <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
-                <div>
-                  <label className="block text-xs font-bold text-muted-foreground uppercase mb-2">Current Password</label>
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                    <input type="password" placeholder="••••••••" className="w-full bg-bg-secondary border border-border-subtle rounded-md pl-10 pr-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-amber-400 transition-colors" />
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-muted-foreground uppercase mb-2">New Password</label>
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                    <input type="password" placeholder="••••••••" className="w-full bg-bg-secondary border border-border-subtle rounded-md pl-10 pr-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-amber-400 transition-colors" />
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-muted-foreground uppercase mb-2">Confirm New Password</label>
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                    <input type="password" placeholder="••••••••" className="w-full bg-bg-secondary border border-border-subtle rounded-md pl-10 pr-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-amber-400 transition-colors" />
-                  </div>
-                </div>
-                <button className="bg-amber-400 text-neutral-900 px-6 py-2.5 rounded-md text-sm font-bold border-none cursor-pointer hover:bg-amber-500 transition-colors mt-2">
-                  Update Password
-                </button>
-              </form>
-            </div>
 
-            <div className="bg-card border border-border-subtle rounded-xl p-6 max-w-2xl my-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-lg font-bold text-foreground mb-1">Two-Factor Authentication</h3>
-                  <p className="text-sm text-muted-foreground">Add an extra layer of security to your account.</p>
-                </div>
-                <div className="bg-neutral-800 text-neutral-400 px-3 py-1 rounded text-xs font-bold border border-neutral-700">
-                  Coming Soon
-                </div>
-              </div>
-            </div>
-            
-            <div className="bg-card border border-red-500/20 rounded-xl p-6 max-w-2xl relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-red-500/5 rounded-full blur-2xl pointer-events-none" />
-              <h3 className="text-lg font-bold text-red-400 mb-1">Active Sessions</h3>
-              <p className="text-sm text-muted-foreground mb-4">Log out of all other devices you might be logged in on.</p>
-              <button className="bg-red-500/10 border border-red-500/50 hover:bg-red-500/20 text-red-400 px-6 py-2 rounded-md text-sm font-bold cursor-pointer transition-colors flex items-center gap-2">
-                <LogOut className="w-4 h-4" /> Logout All Devices
-              </button>
-            </div>
-          </div>
-        )}
 
         {/* SETTINGS TAB */}
         {activeTab === 'settings' && (
@@ -691,6 +634,59 @@ export default function UserProfileDashboard({
                   </button>
                 </div>
               </form>
+            </div>
+            
+            <h2 className="text-xl font-bold text-foreground mt-10 mb-6" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>Security</h2>
+            
+            <div className="bg-card border border-border-subtle rounded-xl p-6 max-w-2xl shadow-xl shadow-black/20">
+              <h3 className="text-lg font-bold text-foreground mb-4">Change Password</h3>
+              <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
+                <div>
+                  <label className="block text-xs font-bold text-muted-foreground uppercase mb-2">Current Password</label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <input type="password" placeholder="••••••••" className="w-full bg-bg-secondary border border-border-subtle rounded-md pl-10 pr-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-amber-400 transition-colors" />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-muted-foreground uppercase mb-2">New Password</label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <input type="password" placeholder="••••••••" className="w-full bg-bg-secondary border border-border-subtle rounded-md pl-10 pr-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-amber-400 transition-colors" />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-muted-foreground uppercase mb-2">Confirm New Password</label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <input type="password" placeholder="••••••••" className="w-full bg-bg-secondary border border-border-subtle rounded-md pl-10 pr-4 py-2.5 text-sm text-foreground focus:outline-none focus:border-amber-400 transition-colors" />
+                  </div>
+                </div>
+                <button className="bg-amber-400 text-neutral-900 px-6 py-2.5 rounded-md text-sm font-bold border-none cursor-pointer hover:bg-amber-500 transition-colors mt-2">
+                  Update Password
+                </button>
+              </form>
+            </div>
+
+            <div className="bg-card border border-border-subtle rounded-xl p-6 max-w-2xl my-6 shadow-xl shadow-black/20">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-lg font-bold text-foreground mb-1">Two-Factor Authentication</h3>
+                  <p className="text-sm text-muted-foreground">Add an extra layer of security to your account.</p>
+                </div>
+                <div className="bg-neutral-800 text-neutral-400 px-3 py-1 rounded text-xs font-bold border border-neutral-700">
+                  Coming Soon
+                </div>
+              </div>
+            </div>
+            
+            <div className="bg-card border border-red-500/20 rounded-xl p-6 max-w-2xl relative overflow-hidden shadow-xl shadow-black/20">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-red-500/5 rounded-full blur-2xl pointer-events-none" />
+              <h3 className="text-lg font-bold text-red-400 mb-1">Active Sessions</h3>
+              <p className="text-sm text-muted-foreground mb-4">Log out of all other devices you might be logged in on.</p>
+              <button className="bg-red-500/10 border border-red-500/50 hover:bg-red-500/20 text-red-400 px-6 py-2 rounded-md text-sm font-bold cursor-pointer transition-colors flex items-center gap-2">
+                <LogOut className="w-4 h-4" /> Logout All Devices
+              </button>
             </div>
           </div>
         )}

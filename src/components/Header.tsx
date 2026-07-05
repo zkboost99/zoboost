@@ -427,7 +427,6 @@ export default function Header() {
                       { id: 'orders', label: 'My Orders', icon: Package },
                       { id: 'support', label: 'Support & Chat', icon: MessageSquare },
                       { id: 'notifications', label: 'Notifications', icon: Bell },
-                      { id: 'security', label: 'Security', icon: Shield },
                       { id: 'settings', label: 'Account Settings', icon: Settings },
                       { id: 'activity', label: 'Recent Activity', icon: Activity },
                     ].map(tab => (
