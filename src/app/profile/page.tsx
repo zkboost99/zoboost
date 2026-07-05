@@ -1,6 +1,7 @@
 import { createClient } from '@/utils/supabase/server';
 import { redirect } from 'next/navigation';
 import Header from '@/components/Header';
+import Footer from '@/components/Footer';
 import UserProfileDashboard from '@/components/UserProfileDashboard';
 
 export const metadata = {
@@ -65,19 +66,17 @@ export default async function ProfilePage() {
   }
 
   return (
-    <div className="h-screen bg-background flex flex-col overflow-hidden">
+    <div className="min-h-screen bg-background flex flex-col">
       <Header />
-      {/* Below header: a flex row that fills remaining viewport height, clipped so nothing can overflow */}
-      <div className="flex-1 flex overflow-hidden">
-        <div className="flex-1 flex max-w-[1200px] w-full mx-auto px-4 sm:px-6 lg:px-8 overflow-hidden gap-8 py-8">
-          <UserProfileDashboard 
-            user={session.user} 
-            initialOrders={orders} 
-            initialNotifications={notifications}
-            initialActivity={activity}
-          />
-        </div>
-      </div>
+      <main className="flex-1 pt-24 pb-32 max-w-[1200px] w-full mx-auto px-4 sm:px-6 lg:px-8">
+        <UserProfileDashboard 
+          user={session.user} 
+          initialOrders={orders} 
+          initialNotifications={notifications}
+          initialActivity={activity}
+        />
+      </main>
+      <Footer />
     </div>
   );
 }

@@ -9,7 +9,6 @@ import {
 } from 'lucide-react';
 import { createClient } from '@/utils/supabase/client';
 import { useRouter } from 'next/navigation';
-import Footer from '@/components/Footer';
 
 interface UserProfileDashboardProps {
   user: any;
@@ -137,7 +136,7 @@ export default function UserProfileDashboard({
   };
 
   return (
-    <div className="flex h-full w-full overflow-hidden animate-fade-in-up">
+    <div className="flex flex-col md:flex-row gap-8 animate-fade-in-up relative">
       
       {/* Toast Notification */}
       {toastMessage && (
@@ -147,9 +146,9 @@ export default function UserProfileDashboard({
         </div>
       )}
 
-      {/* Sidebar: fixed height, does NOT scroll with page */}
-      <aside className="w-64 shrink-0 h-full overflow-y-auto" style={{ scrollbarWidth: 'none' }}>
-        <div className="bg-card border border-border-subtle rounded-xl overflow-hidden">
+      {/* Sidebar Navigation */}
+      <aside className="w-full md:w-64 shrink-0">
+        <div className="bg-card border border-border-subtle rounded-xl overflow-hidden sticky top-24">
           <div className="p-6 border-b border-border-subtle flex flex-col items-center text-center">
             <div className="w-20 h-20 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-3xl font-bold text-neutral-900 shadow-lg shadow-amber-400/20 mb-4 overflow-hidden">
               {user.user_metadata?.custom_avatar_url || user.user_metadata?.avatar_url ? (
@@ -196,8 +195,8 @@ export default function UserProfileDashboard({
         </div>
       </aside>
 
-      {/* Main Content Area: independently scrollable */}
-      <main className="flex-1 min-w-0 h-full overflow-y-auto pl-8 pb-8" style={{ scrollbarWidth: 'thin' }}>
+      {/* Main Content Area */}
+      <main className="flex-1 min-w-0">
         
         {/* OVERVIEW TAB */}
         {activeTab === 'overview' && (
@@ -728,11 +727,6 @@ export default function UserProfileDashboard({
             )}
           </div>
         )}
-
-        {/* Footer inside scrolling area */}
-        <div className="mt-20">
-          <Footer />
-        </div>
       </main>
     </div>
   );
