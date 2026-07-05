@@ -66,16 +66,16 @@ export default async function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="relative min-h-screen">
       <Header />
-      <main className="flex-1 pt-24 pb-32 max-w-[1200px] w-full mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[1200px] w-full mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-16">
         <UserProfileDashboard 
           user={session.user} 
           initialOrders={orders} 
           initialNotifications={notifications}
           initialActivity={activity}
         />
-      </main>
+      </div>
       <Footer />
     </div>
   );
