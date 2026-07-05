@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { createClient } from '@/utils/supabase/client';
 import { useRouter } from 'next/navigation';
+import Footer from '@/components/Footer';
 
 interface UserProfileDashboardProps {
   user: any;
@@ -136,7 +137,7 @@ export default function UserProfileDashboard({
   };
 
   return (
-    <div className="flex flex-col md:flex-row gap-8 animate-fade-in-up relative">
+    <div className="flex flex-col md:flex-row gap-8 animate-fade-in-up relative h-full pb-6">
       
       {/* Toast Notification */}
       {toastMessage && (
@@ -147,8 +148,8 @@ export default function UserProfileDashboard({
       )}
 
       {/* Sidebar Navigation */}
-      <aside className="w-full md:w-64 shrink-0">
-        <div className="bg-card border border-border-subtle rounded-xl overflow-hidden md:sticky md:top-[208px] md:max-h-[calc(100vh-240px)] md:overflow-y-auto" style={{ scrollbarWidth: 'none' }}>
+      <aside className="w-full md:w-64 shrink-0 h-full overflow-y-auto hide-scrollbar rounded-xl">
+        <div className="bg-card border border-border-subtle rounded-xl overflow-hidden min-h-min">
           <div className="p-6 border-b border-border-subtle flex flex-col items-center text-center">
             <div className="w-20 h-20 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-3xl font-bold text-neutral-900 shadow-lg shadow-amber-400/20 mb-4 overflow-hidden">
               {user.user_metadata?.custom_avatar_url || user.user_metadata?.avatar_url ? (
@@ -196,7 +197,7 @@ export default function UserProfileDashboard({
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-1 min-w-0">
+      <main className="flex-1 min-w-0 h-full overflow-y-auto pb-8 relative hide-scrollbar">
         
         {/* OVERVIEW TAB */}
         {activeTab === 'overview' && (
@@ -728,6 +729,10 @@ export default function UserProfileDashboard({
           </div>
         )}
 
+        {/* Footer inside scrolling area */}
+        <div className="mt-20">
+          <Footer />
+        </div>
       </main>
     </div>
   );

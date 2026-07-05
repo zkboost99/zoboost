@@ -66,9 +66,9 @@ export default async function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="h-screen bg-background flex flex-col overflow-hidden">
       <Header />
-      <main className="flex-1 pt-24 pb-32 max-w-[1200px] w-full mx-auto px-4 sm:px-6 lg:px-8">
+      <main className="flex-1 w-full max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 overflow-hidden pt-8">
         <UserProfileDashboard 
           user={session.user} 
           initialOrders={orders} 
@@ -76,7 +76,6 @@ export default async function ProfilePage() {
           initialActivity={activity}
         />
       </main>
-      <Footer />
     </div>
   );
 }
