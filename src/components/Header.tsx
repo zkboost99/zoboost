@@ -60,6 +60,39 @@ const navItems = [
 ];
 
 export default function Header() {
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const [isNotifOpen, setIsNotifOpen] = useState(false);
+  const notifRef = useRef<HTMLDivElement>(null);
+  
+  const unreadCount = notifications.filter(n => !n.is_read).length;
+
+  const formatTimeAgo = (dateStr: string) => {
+    const diff = Date.now() - new Date(dateStr).getTime();
+    const minutes = Math.floor(diff / 60000);
+    if (minutes < 1) return 'Just now';
+    if (minutes < 60) return `${minutes} min ago`;
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `${hours} hr ago`;
+    const days = Math.floor(hours / 24);
+    return `${days} days ago`;
+  };
+
+  const markAllAsRead = async () => {
+    if (!user) return;
+    try {
+      const { createClient } = await import('@/utils/supabase/client');
+      const supabase = createClient();
+      await supabase
+        .from('notifications')
+        .update({ is_read: true })
+        .eq('is_read', false)
+        .eq('user_id', user.id);
+      
+      setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
+    } catch (err) {}
+  };
+
   const [currencyText, setCurrencyText] = useState('English | USD - $');
   const [theme, setTheme] = useState<'dark' | 'light'>('dark');
   const [isCurrencyModalOpen, setIsCurrencyModalOpen] = useState(false);
@@ -107,9 +140,55 @@ export default function Header() {
   }, []);
 
   useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const { createClient } = await import('@/utils/supabase/client');
+        const supabase = createClient();
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        let query = supabase
+          .from('notifications')
+          .select('*')
+          .order('created_at', { ascending: false })
+          .limit(10);
+          
+        if (session?.user) {
+          query = query.or(`user_id.eq.${session.user.id},user_id.is.null`);
+        } else {
+          query = query.is('user_id', null);
+        }
+
+        const { data } = await query;
+        if (data) setNotifications(data);
+      } catch (err) {}
+    };
+
+    fetchNotifications();
+
+    const setupRealtime = async () => {
+      const { createClient } = await import('@/utils/supabase/client');
+      const supabase = createClient();
+      const channel = supabase
+        .channel('public:notifications')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'notifications' }, () => {
+          fetchNotifications();
+        })
+        .subscribe();
+      return () => supabase.removeChannel(channel);
+    };
+    
+    let cleanup: any;
+    setupRealtime().then(c => cleanup = c);
+    return () => { if (cleanup) cleanup(); };
+  }, [user]);
+
+  useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsDropdownOpen(false);
+      }
+      if (notifRef.current && !notifRef.current.contains(event.target as Node)) {
+        setIsNotifOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -243,14 +322,85 @@ export default function Header() {
           <button 
             aria-label="Messages" 
             className="relative hover:text-foreground cursor-pointer bg-transparent border-none hidden sm:block"
-            onClick={(e) => { e.preventDefault(); e.stopPropagation(); window.dispatchEvent(new Event('toggleLiveChat')); }}
+            onClick={(e) => { 
+              e.preventDefault(); 
+              e.stopPropagation(); 
+              if (user) {
+                window.dispatchEvent(new Event('toggleLiveChat')); 
+              } else {
+                setShowLoginModal(true);
+              }
+            }}
           >
             <MessageSquare className="h-5 w-5" />
           </button>
           
-          <button aria-label="Notifications" className="relative hover:text-foreground cursor-pointer bg-transparent border-none hidden sm:block">
-            <Bell className="h-5 w-5" />
-          </button>
+          <div className="relative hidden sm:block" ref={notifRef}>
+            <button 
+              aria-label="Notifications" 
+              className="relative hover:text-foreground cursor-pointer bg-transparent border-none"
+              onClick={() => {
+                if (user) {
+                  setIsNotifOpen(!isNotifOpen);
+                } else {
+                  setShowLoginModal(true);
+                }
+              }}
+            >
+              <Bell className="h-5 w-5" />
+              {unreadCount > 0 && (
+                <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white ring-2 ring-background">
+                  {unreadCount > 9 ? '9+' : unreadCount}
+                </span>
+              )}
+            </button>
+            
+            {isNotifOpen && (
+              <div className="absolute right-0 mt-2 w-80 rounded-xl bg-[#1c1c1e] shadow-2xl ring-1 ring-white/10 z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+                <div className="flex items-center justify-between px-4 py-3 border-b border-white/5 bg-white/5">
+                  <h3 className="text-sm font-bold text-white">Notifications</h3>
+                  {unreadCount > 0 && (
+                    <button 
+                      onClick={markAllAsRead}
+                      className="text-xs font-semibold text-amber-400 hover:text-amber-300 transition-colors border-none bg-transparent cursor-pointer"
+                    >
+                      Mark all as read
+                    </button>
+                  )}
+                </div>
+                
+                <div className="max-h-[300px] overflow-y-auto">
+                  {notifications.length === 0 ? (
+                    <div className="px-4 py-8 text-center text-sm text-neutral-400">
+                      No new notifications.
+                    </div>
+                  ) : (
+                    <div className="flex flex-col">
+                      {notifications.map(notif => (
+                        <div key={notif.id} className={`px-4 py-3 border-b border-white/5 hover:bg-white/5 transition-colors cursor-pointer ${!notif.is_read ? 'bg-amber-400/5' : ''}`}>
+                          <div className="flex justify-between items-start mb-1">
+                            <span className={`text-sm font-bold ${!notif.is_read ? 'text-white' : 'text-neutral-300'}`}>{notif.title}</span>
+                            <span className="text-[10px] text-neutral-500 whitespace-nowrap ml-2">{formatTimeAgo(notif.created_at)}</span>
+                          </div>
+                          <p className={`text-xs ${!notif.is_read ? 'text-neutral-300' : 'text-neutral-400'} line-clamp-2`}>{notif.message}</p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                
+                <div className="p-2 border-t border-white/5 bg-white/5">
+                  <Link 
+                    href="/notifications" 
+                    onClick={() => setIsNotifOpen(false)}
+                    className="block w-full py-2 text-center text-xs font-bold text-white hover:text-amber-400 transition-colors no-underline"
+                  >
+                    View all notifications
+                  </Link>
+                </div>
+              </div>
+            )}
+          </div>
           
           {user ? (
             <div className="relative" ref={dropdownRef}>
@@ -539,7 +689,35 @@ export default function Header() {
             <div className="pb-10 pt-8 mt-auto border-t border-white/[0.08]">
               <div className="flex gap-3 mb-3">
                 <button 
-                  onClick={() => { setIsMobileMenuOpen(false); window.dispatchEvent(new CustomEvent('openLiveChat')); }}
+                  onClick={() => { 
+                    setIsMobileMenuOpen(false); 
+                    if (user) {
+                      router.push('/notifications');
+                    } else {
+                      setShowLoginModal(true);
+                    }
+                  }}
+                  className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-full bg-white/5 text-white hover:bg-white/10 transition-colors border border-white/10 font-semibold text-sm cursor-pointer relative"
+                >
+                  <Bell className="w-4 h-4 text-emerald-400" /> 
+                  Notifications
+                  {unreadCount > 0 && (
+                    <span className="absolute top-0 right-0 flex h-5 w-5 -mt-1 -mr-1 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white ring-2 ring-background">
+                      {unreadCount > 9 ? '9+' : unreadCount}
+                    </span>
+                  )}
+                </button>
+              </div>
+              <div className="flex gap-3 mb-3">
+                <button 
+                  onClick={() => { 
+                    setIsMobileMenuOpen(false); 
+                    if (user) {
+                      window.dispatchEvent(new CustomEvent('openLiveChat')); 
+                    } else {
+                      setShowLoginModal(true);
+                    }
+                  }}
                   className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-full bg-white/5 text-white hover:bg-white/10 transition-colors border border-white/10 font-semibold text-sm cursor-pointer"
                 >
                   <HelpCircle className="w-4 h-4 text-amber-400" /> Support
@@ -625,6 +803,41 @@ export default function Header() {
               <button 
                 onClick={() => setIsCurrencyModalOpen(false)}
                 className="w-full bg-[#242b3d] hover:bg-[#2d364d] text-white font-bold py-3 rounded-[4px] transition-colors cursor-pointer border border-transparent hover:border-white/5"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Login Required Modal */}
+      {showLoginModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 backdrop-blur-sm px-4">
+          <div className="bg-[#1b202c] border border-white/5 rounded-[4px] p-6 w-full max-w-[400px] shadow-2xl relative text-center animate-in zoom-in-95 duration-200">
+            <div className="w-16 h-16 bg-amber-400/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-amber-400/20">
+              <LogOut className="w-8 h-8 text-amber-400" />
+            </div>
+            <h2 className="text-xl font-bold text-white mb-2">Login Required</h2>
+            <p className="text-sm text-neutral-400 mb-8">
+              Please login to your account first to access Live Chat and contact support.
+            </p>
+            
+            <div className="flex flex-col gap-3">
+              <button 
+                onClick={() => { setShowLoginModal(false); router.push('/login'); }}
+                className="w-full py-3 px-4 bg-amber-400 hover:bg-amber-500 text-neutral-900 font-bold rounded-[4px] transition-colors cursor-pointer border-none"
+              >
+                Login
+              </button>
+              <button 
+                onClick={() => { setShowLoginModal(false); router.push('/signup'); }}
+                className="w-full py-3 px-4 bg-white/5 hover:bg-white/10 text-white font-bold rounded-[4px] border border-white/10 transition-colors cursor-pointer"
+              >
+                Sign Up
+              </button>
+              <button 
+                onClick={() => setShowLoginModal(false)}
+                className="w-full py-3 px-4 bg-transparent text-neutral-400 hover:text-white font-medium rounded-[4px] transition-colors cursor-pointer border-none"
               >
                 Cancel
               </button>
