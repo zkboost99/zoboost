@@ -43,6 +43,7 @@ const CATEGORIES = [
 ];
 
 export default function DiscordMarketplace({ products }: DiscordMarketplaceProps) {
+  const [activeTab, setActiveTab] = useState<'shop' | 'reviews' | 'about'>('shop');
   const [activeCategory, setActiveCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [currency, setCurrency] = useState<Currency>({ code: 'USD', symbol: '$', label: 'USD - $', rate: 1 });
@@ -164,15 +165,17 @@ export default function DiscordMarketplace({ products }: DiscordMarketplaceProps
             </div>
           </div>
           
-          {/* Mock Tabs inside the hero card */}
+          {/* Tabs inside the hero card */}
           <div className="mt-8 pt-4 border-t border-neutral-800 flex gap-6">
-             <button className="text-white font-bold pb-2 border-b-2 border-[#4252f5] px-1 text-sm">Shop</button>
-             <button className="text-neutral-500 font-medium pb-2 border-b-2 border-transparent hover:text-neutral-300 px-1 text-sm transition-colors cursor-not-allowed">Reviews</button>
-             <button className="text-neutral-500 font-medium pb-2 border-b-2 border-transparent hover:text-neutral-300 px-1 text-sm transition-colors cursor-not-allowed">About</button>
+             <button onClick={() => setActiveTab('shop')} className={`font-bold pb-2 border-b-2 px-1 text-sm transition-colors outline-none ${activeTab === 'shop' ? 'text-white border-[#4252f5]' : 'text-neutral-500 border-transparent hover:text-neutral-300'}`}>Shop</button>
+             <button onClick={() => setActiveTab('reviews')} className={`font-bold pb-2 border-b-2 px-1 text-sm transition-colors outline-none ${activeTab === 'reviews' ? 'text-white border-[#4252f5]' : 'text-neutral-500 border-transparent hover:text-neutral-300'}`}>Reviews</button>
+             <button onClick={() => setActiveTab('about')} className={`font-bold pb-2 border-b-2 px-1 text-sm transition-colors outline-none ${activeTab === 'about' ? 'text-white border-[#4252f5]' : 'text-neutral-500 border-transparent hover:text-neutral-300'}`}>About</button>
           </div>
         </div>
 
-        <h2 className="text-2xl font-bold text-white mb-6">Shop</h2>
+        {activeTab === 'shop' && (
+          <div className="animate-in fade-in duration-300">
+            <h2 className="text-2xl font-bold text-white mb-6">Shop</h2>
 
         {/* Circular Categories */}
         <div className="flex overflow-x-auto hide-scrollbar gap-6 mb-10 pb-4">
@@ -295,6 +298,66 @@ export default function DiscordMarketplace({ products }: DiscordMarketplaceProps
             <p className="text-xs text-neutral-500 max-w-sm">
               Try adjusting your search query or category filters.
             </p>
+          </div>
+        )}
+          </div>
+        )}
+
+        {activeTab === 'reviews' && (
+          <div className="animate-in fade-in duration-300">
+            <h2 className="text-2xl font-bold text-white mb-6">Customer Reviews</h2>
+            <div className="grid gap-4 md:grid-cols-2">
+              {[
+                { name: 'Alex M.', rating: 5, date: '2 days ago', text: 'Instant delivery and the account works perfectly. Saved me a lot of time!' },
+                { name: 'Sarah K.', rating: 5, date: '1 week ago', text: 'Got 14x Server Boosts for my community. Smooth transaction and great support.' },
+                { name: 'David R.', rating: 4, date: '2 weeks ago', text: 'Nitro delivery was fast, but the payment gateway took a minute to load. Otherwise, great.' },
+                { name: 'Emily T.', rating: 5, date: '1 month ago', text: 'Absolutely love the decorations. Adds so much flavor to my profile. Highly recommended!' },
+              ].map((review, i) => (
+                <div key={i} className="bg-[#1c1c1e] border border-neutral-800 rounded-xl p-5 shadow-sm">
+                  <div className="flex justify-between items-start mb-3">
+                    <div>
+                      <div className="font-bold text-white text-sm">{review.name}</div>
+                      <div className="flex gap-1 mt-1">
+                        {Array.from({ length: 5 }).map((_, idx) => (
+                          <svg key={idx} className={`w-3 h-3 ${idx < review.rating ? 'text-[#ffc107]' : 'text-neutral-600'}`} fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                          </svg>
+                        ))}
+                      </div>
+                    </div>
+                    <span className="text-xs text-neutral-500 font-medium">{review.date}</span>
+                  </div>
+                  <p className="text-sm text-neutral-400 leading-relaxed">{review.text}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'about' && (
+          <div className="animate-in fade-in duration-300">
+            <h2 className="text-2xl font-bold text-white mb-6">About Discord Marketplace</h2>
+            <div className="bg-[#1c1c1e] border border-neutral-800 rounded-xl p-6 sm:p-8">
+              <div className="space-y-6 text-sm text-neutral-400 leading-relaxed">
+                <p>
+                  Welcome to the ultimate hub for all your premium Discord needs. Whether you're looking to upgrade your personal profile or boost your community, we offer a wide range of products tailored for Discord users.
+                </p>
+                
+                <div>
+                  <h3 className="text-white font-bold text-base mb-2">Our Offerings:</h3>
+                  <ul className="list-disc pl-5 space-y-2">
+                    <li><strong className="text-neutral-200">Nitro Subscriptions:</strong> Enjoy enhanced features, HD streaming, and custom emojis at unbeatable prices.</li>
+                    <li><strong className="text-neutral-200">Server Boosts:</strong> Elevate your community with level 3 perks, better audio quality, and more vanity slots instantly.</li>
+                    <li><strong className="text-neutral-200">Exclusive Decorations:</strong> Stand out from the crowd with rare avatar decorations and profile effects.</li>
+                    <li><strong className="text-neutral-200">Aged Accounts:</strong> Get access to verified, aged Discord accounts for your specific needs.</li>
+                  </ul>
+                </div>
+
+                <p>
+                  We guarantee <strong className="text-neutral-200">100% secure transactions</strong> and <strong className="text-neutral-200">instant automated delivery</strong> to your email and dashboard upon purchase. Have questions? Our 24/7 support team is always ready to assist you.
+                </p>
+              </div>
+            </div>
           </div>
         )}
       </main>
