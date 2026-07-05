@@ -72,7 +72,7 @@ export default function AdminLogin() {
       setSuccess(true);
       // Wait a moment then redirect to a safe admin area
       setTimeout(() => {
-        router.push('/admin.html');
+        window.location.href = '/admin.html';
       }, 2000);
 
     } catch (err: any) {
