@@ -4,10 +4,10 @@ import Image from 'next/image';
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { 
   ChevronDown, Bell, MessageSquare, ArrowLeftRight, HelpCircle, Globe, Sun, Moon, Gamepad2, X,
-  ShieldCheck, Star, Tv, Rocket, Users, BadgeCheck, Palette, Crown, Gift, Percent, Zap, Wallet, LogOut, User, Menu
+  ShieldCheck, Star, Tv, Rocket, Users, BadgeCheck, Palette, Crown, Gift, Percent, Zap, Wallet, LogOut, User, Menu, Package, Shield, Settings, Activity
 } from 'lucide-react';
 
 const navItems = [
@@ -71,6 +71,23 @@ export default function Header() {
   const [expandedMobileNav, setExpandedMobileNav] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
+  const pathname = usePathname();
+
+  useEffect(() => {
+    if (pathname === '/profile') {
+      const pendingTab = sessionStorage.getItem('pendingProfileTab');
+      if (pendingTab) {
+        setTimeout(() => {
+          const buttons = Array.from(document.querySelectorAll('aside nav button'));
+          const targetBtn = buttons.find(b => b.textContent?.includes(pendingTab));
+          if (targetBtn) {
+             (targetBtn as HTMLButtonElement).click();
+          }
+          sessionStorage.removeItem('pendingProfileTab');
+        }, 100);
+      }
+    }
+  }, [pathname]);
 
   useEffect(() => {
     const initAuth = async () => {
@@ -255,20 +272,42 @@ export default function Header() {
                       <p className="text-sm font-medium text-foreground truncate">{user.user_metadata?.full_name || 'User'}</p>
                       <p className="text-xs text-muted-foreground truncate">{user.email}</p>
                     </div>
-                    <Link
-                      href="/profile"
-                      className="flex items-center px-4 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground cursor-pointer"
-                      onClick={() => setIsDropdownOpen(false)}
-                      style={{ textDecoration: 'none' }}
-                    >
-                      <User className="mr-2 h-4 w-4" />
-                      Profile
-                    </Link>
+                    {[
+                      { id: 'overview', label: 'Overview', icon: User },
+                      { id: 'orders', label: 'My Orders', icon: Package },
+                      { id: 'support', label: 'Support & Chat', icon: MessageSquare },
+                      { id: 'notifications', label: 'Notifications', icon: Bell },
+                      { id: 'security', label: 'Security', icon: Shield },
+                      { id: 'settings', label: 'Account Settings', icon: Settings },
+                      { id: 'activity', label: 'Recent Activity', icon: Activity },
+                    ].map(tab => (
+                      <button
+                        key={tab.id}
+                        onClick={() => {
+                          setIsDropdownOpen(false);
+                          if (pathname === '/profile') {
+                            const buttons = Array.from(document.querySelectorAll('aside nav button'));
+                            const targetBtn = buttons.find(b => b.textContent?.includes(tab.label));
+                            if (targetBtn) {
+                               (targetBtn as HTMLButtonElement).click();
+                            }
+                          } else {
+                            sessionStorage.setItem('pendingProfileTab', tab.label);
+                            router.push('/profile');
+                          }
+                        }}
+                        className="flex w-full items-center px-4 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground cursor-pointer border-none bg-transparent"
+                      >
+                        <tab.icon className="mr-3 h-4 w-4" />
+                        {tab.label}
+                      </button>
+                    ))}
+                    <div className="border-t border-border-subtle my-1"></div>
                     <button
                       onClick={handleLogout}
                       className="flex w-full items-center px-4 py-2 text-sm text-red-400 hover:bg-muted hover:text-red-500 cursor-pointer border-none bg-transparent"
                     >
-                      <LogOut className="mr-2 h-4 w-4" />
+                      <LogOut className="mr-3 h-4 w-4" />
                       Sign Out
                     </button>
                   </div>
