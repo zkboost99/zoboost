@@ -148,7 +148,7 @@ export default function UserProfileDashboard({
 
       {/* Sidebar Navigation */}
       <aside className="w-full md:w-64 shrink-0">
-        <div className="bg-card border border-border-subtle rounded-xl overflow-hidden md:sticky md:top-32 md:max-h-[calc(100vh-160px)] md:overflow-y-auto" style={{ scrollbarWidth: 'none' }}>
+        <div className="bg-card border border-border-subtle rounded-xl overflow-hidden md:sticky md:top-[144px] md:max-h-[calc(100vh-180px)] md:overflow-y-auto" style={{ scrollbarWidth: 'none' }}>
           <div className="p-6 border-b border-border-subtle flex flex-col items-center text-center">
             <div className="w-20 h-20 rounded-full bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-3xl font-bold text-neutral-900 shadow-lg shadow-amber-400/20 mb-4 overflow-hidden">
               {user.user_metadata?.custom_avatar_url || user.user_metadata?.avatar_url ? (
