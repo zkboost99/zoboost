@@ -2962,3 +2962,220 @@ select.fi {
   background-size: 14px;
   padding-right: 40px;
 }
+/* =========================================================================
+   EXPORT SYSTEM
+   ========================================================================= */
+
+.export-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
+  background: var(--bg-card, #ffffff);
+  border: 1px solid rgba(0,0,0,0.06);
+  border-radius: var(--radius-md, 8px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+  min-width: 200px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  padding: 6px;
+  opacity: 0;
+  transform: translateY(-10px);
+  pointer-events: none;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.export-dropdown.active {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* Dark mode support */
+body.dark .export-dropdown {
+  background: var(--bg-card, #1A1D2D);
+  border-color: rgba(255,255,255,0.05);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+}
+
+.export-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  color: var(--t-main, #11142D);
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.export-item i {
+  font-size: 14px;
+  width: 16px;
+  text-align: center;
+}
+.export-item .fa-file-excel { color: #10B981; }
+.export-item .fa-file-csv { color: #F59E0B; }
+.export-item .fa-file-pdf { color: #EF4444; }
+
+.export-item:hover {
+  background: rgba(99, 102, 241, 0.08);
+  color: var(--primary, #6366F1);
+}
+
+body.dark .export-item {
+  color: var(--t-main, #E2E8F0);
+}
+body.dark .export-item:hover {
+  background: rgba(255,255,255,0.05);
+  color: #fff;
+}
+
+/* Position context for buttons */
+.pg-head-r, .frow {
+  position: relative;
+}
+
+/* Premium Notification Card Hover Styles */
+.nitem {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid var(--border-light);
+}
+.nitem.unr {
+  border-left: 4px solid var(--brand);
+  background: linear-gradient(90deg, rgba(99,102,241,0.06) 0%, transparent 100%);
+  border-color: rgba(99,102,241,0.2);
+}
+.nitem.unr:hover {
+  background: linear-gradient(90deg, rgba(99,102,241,0.1) 0%, transparent 100%);
+  border-color: var(--brand);
+  box-shadow: 0 10px 25px rgba(99,102,241,0.15);
+  transform: translateY(-2px);
+}
+.nitem:not(.unr):hover {
+  background: rgba(255,255,255,0.02);
+  border-color: var(--border-light);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+  transform: translateY(-2px);
+}
+.nitem:hover .nact-hover {
+  opacity: 1 !important;
+  transform: translateX(0) !important;
+}
+
+/* Linear/GitHub style Notification Card */
+.linear-notif:hover {
+  background: var(--surface-1) !important;
+}
+.linear-notif:active {
+  background: var(--surface-2) !important;
+}
+
+/* === NOTIFICATIONS GRID CARD REDESIGN === */
+.nlist {
+  display: grid !important;
+  grid-template-columns: repeat(5, 1fr) !important;
+  gap: 14px !important;
+  align-items: start;
+}
+@media (max-width: 1400px) { .nlist { grid-template-columns: repeat(4, 1fr) !important; } }
+@media (max-width: 1100px) { .nlist { grid-template-columns: repeat(3, 1fr) !important; } }
+@media (max-width: 768px) { .nlist { grid-template-columns: repeat(2, 1fr) !important; } }
+.notif-grid-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border-light);
+  border-radius: 14px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4,0,0.2,1);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: relative;
+  overflow: hidden;
+  min-height: 140px;
+}
+.notif-grid-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.18);
+  border-color: rgba(255,255,255,0.08);
+  background: var(--surface-1);
+}
+.notif-grid-card.unread {
+  border-color: rgba(244, 196, 48, 0.45);
+  box-shadow: 0 0 0 1px rgba(244, 196, 48, 0.12), 0 4px 16px rgba(244, 196, 48, 0.08);
+}
+.notif-grid-card.unread:hover {
+  border-color: rgba(244, 196, 48, 0.7);
+  box-shadow: 0 0 0 1px rgba(244, 196, 48, 0.2), 0 8px 24px rgba(244, 196, 48, 0.15);
+  background: var(--surface-1);
+}
+.notif-grid-card.unread::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #F4C430, #FBBF24);
+  border-radius: 14px 14px 0 0;
+}
+
+/* === NOTIFICATION CARD PER-CARD ACTION BUTTONS === */
+.notif-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.nact-btn {
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  color: var(--t-muted);
+  font-size: 11px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.18s cubic-bezier(0.4,0,0.2,1);
+  padding: 0;
+  flex-shrink: 0;
+}
+.nact-btn:hover {
+  background: var(--surface-2);
+  border-color: var(--border-light);
+  color: var(--t-sub);
+}
+.nact-btn.mark-read:hover {
+  background: rgba(16, 185, 129, 0.1);
+  border-color: rgba(16, 185, 129, 0.25);
+  color: #10B981;
+}
+.nact-btn.del:hover {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.25);
+  color: var(--red);
+}
+
+/* === ORDERS TABLE CLICKABLE ROW UX === */
+.clickable-row {
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4,0,0.2,1);
+}
+.clickable-row:hover {
+  background: rgba(255, 255, 255, 0.03) !important;
+}
+.clickable-row .ibtn {
+  position: relative;
+  z-index: 2;
+}
+.clickable-row select {
+  position: relative;
+  z-index: 2;
+}

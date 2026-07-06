@@ -536,10 +536,12 @@ body {
 .content {
   flex: 1;
   overflow-y: auto;
-  padding: 0 28px 40px 28px;
+  padding: 32px 32px 40px 32px;
   scrollbar-width: thin;
   scrollbar-color: var(--border) transparent;
 }
+@media (max-width: 1200px) { .content { padding: 24px 20px 40px 20px; } }
+@media (max-width: 768px) { .content { padding: 16px 14px 40px 14px; } }
 .content::-webkit-scrollbar { width: 4px; }
 .content::-webkit-scrollbar-track { background: transparent; }
 .content::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
@@ -1154,7 +1156,16 @@ body {
 .cdate { font-size: 11px; color: var(--t-muted); font-weight: 600; }
 
 /* ─── NOTIFICATIONS ─── */
-.nlist { display: flex; flex-direction: column; gap: 10px; }
+.nlist { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; align-items: start; }
+@media (max-width: 1400px) { .nlist { grid-template-columns: repeat(4, 1fr); } }
+@media (max-width: 1100px) { .nlist { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 768px) { .nlist { grid-template-columns: repeat(2, 1fr); } }
+.notif-grid-card { background: var(--card-bg); border: 1px solid var(--border-light); border-radius: 14px; padding: 16px; cursor: pointer; transition: all 0.2s cubic-bezier(0.4,0,0.2,1); display: flex; flex-direction: column; gap: 10px; position: relative; overflow: hidden; min-height: 140px; }
+.notif-grid-card:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(0,0,0,0.18); border-color: rgba(255,255,255,0.08); background: var(--surface-1); }
+.notif-grid-card.unread { border-color: rgba(99,102,241,0.25); }
+.notif-grid-card.unread::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--brand); border-radius: 14px 14px 0 0; }
+.notif-grid-card:hover .notif-card-chevron { opacity: 1; transform: translateX(0); }
+.notif-card-chevron { opacity: 0; transform: translateX(-6px); transition: all 0.2s; }
 .nitem {
   display: flex;
   gap: 14px;
@@ -3082,7 +3093,7 @@ select.fi { appearance: none; cursor: pointer;
             </div>
           </div>
           <div class="frow">
-            <div class="fsearch"><i class="fas fa-search"></i><input placeholder="Search by Order ID or customer...">
+            <div class="fsearch"><i class="fas fa-search"></i><input placeholder="Search by Order ID or customer..." oninput="updateOrderSearch('all', this.value)">
             </div>
             <select class="fsel" onchange="filterAllOrders(this.value)">
               <option value="all">All Status</option>
@@ -3118,7 +3129,7 @@ select.fi { appearance: none; cursor: pointer;
             <div class="pg-head-r"><button class="btn bs bsm"><i class="fas fa-download"></i> Export</button></div>
           </div>
           <div class="frow">
-            <div class="fsearch"><i class="fas fa-search"></i><input placeholder="Search completed orders..."></div>
+            <div class="fsearch"><i class="fas fa-search"></i><input placeholder="Search completed orders..." oninput="updateOrderSearch('completed', this.value)"></div>
           </div>
           <div class="ao-wrap" style="margin-top:16px">
             <table class="ao-table">
@@ -3144,7 +3155,7 @@ select.fi { appearance: none; cursor: pointer;
             <div class="pg-head-r"><button class="btn bs bsm"><i class="fas fa-download"></i> Export</button></div>
           </div>
           <div class="frow">
-            <div class="fsearch"><i class="fas fa-search"></i><input placeholder="Search pending orders..."></div>
+            <div class="fsearch"><i class="fas fa-search"></i><input placeholder="Search pending orders..." oninput="updateOrderSearch('pending', this.value)"></div>
           </div>
           <div class="ao-wrap" style="margin-top:16px">
             <table class="ao-table">
@@ -3170,7 +3181,7 @@ select.fi { appearance: none; cursor: pointer;
             <div class="pg-head-r"><button class="btn bs bsm"><i class="fas fa-download"></i> Export</button></div>
           </div>
           <div class="frow">
-            <div class="fsearch"><i class="fas fa-search"></i><input placeholder="Search failed orders..."></div>
+            <div class="fsearch"><i class="fas fa-search"></i><input placeholder="Search failed orders..." oninput="updateOrderSearch('failed', this.value)"></div>
           </div>
           <div class="ao-wrap" style="margin-top:16px">
             <table class="ao-table">
@@ -3194,8 +3205,8 @@ select.fi { appearance: none; cursor: pointer;
         <section class="section" id="s-purchased-orders">
 
           <div class="frow">
-            <div class="fsearch"><i class="fas fa-search"></i><input placeholder="Search by Order ID, User..."></div>
-            <select class="fsel">
+            <div class="fsearch"><i class="fas fa-search"></i><input id="purchased-search" placeholder="Search by Order ID, User..." oninput="filterPurchasedOrders()"></div>
+            <select id="purchased-status" class="fsel" onchange="filterPurchasedOrders()">
               <option>All Status</option>
               <option>Completed</option>
               <option>Pending</option>
@@ -3682,73 +3693,11 @@ select.fi { appearance: none; cursor: pointer;
         <section class="section" id="s-notifications">
           <div class="pg-head">
             <div class="pg-head-r">
-              <button class="btn bs bsm" onclick="markAllNotificationsRead()"><i class="fas fa-check-double"></i> Mark
-                All Read</button>
+              <button class="btn bs bsm" onclick="markAllNotificationsRead()"><i class="fas fa-check-double"></i> Mark All Read</button>
             </div>
           </div>
           <div class="nlist">
-            <div class="nitem unr">
-              <div class="nic" style="background:rgba(239,68,68,.08);color:var(--rd)"><i
-                  class="fas fa-triangle-exclamation"></i></div>
-              <div class="ninf">
-                <div class="ntit">Order Failed – Refund Required</div>
-                <div class="nbdy">Order #ORD-1088 by Lisa Park failed payment verification. Initiate a refund or retry.
-                </div>
-                <div class="ntime"><i class="fas fa-clock"></i> 2 hours ago</div>
-              </div><button class="btn bs bsm" style="flex-shrink:0;align-self:flex-start">Action</button>
-            </div>
-            <div class="nitem unr">
-              <div class="nic" style="background:rgba(99,102,241,.08);color:var(--ac)"><i
-                  class="fas fa-bag-shopping"></i></div>
-              <div class="ninf">
-                <div class="ntit">New Order Received</div>
-                <div class="nbdy">Alex Johnson placed an order for Discord Server Boost x7 — $49.99</div>
-                <div class="ntime"><i class="fas fa-clock"></i> 4 hours ago</div>
-              </div><button class="btn bs bsm" style="flex-shrink:0;align-self:flex-start">View</button>
-            </div>
-            <div class="nitem unr">
-              <div class="nic" style="background:rgba(245,158,11,.08);color:var(--or)"><i class="fas fa-box"></i></div>
-              <div class="ninf">
-                <div class="ntit">Low Stock Alert</div>
-                <div class="nbdy">Member Boost x30 is running low — only 12 units remaining. Restock recommended.</div>
-                <div class="ntime"><i class="fas fa-clock"></i> 6 hours ago</div>
-              </div><button class="btn bs bsm" style="flex-shrink:0;align-self:flex-start">Restock</button>
-            </div>
-            <div class="nitem">
-              <div class="nic" style="background:rgba(16,185,129,.08);color:var(--gr)"><i class="fas fa-star"></i></div>
-              <div class="ninf">
-                <div class="ntit">New 5-Star Review</div>
-                <div class="nbdy">Ryan Kim: "Instant delivery, great service. Will order again!"</div>
-                <div class="ntime"><i class="fas fa-clock"></i> 1 day ago</div>
-              </div>
-            </div>
-            <div class="nitem">
-              <div class="nic" style="background:rgba(6,182,212,.08);color:var(--cy)"><i class="fas fa-envelope"></i>
-              </div>
-              <div class="ninf">
-                <div class="ntit">New Contact Message</div>
-                <div class="nbdy">Sara Miller sent an inquiry about order #ORD-1090 still being pending.</div>
-                <div class="ntime"><i class="fas fa-clock"></i> 1 day ago</div>
-              </div>
-            </div>
-            <div class="nitem">
-              <div class="nic" style="background:rgba(99,102,241,.08);color:var(--ac)"><i class="fas fa-newspaper"></i>
-              </div>
-              <div class="ninf">
-                <div class="ntit">Blog Post Published</div>
-                <div class="nbdy">"How to Protect Your Discord Server from Raids" has been published successfully.</div>
-                <div class="ntime"><i class="fas fa-clock"></i> 2 days ago</div>
-              </div>
-            </div>
-            <div class="nitem">
-              <div class="nic" style="background:rgba(16,185,129,.08);color:var(--gr)"><i
-                  class="fas fa-shield-halved"></i></div>
-              <div class="ninf">
-                <div class="ntit">System Health — All Good</div>
-                <div class="nbdy">All services running normally. Last health check passed without issues.</div>
-                <div class="ntime"><i class="fas fa-clock"></i> 3 days ago</div>
-              </div>
-            </div>
+            <!-- Cards loaded by updateNotifications() JS -->
           </div>
         </section>
 
@@ -4646,6 +4595,55 @@ select.fi { appearance: none; cursor: pointer;
     ];
 
     let aoFilter = 'all';
+    const orderSearchQueries = { all: '', completed: '', pending: '', failed: '' };
+
+    function updateOrderSearch(tab, query) {
+      orderSearchQueries[tab] = query.toLowerCase();
+      if (tab === 'all') renderAllOrders();
+      else if (tab === 'completed') renderStatusOrders('Completed', 'tbody-completed');
+      else if (tab === 'pending') renderStatusOrders('Pending', 'tbody-pending');
+      else if (tab === 'failed') renderStatusOrders('Failed', 'tbody-failed');
+    }
+
+    function matchOrderSearch(order, query) {
+      if (!query) return true;
+      const q = query;
+      return (
+        String(order.id).toLowerCase().includes(q) ||
+        (order.name && order.name.toLowerCase().includes(q)) ||
+        (order.email && order.email.toLowerCase().includes(q)) ||
+        (order.product && order.product.toLowerCase().includes(q)) ||
+        (order.transactionId && order.transactionId.toLowerCase().includes(q))
+      );
+    }
+
+    function filterPurchasedOrders() {
+      const query = (document.getElementById('purchased-search')?.value || '').toLowerCase();
+      const statusSel = document.getElementById('purchased-status')?.value || 'All Status';
+      const rows = document.querySelectorAll('#s-purchased-orders .otable tbody tr');
+      
+      let visibleCount = 0;
+      rows.forEach(row => {
+        if (row.classList.contains('empty-state')) { row.remove(); return; }
+        const text = row.textContent.toLowerCase();
+        const statusCol = row.querySelector('td:last-child').textContent.trim();
+        
+        const matchesQuery = !query || text.includes(query);
+        const matchesStatus = statusSel === 'All Status' || statusCol === statusSel;
+        
+        if (matchesQuery && matchesStatus) {
+          row.style.display = '';
+          visibleCount++;
+        } else {
+          row.style.display = 'none';
+        }
+      });
+      
+      const tbody = document.querySelector('#s-purchased-orders .otable tbody');
+      if (visibleCount === 0 && tbody) {
+        tbody.insertAdjacentHTML('beforeend', `<tr class="empty-state"><td colspan="6" style="text-align:center;padding:40px;color:var(--m2)"><i class="fas fa-search" style="font-size:28px;display:block;margin-bottom:10px"></i>No purchased orders found matching your criteria.</td></tr>`);
+      }
+    }
 
     function statClass(s) { return s === 'Completed' ? 'c' : s === 'Failed' ? 'f' : s === 'Processing' ? 'r' : 'p'; }
     function statLabel(s) { return `<span class="ostat ${statClass(s)}">${s}</span>`; }
@@ -4657,16 +4655,23 @@ select.fi { appearance: none; cursor: pointer;
     function renderAllOrders() {
       const tbody = document.getElementById('ao-tbody');
       if (!tbody) return;
-      const rows = ALL_ORDERS_DATA.filter(o => aoFilter === 'all' || o.status === aoFilter);
+      const rows = ALL_ORDERS_DATA.filter(o => 
+        (aoFilter === 'all' || o.status === aoFilter) &&
+        matchOrderSearch(o, orderSearchQueries['all'])
+      );
+      if (rows.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--m2)"><i class="fas fa-search" style="font-size:28px;display:block;margin-bottom:10px"></i>No orders found matching your criteria.</td></tr>`;
+        return;
+      }
       tbody.innerHTML = rows.map(o => `
-    <tr id="row-${o.id}">
+    <tr id="row-${o.id}" class="clickable-row" onclick="viewOrder('${o.id}', null)">
       <td class="ao-oid">#${o.id}</td>
       <td><div class="ao-user"><div class="ao-av" style="background:${o.color}">${o.initials}</div><span class="ao-name">${o.name}</span></div></td>
       <td class="ao-product">${o.product}</td>
       <td class="ao-price">${o.amount}</td>
       <td class="ao-date">${o.date}</td>
       <td>
-        <select class="status-sel ${statClass(o.status)}" onchange="updateOrderStatus('${o.id}', this)">
+        <select class="status-sel ${statClass(o.status)}" onchange="updateOrderStatus('${o.id}', this)" onclick="event.stopPropagation()">
           <option ${o.status === 'Completed' ? 'selected' : ''}>Completed</option>
           <option ${o.status === 'Pending' ? 'selected' : ''}>Pending</option>
           <option ${o.status === 'Processing' ? 'selected' : ''}>Processing</option>
@@ -4675,9 +4680,8 @@ select.fi { appearance: none; cursor: pointer;
       </td>
       <td>
         <div class="ao-acts">
-          <button class="ibtn" title="Chat" style="background:rgba(99,102,241,.1);color:var(--ac);width:32px;height:32px;border-radius:8px;border:none;cursor:pointer;font-size:13px" onclick="openOrderModal('${o.id}','${o.status}','${o.name}')"><i class="fas fa-message"></i></button>
-          <button class="ibtn ed" title="View" onclick="viewOrder('${o.id}', this)"><i class="fas fa-eye"></i></button>
-          <button class="ibtn dl" title="Delete" onclick="deleteOrder('${o.id}')"><i class="fas fa-trash"></i></button>
+          <button class="ibtn ed" title="View" onclick="event.stopPropagation(); viewOrder('${o.id}', this)"><i class="fas fa-eye"></i></button>
+          <button class="ibtn dl" title="Delete" onclick="event.stopPropagation(); deleteOrder('${o.id}')"><i class="fas fa-trash"></i></button>
         </div>
       </td>
     </tr>
@@ -4937,13 +4941,14 @@ select.fi { appearance: none; cursor: pointer;
     function renderStatusOrders(status, tbodyId) {
       const tbody = document.getElementById(tbodyId);
       if (!tbody) return;
-      const rows = ALL_ORDERS_DATA.filter(o => o.status === status);
+      const q = orderSearchQueries[status.toLowerCase()] || '';
+      const rows = ALL_ORDERS_DATA.filter(o => o.status === status && matchOrderSearch(o, q));
       if (rows.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--m2)"><i class="fas fa-inbox" style="font-size:28px;display:block;margin-bottom:10px"></i>No ${status.toLowerCase()} orders found.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--m2)"><i class="fas fa-search" style="font-size:28px;display:block;margin-bottom:10px"></i>No ${status.toLowerCase()} orders found matching your criteria.</td></tr>`;
         return;
       }
       tbody.innerHTML = rows.map(o => `
-    <tr id="srow-${tbodyId}-${o.id}">
+    <tr id="srow-${tbodyId}-${o.id}" class="clickable-row" onclick="viewOrder('${o.id}', null)">
       <td class="ao-oid">#${o.id}</td>
       <td><div class="ao-user"><div class="ao-av" style="background:${o.color}">${o.initials}</div><span class="ao-name">${o.name}</span></div></td>
       <td class="ao-product">${o.product}</td>
@@ -4952,9 +4957,8 @@ select.fi { appearance: none; cursor: pointer;
       <td>${statLabel(o.status)}</td>
       <td>
         <div class="ao-acts">
-          <button class="ibtn" title="Chat" style="background:rgba(99,102,241,.1);color:var(--ac);width:32px;height:32px;border-radius:8px;border:none;cursor:pointer;font-size:13px" onclick="openOrderModal('${o.id}','${o.status}','${o.name}')"><i class="fas fa-message"></i></button>
-          <button class="ibtn ed" title="View" onclick="viewOrder('${o.id}', this)"><i class="fas fa-eye"></i></button>
-          <button class="ibtn dl" title="Delete" onclick="deleteStatusOrder('${o.id}','${tbodyId}')"><i class="fas fa-trash"></i></button>
+          <button class="ibtn ed" title="View" onclick="event.stopPropagation(); viewOrder('${o.id}', this)"><i class="fas fa-eye"></i></button>
+          <button class="ibtn dl" title="Delete" onclick="event.stopPropagation(); deleteStatusOrder('${o.id}','${tbodyId}')"><i class="fas fa-trash"></i></button>
         </div>
       </td>
     </tr>
@@ -5080,40 +5084,56 @@ select.fi { appearance: none; cursor: pointer;
     }
 
     function openChatFromDropdown(id) {
+      // Close any open dropdowns
       const dd = document.getElementById('tbChatDropdown');
       if (dd) dd.classList.remove('show');
 
+      // Navigate to Contact & Tickets page
       const contactLink = document.querySelector('.nav-link[data-tip="Contact"]');
       nav('contact', contactLink);
 
-      setTimeout(() => {
-        const contact = ALL_CONTACTS.find(c => c.id === id);
-        if (contact) {
-          let isTicket = false;
-          try {
-            const parsed = JSON.parse(contact.message);
-            if (parsed && parsed.type === 'ticket') isTicket = true;
-          } catch (e) { }
+      // After page renders, automatically open the exact chat conversation
+      function tryOpenChat(attempts) {
+        if (attempts <= 0) return;
 
-          if (isTicket) {
-            switchContactTab('tickets');
-          } else {
-            switchContactTab('messages');
-          }
-
-          const card = document.getElementById('contact-' + id);
-          if (card) {
-            card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            card.style.transition = 'all 0.4s';
-            card.style.borderColor = 'var(--brand)';
-            card.style.boxShadow = '0 0 14px rgba(108, 92, 231, 0.25)';
-            setTimeout(() => {
-              card.style.borderColor = '';
-              card.style.boxShadow = '';
-            }, 2200);
-          }
+        const contact = (typeof ALL_CONTACTS !== 'undefined' ? ALL_CONTACTS : []).find(c => c.id === id);
+        if (!contact) {
+          setTimeout(() => tryOpenChat(attempts - 1), 200);
+          return;
         }
-      }, 120);
+
+        // Switch to correct tab (messages vs tickets)
+        let isTicket = false;
+        try {
+          const parsed = JSON.parse(contact.message);
+          if (parsed && parsed.type === 'ticket') isTicket = true;
+        } catch (e) { }
+
+        if (isTicket) {
+          if (typeof switchContactTab === 'function') switchContactTab('tickets');
+        } else {
+          if (typeof switchContactTab === 'function') switchContactTab('messages');
+        }
+
+        // Directly open the chat — this renders messages, sets active state, everything
+        if (typeof window.selectDcChat === 'function') {
+          window.selectDcChat(id);
+
+          // Scroll the contact card into view in the sidebar list
+          setTimeout(() => {
+            const card = document.getElementById('contact-' + id) || document.querySelector(`[onclick="selectDcChat('${id}')"]`);
+            if (card) {
+              card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+          }, 150);
+        } else {
+          // Fallback: highlight the card if selectDcChat not ready yet
+          setTimeout(() => tryOpenChat(attempts - 1), 200);
+        }
+      }
+
+      // Give the page time to mount, then open the chat
+      setTimeout(() => tryOpenChat(10), 150);
     }
 
     function openFullChat() {
@@ -5325,8 +5345,50 @@ select.fi { appearance: none; cursor: pointer;
       }
     }
 
+    // Mark single notification as read (does NOT navigate)
+    function markNotifRead(id, event) {
+      if (event) { event.stopPropagation(); event.preventDefault(); }
+      const readNotifIds = JSON.parse(localStorage.getItem('read_notif_ids') || '[]');
+      if (!readNotifIds.includes(id)) {
+        readNotifIds.push(id);
+        localStorage.setItem('read_notif_ids', JSON.stringify(readNotifIds));
+      }
+      if (id.startsWith('contact-')) {
+        const contactId = id.substring(8);
+        if (typeof changeContactStatus === 'function') changeContactStatus(contactId, 'Read');
+      }
+      updateNotifications();
+    }
+
+    // Delete notification from Notification Center ONLY — no data deleted
+    function deleteNotification(id, event) {
+      if (event) { event.stopPropagation(); event.preventDefault(); }
+      const deletedIds = JSON.parse(localStorage.getItem('deleted_notif_ids') || '[]');
+      if (!deletedIds.includes(id)) {
+        deletedIds.push(id);
+        localStorage.setItem('deleted_notif_ids', JSON.stringify(deletedIds));
+      }
+      // Also mark as read so unread count is correct
+      const readNotifIds = JSON.parse(localStorage.getItem('read_notif_ids') || '[]');
+      if (!readNotifIds.includes(id)) {
+        readNotifIds.push(id);
+        localStorage.setItem('read_notif_ids', JSON.stringify(readNotifIds));
+      }
+      // Animate card out
+      const card = document.getElementById('notif-' + id);
+      if (card) {
+        card.style.transition = 'all 0.25s cubic-bezier(0.4,0,0.2,1)';
+        card.style.opacity = '0';
+        card.style.transform = 'scale(0.9)';
+        setTimeout(() => updateNotifications(), 260);
+      } else {
+        updateNotifications();
+      }
+    }
+
     function updateNotifications() {
       const readNotifIds = JSON.parse(localStorage.getItem('read_notif_ids') || '[]');
+      const deletedNotifIds = JSON.parse(localStorage.getItem('deleted_notif_ids') || '[]');
       const list = [];
 
       // 1. Orders
@@ -5444,26 +5506,104 @@ select.fi { appearance: none; cursor: pointer;
         });
       }
 
-      // Sort by time descending
+      // Sort by time descending, filter out deleted
       list.sort((a, b) => b.time - a.time);
+      const filteredList = list.filter(item => !deletedNotifIds.includes(item.id));
 
       // Render to .nlist
       const container = document.querySelector('.nlist');
       if (container) {
-        if (list.length === 0) {
-          container.innerHTML = `<div style="text-align:center;padding:40px;color:var(--m2)"><i class="fas fa-inbox" style="font-size:28px;display:block;margin-bottom:10px"></i>No notifications yet.</div>`;
-        } else {
-          container.innerHTML = list.map(item => {
-            const relativeTime = getRelativeTimeStr(item.time);
-            return `
-          <div class="nitem ${item.unread ? 'unr' : ''}" id="notif-${item.id}">
-            <div class="nic" style="background:${item.iconBg};color:${item.iconColor}"><i class="fas ${item.icon}"></i></div>
-            <div class="ninf">
-              <div class="ntit">${item.title}</div>
-              <div class="nbdy">${item.body}</div>
-              <div class="ntime"><i class="fas fa-clock"></i> ${relativeTime}</div>
+        if (filteredList.length === 0) {
+          container.style.display = 'flex';
+          container.style.alignItems = 'center';
+          container.style.justifyContent = 'center';
+          container.innerHTML = `<div style="text-align:center; padding:80px 40px; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+            <div style="width:72px; height:72px; border-radius:50%; background:var(--surface-2); border:1px solid var(--border-light); display:flex; align-items:center; justify-content:center; margin-bottom:20px; box-shadow:0 4px 16px rgba(0,0,0,0.06);">
+              <i class="fas fa-check-circle" style="font-size:32px; color:var(--brand);"></i>
             </div>
-            <button class="btn bs bsm" style="flex-shrink:0;align-self:flex-start" onclick="handleNotificationAction('${item.id}', \`${item.action}\`)">View</button>
+            <div style="font-size:18px; font-weight:800; color:var(--t-main); margin-bottom:6px;">Inbox Zero</div>
+            <div style="font-size:14px; color:var(--t-muted); max-width:280px; line-height:1.6;">You're all caught up! No new notifications to review.</div>
+          </div>`;
+        } else {
+          container.style.display = '';
+          container.innerHTML = filteredList.map(item => {
+            const relativeTime = getRelativeTimeStr(item.time);
+            
+            let category = 'SYSTEM';
+            let badgeColor = 'var(--t-sub)';
+            let badgeBg = 'rgba(255,255,255,0.04)';
+            let categoryIcon = 'fa-bell';
+            let iconBg = 'rgba(255,255,255,0.06)';
+            let iconClr = 'var(--t-muted)';
+            let isPriority = false;
+            
+            if (item.id.startsWith('order')) {
+              category = 'ORDER';
+              badgeColor = 'var(--brand)';
+              badgeBg = 'rgba(99,102,241,0.12)';
+              categoryIcon = 'fa-shopping-bag';
+              iconBg = 'rgba(99,102,241,0.12)';
+              iconClr = 'var(--brand)';
+              if (item.id.includes('Failed')) { isPriority = true; iconBg = 'rgba(239,68,68,0.12)'; iconClr = 'var(--red)'; category = 'ORDER'; badgeColor = 'var(--red)'; badgeBg = 'rgba(239,68,68,0.12)'; }
+            } else if (item.id.startsWith('contact')) {
+              category = 'CHAT';
+              badgeColor = '#38BDF8';
+              badgeBg = 'rgba(56,189,248,0.12)';
+              categoryIcon = 'fa-comment-dots';
+              iconBg = 'rgba(56,189,248,0.12)';
+              iconClr = '#38BDF8';
+            } else if (item.id.startsWith('bug')) {
+              category = 'BUG';
+              badgeColor = 'var(--red)';
+              badgeBg = 'rgba(239,68,68,0.12)';
+              categoryIcon = 'fa-bug';
+              iconBg = 'rgba(239,68,68,0.12)';
+              iconClr = 'var(--red)';
+              isPriority = true;
+            } else if (item.id.startsWith('suggestion')) {
+              category = 'FEEDBACK';
+              badgeColor = '#F59E0B';
+              badgeBg = 'rgba(245,158,11,0.12)';
+              categoryIcon = 'fa-lightbulb';
+              iconBg = 'rgba(245,158,11,0.12)';
+              iconClr = '#F59E0B';
+            }
+            
+            const actionButtons = item.unread
+              ? `<div class="notif-actions" onclick="event.stopPropagation()">
+                  <button class="nact-btn mark-read" onclick="markNotifRead('${item.id}', event)" title="Mark as Read"><i class="fas fa-check"></i></button>
+                  <button class="nact-btn del" onclick="deleteNotification('${item.id}', event)" title="Dismiss"><i class="fas fa-xmark"></i></button>
+                </div>`
+              : `<div class="notif-actions" onclick="event.stopPropagation()">
+                  <button class="nact-btn del" onclick="deleteNotification('${item.id}', event)" title="Dismiss"><i class="fas fa-xmark"></i></button>
+                </div>`;
+
+            return `
+          <div class="notif-grid-card ${item.unread ? 'unread' : ''}" id="notif-${item.id}" onclick="handleNotificationAction('${item.id}', \`${item.action}\`)">
+
+            <!-- Row 1: icon + action buttons -->
+            <div style="display:flex; align-items:center; justify-content:space-between;">
+              <div style="width:36px; height:36px; border-radius:10px; background:${iconBg}; color:${iconClr}; display:flex; align-items:center; justify-content:center; font-size:15px; flex-shrink:0;">
+                <i class="fas ${categoryIcon}"></i>
+              </div>
+              ${actionButtons}
+            </div>
+
+            <!-- Row 2: title + body -->
+            <div style="flex:1;">
+              <div style="font-size:13.5px; font-weight:700; color:${item.unread ? 'var(--t-main)' : 'var(--t-sub)'}; line-height:1.3; margin-bottom:5px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">${item.title}</div>
+              <div style="font-size:12px; color:var(--t-muted); line-height:1.5; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;">${item.body}</div>
+            </div>
+
+            <!-- Row 3: time + category badge -->
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-top:auto;">
+              <div style="display:flex; align-items:center; gap:5px; font-size:11px; color:var(--t-muted); font-weight:500;">
+                <i class="fas fa-clock" style="font-size:10px;"></i>
+                <span>${relativeTime}</span>
+              </div>
+              <span style="font-size:9.5px; font-weight:800; text-transform:uppercase; letter-spacing:0.06em; padding:2px 8px; border-radius:6px; background:${badgeBg}; color:${badgeColor};">${category}</span>
+            </div>
+
           </div>
         `;
           }).join('');
@@ -5805,7 +5945,7 @@ select.fi { appearance: none; cursor: pointer;
             <div class="cav" style="background:${getRandomColor(m.name || 'User')}">${(m.name || 'U')[0].toUpperCase()}</div>
             <div>
               <div class="cname" style="display:flex;align-items:center;gap:6px;">${m.name || 'Anonymous'} ${orderIdInfo}</div>
-              <div class="cemail">${m.email || 'N/A'}</div>
+              <div class="cemail">${m.email || 'N/A'} ${m.email ? renderCopyable(m.email, "Customer Email") : ""}</div>
             </div>
             ${statusBadge}
           </div>
@@ -6212,7 +6352,7 @@ select.fi { appearance: none; cursor: pointer;
           <div class="sgb" style="margin: 10px 0 16px 0; font-size:13.5px; color:var(--t-sub); line-height:1.5; white-space: pre-wrap;">${desc}</div>
           <div class="sgmeta" style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap; border-top:1px solid rgba(0,0,0,0.03); padding-top:14px; font-size:11.5px; color:var(--t-sub); font-weight:600;">
             <span style="display:inline-flex; align-items:center; gap:6px;"><i class="fas fa-user" style="color:var(--t-muted)"></i>${s.name || 'Anonymous'}</span>
-            <span style="display:inline-flex; align-items:center; gap:6px;"><i class="fas fa-envelope" style="color:var(--t-muted)"></i>${s.email || 'N/A'}</span>
+            <span style="display:inline-flex; align-items:center; gap:6px;"><i class="fas fa-envelope" style="color:var(--t-muted)"></i>${s.email || 'N/A'} ${s.email ? renderCopyable(s.email, "Email") : ""}</span>
             <span style="display:inline-flex; align-items:center; gap:6px;"><i class="fas fa-calendar" style="color:var(--t-muted)"></i>${new Date(s.created_at).toLocaleDateString()}</span>
             <div style="display: flex; align-items: center; gap: 8px; margin-left: auto;">
               <span class="badge ${statusClass}">${s.status}</span>
@@ -6325,7 +6465,7 @@ select.fi { appearance: none; cursor: pointer;
             </div>
             <div style="display:flex; flex-direction:column; line-height:1.2;">
               <strong style="font-weight:700; color:var(--t-main); font-size:13px;">${b.name || 'Anonymous'}</strong>
-              <span style="font-size:11px; color:var(--t-sub); font-weight:500;">${b.email || 'N/A'}</span>
+              <span style="font-size:11px; color:var(--t-sub); font-weight:500;">${b.email || 'N/A'} ${b.email ? renderCopyable(b.email, "Reporter Email") : ""}</span>
             </div>
           </div>
         </td>
@@ -6432,7 +6572,7 @@ select.fi { appearance: none; cursor: pointer;
       </div>
       <div style="background:#FAFBFC; padding: 12px; border-radius: 10px; border: 1px solid rgba(0,0,0,0.03);">
         <div style="font-size:10px; font-weight:800; color:var(--t-muted); text-transform:uppercase; margin-bottom:4px;">Email Address</div>
-        <div style="font-size:13px; font-weight:700; color:var(--t-main);">${s.email || 'N/A'}</div>
+        <div style="font-size:13px; font-weight:700; color:var(--t-main);">${s.email || 'N/A'} ${s.email ? renderCopyable(s.email, "Email") : ""}</div>
       </div>
     </div>
     <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
@@ -6504,7 +6644,7 @@ select.fi { appearance: none; cursor: pointer;
       </div>
       <div style="background:#FAFBFC; padding: 12px; border-radius: 10px; border: 1px solid rgba(0,0,0,0.03);">
         <div style="font-size:10px; font-weight:800; color:var(--t-muted); text-transform:uppercase; margin-bottom:4px;">Email Address</div>
-        <div style="font-size:13px; font-weight:700; color:var(--t-main);">${b.email || 'N/A'}</div>
+        <div style="font-size:13px; font-weight:700; color:var(--t-main);">${b.email || 'N/A'} ${b.email ? renderCopyable(b.email, "Email") : ""}</div>
       </div>
     </div>
     <div style="background:#FAFBFC; padding: 12px; border-radius: 10px; border: 1px solid rgba(0,0,0,0.03);">
