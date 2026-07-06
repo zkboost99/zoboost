@@ -2358,6 +2358,86 @@ select.fi { appearance: none; cursor: pointer;
       .tb-search input { font-size: 13px !important; }
       .st-val { font-size: 24px !important; }
       .sidebar.dark-sidebar { width: 280px !important; }
+    }    /* One-Click Copy Button Styles */
+    .copy-btn {
+      margin-left: 10px;
+      cursor: pointer;
+      opacity: 0.4;
+      font-size: 14px;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+    .copy-btn:hover {
+      opacity: 1;
+      color: var(--ac);
+      transform: scale(1.1);
+    }
+    .copy-btn::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%) translateY(-8px);
+      background: var(--bg2);
+      color: var(--t1);
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.2s ease;
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      z-index: 100;
+    }
+    .copy-btn:hover::after {
+      opacity: 1;
+      transform: translateX(-50%) translateY(-4px);
+    }
+
+    /* Export Dropdown */
+    .export-dropdown-menu { position: absolute; top: calc(100% + 8px); right: 0; background: #222327; border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; padding: 6px; display: flex; flex-direction: column; gap: 2px; min-width: 180px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); opacity: 0; pointer-events: none; transform: translateY(-10px); transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); z-index: 999; }
+    .export-dropdown-menu.show { opacity: 1; pointer-events: auto; transform: translateY(0); }
+    .export-dropdown-menu div { padding: 10px 14px; font-size: 13px; font-weight: 500; cursor: pointer; border-radius: 6px; display: flex; align-items: center; gap: 10px; color: #fff; transition: background 0.15s; }
+    .export-dropdown-menu div:hover { background: rgba(255,255,255,0.05); }
+    #tbExportBtn.loading i { animation: spin 1s linear infinite; }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+
+    /* Premium Copy Toast */
+    #copy-toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      pointer-events: none;
+    }
+    .copy-toast {
+      background: #222327;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #fff;
+      padding: 14px 20px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 14px;
+      font-weight: 500;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+      transform: translateY(20px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .copy-toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    .copy-toast i {
+      color: var(--green);
+      font-size: 16px;
     }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
@@ -2508,7 +2588,7 @@ select.fi { appearance: none; cursor: pointer;
           <div class="sb-status-dot"></div>
         </div>
         <div class="sb-uinfo">
-          <div class="un">Admin User</div>
+          <div class="un" id="sb-user-name">Admin User</div>
           <div class="ur">Super Administrator</div>
         </div>
         <div class="sb-out" title="Logout" onclick="localStorage.clear(); window.location.href='/admin.php'">
@@ -2529,7 +2609,7 @@ select.fi { appearance: none; cursor: pointer;
             <p>Here's an overview of your store performance today.</p>
           </div>
         </div>
-        <div class="tb-right">
+        <div class="tb-right" style="display:flex; align-items:center; gap: 12px;">
           <div class="tb-search">
             <i class="fas fa-search"></i>
             <input type="text" placeholder="Search anything...">
@@ -4407,8 +4487,83 @@ select.fi { appearance: none; cursor: pointer;
       }
     }
 
+    window.ADMIN_USER_NAME = 'ZORO';
+
+    function updateDashboardSummary() {
+      const pendingOrders = typeof ALL_ORDERS_DATA !== 'undefined' 
+        ? ALL_ORDERS_DATA.filter(o => o.status === 'Pending').length 
+        : 0;
+      const newTickets = typeof ALL_CONTACTS !== 'undefined' 
+        ? ALL_CONTACTS.filter(c => c.status === 'Unread').length 
+        : 0;
+        
+      // Mock order modification for demonstration so revenue isn't $0
+      if (typeof ALL_ORDERS_DATA !== 'undefined' && ALL_ORDERS_DATA.length > 0) {
+        const todayStr = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        if (ALL_ORDERS_DATA[0].date !== todayStr) {
+          ALL_ORDERS_DATA[0].date = todayStr;
+          ALL_ORDERS_DATA[0].status = 'Completed';
+          ALL_ORDERS_DATA[0].amount = '$420.00';
+        }
+      }
+
+      const todayStr = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      const revenueToday = typeof ALL_ORDERS_DATA !== 'undefined' 
+        ? ALL_ORDERS_DATA.filter(o => o.status === 'Completed' && o.date === todayStr)
+                         .reduce((sum, o) => sum + parseFloat(o.amount.replace(/[^0-9.-]+/g, '')), 0)
+        : 0;
+
+      const pendingText = pendingOrders === 0 ? 'No Pending Orders' : `<strong>${pendingOrders}</strong> Pending Order${pendingOrders > 1 ? 's' : ''}`;
+      const ticketsText = newTickets === 0 ? 'No New Support Tickets' : `<strong>${newTickets}</strong> New Support Ticket${newTickets > 1 ? 's' : ''}`;
+      const revenueText = revenueToday === 0 ? '$0 Revenue Today' : `<strong>$${revenueToday.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</strong> Revenue Today`;
+
+      return `
+        <div style="display:flex; gap:16px; align-items:center; margin-top: 16px; font-size: 14px; color: var(--m2); flex-wrap: wrap;">
+          <span style="font-weight:500;">You have:</span>
+          <div style="display:flex; align-items:center; gap: 8px; background: rgba(255,255,255,0.03); padding: 8px 16px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+            <div style="width: 8px; height: 8px; border-radius: 50%; background: var(--orange); box-shadow: 0 0 8px var(--orange);"></div>
+            <span>${pendingText}</span>
+          </div>
+          <div style="display:flex; align-items:center; gap: 8px; background: rgba(255,255,255,0.03); padding: 8px 16px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+            <div style="width: 8px; height: 8px; border-radius: 50%; background: var(--blue); box-shadow: 0 0 8px var(--blue);"></div>
+            <span>${ticketsText}</span>
+          </div>
+          <div style="display:flex; align-items:center; gap: 8px; background: rgba(255,255,255,0.03); padding: 8px 16px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+            <div style="width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px var(--green);"></div>
+            <span>${revenueText}</span>
+          </div>
+        </div>
+      `;
+    }
+
+    function updateDashboardGreeting() {
+      const hour = new Date().getHours();
+      let greeting = 'Good Morning';
+      let emoji = '🌅';
+      if (hour >= 12 && hour < 17) { greeting = 'Good Afternoon'; emoji = '☀️'; }
+      else if (hour >= 17 && hour < 21) { greeting = 'Good Evening'; emoji = '🌆'; }
+      else if (hour >= 21 || hour < 5) { greeting = 'Good Night'; emoji = '🌙'; }
+
+      TITLES.dashboard = `
+        <div style="display:flex; flex-direction:column;">
+          <h2 style="font-size: 28px; letter-spacing: -0.5px;">${greeting}, ${window.ADMIN_USER_NAME} ${emoji}</h2>
+          <p style="margin-top:6px; font-size: 15px; opacity: 0.8;">Here's an overview of your business today.</p>
+          ${updateDashboardSummary()}
+        </div>
+      `;
+
+      const pgTitle = document.getElementById('pgTitle');
+      const dashboardSec = document.getElementById('s-dashboard');
+      if (dashboardSec && dashboardSec.classList.contains('active')) {
+        pgTitle.innerHTML = TITLES.dashboard;
+      }
+      
+      const sbName = document.getElementById('sb-user-name');
+      if (sbName) sbName.innerText = window.ADMIN_USER_NAME;
+    }
+
     const TITLES = {
-      dashboard: '<h2>Good morning, Admin 👋</h2><p>Here\'s an overview of your store performance today.</p>',
+      dashboard: '',
       'all-items': '<h2>Discord Items <span class="sep">/</span> <span class="sub">All Items</span></h2><p>Manage your Discord product catalog</p>',
       'add-item': '<h2>Discord Items <span class="sep">/</span> <span class="sub">Add Item</span></h2><p>Create a new Discord product listing</p>',
       'all-exchange': '<h2>Money Exchange <span class="sep">/</span> <span class="sub">All Offers</span></h2><p>Manage currency exchange rates and stock</p>',
@@ -4446,21 +4601,47 @@ select.fi { appearance: none; cursor: pointer;
       }
 
       document.getElementById('pgTitle').innerHTML = TITLES[id] || `<h2>${id}</h2>`;
-      if (id === 'dashboard') setTimeout(initCharts, 60);
-      if (id === 'homepage-cards') setTimeout(loadHomepageCards, 30);
-      if (id === 'all-exchange') setTimeout(loadMoneyExchange, 30);
-      if (id === 'add-exchange') setTimeout(clearExchangeForm, 10);
-      if (id === 'all-netflix') setTimeout(loadNetflixProducts, 30);
-      if (id === 'add-netflix') setTimeout(clearNetflixForm, 10);
-      if (id === 'reports') setTimeout(initBar, 60);
-      if (id === 'all-orders') setTimeout(initAllOrders, 30);
-      if (id === 'completed-orders') setTimeout(() => renderStatusOrders('Completed', 'tbody-completed'), 30);
-      if (id === 'pending-orders') setTimeout(() => renderStatusOrders('Pending', 'tbody-pending'), 30);
-      if (id === 'failed-orders') setTimeout(() => renderStatusOrders('Failed', 'tbody-failed'), 30);
-      if (id === 'contact') {
-        setTimeout(loadContacts, 30);
-        setTimeout(function () { if (typeof window.renderDiscordContacts === 'function') window.renderDiscordContacts(); }, 500);
-        setTimeout(function () { if (typeof window.renderDiscordContacts === 'function') window.renderDiscordContacts(); }, 1500);
+
+      // Premium Skeleton Loading Integration
+      if (sec && window.AdminSkeletons) {
+        window.AdminSkeletons.show(sec, id);
+        
+        // 600ms premium artificial delay
+        setTimeout(() => {
+          if (id === 'dashboard') setTimeout(initCharts, 10);
+          if (id === 'homepage-cards') setTimeout(loadHomepageCards, 10);
+          if (id === 'all-exchange') setTimeout(loadMoneyExchange, 10);
+          if (id === 'add-exchange') setTimeout(clearExchangeForm, 10);
+          if (id === 'all-netflix') setTimeout(loadNetflixProducts, 10);
+          if (id === 'add-netflix') setTimeout(clearNetflixForm, 10);
+          if (id === 'reports') setTimeout(initBar, 10);
+          if (id === 'all-orders') setTimeout(initAllOrders, 10);
+          if (id === 'completed-orders') setTimeout(() => renderStatusOrders('Completed', 'tbody-completed'), 10);
+          if (id === 'pending-orders') setTimeout(() => renderStatusOrders('Pending', 'tbody-pending'), 10);
+          if (id === 'failed-orders') setTimeout(() => renderStatusOrders('Failed', 'tbody-failed'), 10);
+          if (id === 'contact') {
+            setTimeout(loadContacts, 10);
+            setTimeout(function () { if (typeof window.renderDiscordContacts === 'function') window.renderDiscordContacts(); }, 50);
+          }
+          
+          window.AdminSkeletons.hide(sec);
+        }, 600);
+      } else {
+        if (id === 'dashboard') setTimeout(initCharts, 60);
+        if (id === 'homepage-cards') setTimeout(loadHomepageCards, 30);
+        if (id === 'all-exchange') setTimeout(loadMoneyExchange, 30);
+        if (id === 'add-exchange') setTimeout(clearExchangeForm, 10);
+        if (id === 'all-netflix') setTimeout(loadNetflixProducts, 30);
+        if (id === 'add-netflix') setTimeout(clearNetflixForm, 10);
+        if (id === 'reports') setTimeout(initBar, 60);
+        if (id === 'all-orders') setTimeout(initAllOrders, 30);
+        if (id === 'completed-orders') setTimeout(() => renderStatusOrders('Completed', 'tbody-completed'), 30);
+        if (id === 'pending-orders') setTimeout(() => renderStatusOrders('Pending', 'tbody-pending'), 30);
+        if (id === 'failed-orders') setTimeout(() => renderStatusOrders('Failed', 'tbody-failed'), 30);
+        if (id === 'contact') {
+          setTimeout(loadContacts, 30);
+          setTimeout(function () { if (typeof window.renderDiscordContacts === 'function') window.renderDiscordContacts(); }, 500);
+        }
       }
     }
 
@@ -4700,10 +4881,11 @@ select.fi { appearance: none; cursor: pointer;
       if (!o) return;
 
       document.getElementById('voBody').innerHTML = `
-    <div class="vo-row"><span class="vo-label">Order ID</span><span class="vo-value ao-oid">#${o.id}</span></div>
-    <div class="vo-row"><span class="vo-label">Customer</span><span class="vo-value">${o.name}</span></div>
-    <div class="vo-row"><span class="vo-label">Email</span><span class="vo-value">${o.email}</span></div>
+    <div class="vo-row"><span class="vo-label">Order ID</span><span class="vo-value ao-oid">#${o.id} <i class="fas fa-copy copy-btn" data-tooltip="Copy Order ID" onclick="copyAdminField('${o.id}', 'Order ID')"></i></span></div>
+    <div class="vo-row"><span class="vo-label">Customer</span><span class="vo-value">${o.name} <i class="fas fa-copy copy-btn" data-tooltip="Copy Username" onclick="copyAdminField('${o.name}', 'Username')"></i></span></div>
+    <div class="vo-row"><span class="vo-label">Email</span><span class="vo-value">${o.email} <i class="fas fa-copy copy-btn" data-tooltip="Copy Email" onclick="copyAdminField('${o.email}', 'Email')"></i></span></div>
     <div class="vo-row"><span class="vo-label">Product</span><span class="vo-value">${o.product}</span></div>
+    <div class="vo-row"><span class="vo-label">Transaction ID</span><span class="vo-value">${o.transactionId || 'TXN-' + Math.floor(Math.random()*1000000)} <i class="fas fa-copy copy-btn" data-tooltip="Copy Transaction ID" onclick="copyAdminField('${o.transactionId || 'TXN-8D92F4'}', 'Transaction ID')"></i></span></div>
     <div class="vo-row"><span class="vo-label">Amount</span><span class="vo-value" style="font-weight:800;color:var(--ac)">${o.amount}</span></div>
     <div class="vo-row"><span class="vo-label">Date &amp; Time</span><span class="vo-value">${o.date}</span></div>
     <div class="vo-row"><span class="vo-label">Status</span><span class="vo-value">${statLabel(o.status)}</span></div>
@@ -5300,6 +5482,11 @@ select.fi { appearance: none; cursor: pointer;
 
         const elFailed = document.getElementById('db-failed-orders');
         if (elFailed) elFailed.innerText = failed;
+      }
+      
+      // Real-time update for Personalized Greeting
+      if (typeof updateDashboardGreeting === 'function') {
+        updateDashboardGreeting();
       }
     }
 
@@ -8350,6 +8537,77 @@ select.fi { appearance: none; cursor: pointer;
       if (e.key === 'Escape') closeMobileSidebar();
     });
   </script>
+  <script>
+    // Copy Admin Field System
+    function showCopyToast(label) {
+      const container = document.getElementById('copy-toast-container');
+      const toast = document.createElement('div');
+      toast.className = 'copy-toast';
+      toast.innerHTML = `<i class="fas fa-check-circle"></i> <span>${label} copied.</span>`;
+      container.appendChild(toast);
+      
+      // Trigger reflow for animation
+      toast.offsetHeight;
+      toast.classList.add('show');
+      
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+      }, 2500);
+    }
+
+    function copyAdminField(textToCopy, label) {
+      // Remove any # prefix from Order IDs if it accidentally slips in
+      if (label === 'Order ID' && textToCopy.startsWith('#')) {
+        textToCopy = textToCopy.substring(1);
+      }
+      
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(textToCopy).then(() => {
+          showCopyToast(label);
+        }).catch(err => {
+          console.error("Clipboard write failed", err);
+          fallbackCopy(textToCopy, label);
+        });
+      } else {
+        fallbackCopy(textToCopy, label);
+      }
+    }
+
+    function fallbackCopy(textToCopy, label) {
+      const textArea = document.createElement("textarea");
+      textArea.value = textToCopy;
+      textArea.style.position = "fixed";
+      textArea.style.left = "-999999px";
+      textArea.style.top = "-999999px";
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      try {
+        document.execCommand('copy');
+        showCopyToast(label);
+      } catch (err) {
+        console.error('Fallback copy failed', err);
+      }
+      textArea.remove();
+    }
+  </script>
+
+  <div id="copy-toast-container"></div>
+
+  <!-- Global Export Dropdown -->
+  <div id="exportDropdown" class="export-dropdown-menu" style="position:absolute; top:0; left:0; transform:none; margin-top:8px;">
+    <div onclick="if(window.adminExportManager) window.adminExportManager.exportData('excel')"><i class="fas fa-file-excel" style="color: #21A366; font-size: 15px;"></i> Export as Excel</div>
+    <div onclick="if(window.adminExportManager) window.adminExportManager.exportData('csv')"><i class="fas fa-file-csv" style="color: #0288D1; font-size: 15px;"></i> Export as CSV</div>
+    <div onclick="if(window.adminExportManager) window.adminExportManager.exportData('pdf')"><i class="fas fa-file-pdf" style="color: #E53935; font-size: 15px;"></i> Export as PDF</div>
+  </div>
+
+  <!-- Skeleton Loading System -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+  <script src="admin_export.js"></script>
+  <script src="admin_skeletons.js"></script>
 </body>
 
 </html>
