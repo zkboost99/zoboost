@@ -4669,7 +4669,14 @@ select.fi { appearance: none; cursor: pointer;
         const res = await fetch('/api/admin/orders');
         const data = await res.json();
         if (data.success) {
-          ALL_ORDERS_DATA = data.orders;
+          ALL_ORDERS_DATA = data.orders.map(o => ({
+            ...o,
+            displayId: o.displayId || ('ORD-' + (parseInt((o.id || '').substring(0, 8), 16) % 1000000).toString().padStart(6, '0')),
+            name: o.customer_name || 'Unknown',
+            date: o.created_at ? new Date(o.created_at).toLocaleDateString() : 'Unknown Date',
+            product: o.product_name || 'Unknown Product',
+            transactionId: o.transaction_id || ('TXN-' + Math.floor(Math.random() * 1000000))
+          }));
           renderAllOrders();
           renderStatusOrders('Completed', 'tbody-completed');
           renderStatusOrders('Pending', 'tbody-pending');
@@ -4722,8 +4729,9 @@ select.fi { appearance: none; cursor: pointer;
 
     function matchOrderSearch(order, query) {
       if (!query) return true;
-      const q = query;
+      const q = query.toLowerCase();
       return (
+        String(order.displayId).toLowerCase().includes(q) ||
         String(order.id).toLowerCase().includes(q) ||
         (order.name && order.name.toLowerCase().includes(q)) ||
         (order.email && order.email.toLowerCase().includes(q)) ||
@@ -4780,17 +4788,17 @@ select.fi { appearance: none; cursor: pointer;
       }
       tbody.innerHTML = rows.map(o => `
     <tr id="row-${o.id}" class="clickable-row" onclick="viewOrder('${o.id}', null)">
-      <td class="ao-oid">#${o.id}</td>
-      <td><div class="ao-user"><div class="ao-av" style="background:${o.color}">${o.initials}</div><span class="ao-name">${o.name}</span></div></td>
+      <td class="ao-oid">${o.displayId}</td>
+      <td><div class="ao-user"><div class="ao-av" style="background:${o.color || '#3b82f6'}">${o.initials || o.name.substring(0, 2).toUpperCase()}</div><span class="ao-name">${o.name}</span></div></td>
       <td class="ao-product">${o.product}</td>
       <td class="ao-price">${o.amount}</td>
       <td class="ao-date">${o.date}</td>
       <td>
         <select class="status-sel ${statClass(o.status)}" onchange="updateOrderStatus('${o.id}', this)" onclick="event.stopPropagation()">
-          <option ${o.status === 'Completed' ? 'selected' : ''}>Completed</option>
-          <option ${o.status === 'Pending' ? 'selected' : ''}>Pending</option>
-          <option ${o.status === 'Processing' ? 'selected' : ''}>Processing</option>
-          <option ${o.status === 'Failed' ? 'selected' : ''}>Failed</option>
+          <option value="Completed" ${o.status === 'Completed' ? 'selected="selected"' : ''}>Completed</option>
+          <option value="Pending" ${o.status === 'Pending' ? 'selected="selected"' : ''}>Pending</option>
+          <option value="Processing" ${o.status === 'Processing' ? 'selected="selected"' : ''}>Processing</option>
+          <option value="Failed" ${o.status === 'Failed' ? 'selected="selected"' : ''}>Failed</option>
         </select>
       </td>
       <td>
@@ -4827,11 +4835,14 @@ select.fi { appearance: none; cursor: pointer;
       }
 
       document.getElementById('voBody').innerHTML = `
-    <div class="vo-row"><span class="vo-label">Order ID</span><span class="vo-value ao-oid">#${o.id} <i class="fas fa-copy copy-btn" data-tooltip="Copy Order ID" onclick="copyAdminField('${o.id}', 'Order ID')"></i></span></div>
+    <div class="vo-row"><span class="vo-label">Order ID</span><span class="vo-value ao-oid">${o.displayId} <i class="fas fa-copy copy-btn" data-tooltip="Copy Order ID" onclick="copyAdminField('${o.displayId}', 'Order ID')"></i></span></div>
     <div class="vo-row"><span class="vo-label">Customer</span><span class="vo-value">${o.name} <i class="fas fa-copy copy-btn" data-tooltip="Copy Username" onclick="copyAdminField('${o.name}', 'Username')"></i></span></div>
     <div class="vo-row"><span class="vo-label">Email</span><span class="vo-value">${o.email} <i class="fas fa-copy copy-btn" data-tooltip="Copy Email" onclick="copyAdminField('${o.email}', 'Email')"></i></span></div>
+    ${o.phone_number ? `<div class="vo-row"><span class="vo-label">Phone</span><span class="vo-value">${o.phone_number} <i class="fas fa-copy copy-btn" data-tooltip="Copy Phone" onclick="copyAdminField('${o.phone_number}', 'Phone')"></i></span></div>` : ''}
+    ${o.discord_username ? `<div class="vo-row"><span class="vo-label">Discord</span><span class="vo-value">${o.discord_username} <i class="fas fa-copy copy-btn" data-tooltip="Copy Discord" onclick="copyAdminField('${o.discord_username}', 'Discord')"></i></span></div>` : ''}
     <div class="vo-row"><span class="vo-label">Product</span><span class="vo-value">${o.product}</span></div>
-    <div class="vo-row"><span class="vo-label">Transaction ID</span><span class="vo-value">${o.transactionId || 'TXN-' + Math.floor(Math.random()*1000000)} <i class="fas fa-copy copy-btn" data-tooltip="Copy Transaction ID" onclick="copyAdminField('${o.transactionId || 'TXN-8D92F4'}', 'Transaction ID')"></i></span></div>
+    <div class="vo-row"><span class="vo-label">Transaction ID</span><span class="vo-value">${o.transactionId} <i class="fas fa-copy copy-btn" data-tooltip="Copy Transaction ID" onclick="copyAdminField('${o.transactionId}', 'Transaction ID')"></i></span></div>
+    ${o.payment_method ? `<div class="vo-row"><span class="vo-label">Payment Method</span><span class="vo-value" style="font-weight:600;">${o.payment_method}</span></div>` : ''}
     <div class="vo-row"><span class="vo-label">Amount</span><span class="vo-value" style="font-weight:800;color:var(--ac)">${o.amount}</span></div>
     <div class="vo-row"><span class="vo-label">Date &amp; Time</span><span class="vo-value">${o.date}</span></div>
     <div class="vo-row"><span class="vo-label">Status</span><span class="vo-value">${statLabel(o.status)}</span></div>
@@ -4889,12 +4900,34 @@ select.fi { appearance: none; cursor: pointer;
       renderAllOrders();
     }
 
-    function updateOrderStatus(id, sel) {
+    async function updateOrderStatus(id, sel) {
       const order = ALL_ORDERS_DATA.find(o => o.id === id);
       if (!order) return;
-      order.status = sel.value;
-      sel.className = `status-sel ${statClass(sel.value)}`;
+      
+      const prevStatus = order.status;
+      const newStatus = sel.value;
+      
+      // Optimistic update
+      order.status = newStatus;
+      sel.className = `status-sel ${statClass(newStatus)}`;
       updateSidebarBadges();
+      
+      try {
+        const res = await fetch('/api/admin/orders', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id, status: newStatus })
+        });
+        const data = await res.json();
+        if (!data.success) throw new Error(data.error || 'Failed to update status');
+      } catch (err) {
+        alert(err.message);
+        // Revert on error
+        order.status = prevStatus;
+        sel.value = prevStatus;
+        sel.className = `status-sel ${statClass(prevStatus)}`;
+        updateSidebarBadges();
+      }
     }
 
 
@@ -5052,18 +5085,46 @@ select.fi { appearance: none; cursor: pointer;
       }
     }
 
-    function deleteOrder(id) {
-      if (!confirm(`Delete order #${id}? This cannot be undone.`)) return;
-      const idx = ALL_ORDERS_DATA.findIndex(o => o.id === id);
-      if (idx > -1) ALL_ORDERS_DATA.splice(idx, 1);
-      const row = document.getElementById('row-' + id);
-      if (row) {
-        row.style.transition = 'opacity .25s, transform .25s';
-        row.style.opacity = '0';
-        row.style.transform = 'translateX(30px)';
-        setTimeout(() => { row.remove(); }, 260);
+    async function deleteOrder(id) {
+      try {
+        console.log("Delete button clicked for ID:", id);
+        const order = ALL_ORDERS_DATA.find(o => String(o.id) === String(id));
+        if (!order) {
+          alert("Error: Order not found in local data!");
+          return;
+        }
+        
+        showCustomConfirm(`Delete order ${order.displayId}? This cannot be undone.`, async () => {
+          try {
+            const res = await fetch(`/api/admin/orders?id=${id}`, { method: 'DELETE' });
+            
+            if (!res.ok) {
+               const errText = await res.text();
+               throw new Error(`HTTP Error ${res.status}: ${errText}`);
+            }
+            
+            const data = await res.json();
+            if (!data.success) throw new Error(data.error || 'Failed to delete order');
+            
+            const idx = ALL_ORDERS_DATA.findIndex(o => String(o.id) === String(id));
+            if (idx > -1) ALL_ORDERS_DATA.splice(idx, 1);
+            
+            const row = document.getElementById('row-' + id);
+            if (row) {
+              row.style.transition = 'opacity .25s, transform .25s';
+              row.style.opacity = '0';
+              row.style.transform = 'translateX(30px)';
+              setTimeout(() => { row.remove(); }, 260);
+            }
+            updateSidebarBadges();
+          } catch (e) {
+            console.error("Delete order error:", e);
+            alert("Failed to delete order: " + e.message);
+          }
+        });
+      } catch (e) {
+        console.error("Delete order initial error:", e);
       }
-      updateSidebarBadges();
     }
     /* ─── STATUS-FILTERED ORDER TABLES ─── */
     function renderStatusOrders(status, tbodyId) {
@@ -5077,8 +5138,8 @@ select.fi { appearance: none; cursor: pointer;
       }
       tbody.innerHTML = rows.map(o => `
     <tr id="srow-${tbodyId}-${o.id}" class="clickable-row" onclick="viewOrder('${o.id}', null)">
-      <td class="ao-oid">#${o.id}</td>
-      <td><div class="ao-user"><div class="ao-av" style="background:${o.color}">${o.initials}</div><span class="ao-name">${o.name}</span></div></td>
+      <td class="ao-oid">${o.displayId}</td>
+      <td><div class="ao-user"><div class="ao-av" style="background:${o.color || '#3b82f6'}">${o.initials || o.name.substring(0, 2).toUpperCase()}</div><span class="ao-name">${o.name}</span></div></td>
       <td class="ao-product">${o.product}</td>
       <td class="ao-price">${o.amount}</td>
       <td class="ao-date">${o.date}</td>
@@ -5093,20 +5154,48 @@ select.fi { appearance: none; cursor: pointer;
   `).join('');
     }
 
-    function deleteStatusOrder(id, tbodyId) {
-      if (!confirm(`Delete order #${id}? This cannot be undone.`)) return;
-      const idx = ALL_ORDERS_DATA.findIndex(o => o.id === id);
-      if (idx > -1) ALL_ORDERS_DATA.splice(idx, 1);
-      const row = document.getElementById(`srow-${tbodyId}-${id}`);
-      if (row) {
-        row.style.transition = 'opacity .25s, transform .25s';
-        row.style.opacity = '0';
-        row.style.transform = 'translateX(30px)';
-        setTimeout(() => { row.remove(); }, 260);
+    async function deleteStatusOrder(id, tbodyId) {
+      try {
+        console.log("Delete status button clicked for ID:", id, tbodyId);
+        const order = ALL_ORDERS_DATA.find(o => String(o.id) === String(id));
+        if (!order) {
+          alert("Error: Order not found in local data!");
+          return;
+        }
+        
+        showCustomConfirm(`Delete order ${order.displayId}? This cannot be undone.`, async () => {
+          try {
+            const res = await fetch(`/api/admin/orders?id=${id}`, { method: 'DELETE' });
+            
+            if (!res.ok) {
+               const errText = await res.text();
+               throw new Error(`HTTP Error ${res.status}: ${errText}`);
+            }
+            
+            const data = await res.json();
+            if (!data.success) throw new Error(data.error || 'Failed to delete order');
+            
+            const idx = ALL_ORDERS_DATA.findIndex(o => String(o.id) === String(id));
+            if (idx > -1) ALL_ORDERS_DATA.splice(idx, 1);
+            
+            const row = document.getElementById(`srow-${tbodyId}-${id}`);
+            if (row) {
+              row.style.transition = 'opacity .25s, transform .25s';
+              row.style.opacity = '0';
+              row.style.transform = 'translateX(30px)';
+              setTimeout(() => { row.remove(); }, 260);
+            }
+            const aoRow = document.getElementById('row-' + id);
+            if (aoRow) aoRow.remove();
+            updateSidebarBadges();
+          } catch (e) {
+            console.error("Delete status order error:", e);
+            alert("Failed to delete order: " + e.message);
+          }
+        });
+      } catch (e) {
+        console.error("Delete status order initial error:", e);
       }
-      const aoRow = document.getElementById('row-' + id);
-      if (aoRow) aoRow.remove();
-      updateSidebarBadges();
     }
 
     /* ─── CHAT DROPDOWN ─── */

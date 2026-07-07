@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ProductDescriptionSection from './ProductDescriptionSection';
+import OrderFormModal from '@/components/OrderFormModal';
 import { 
   ArrowLeft,
   ShieldCheck, 
@@ -44,6 +45,7 @@ interface ProductDetailsClientProps {
 export default function ProductDetailsClient({ product, relatedProducts }: ProductDetailsClientProps) {
   const [currency, setCurrency] = useState<Currency>({ code: 'USD', symbol: '$', label: 'USD - $', rate: 1 });
   const [protectExpanded, setProtectExpanded] = useState(true);
+  const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
 
   useEffect(() => {
     const stored = localStorage.getItem('selected_currency');
@@ -229,14 +231,13 @@ export default function ProductDetailsClient({ product, relatedProducts }: Produ
                   </div>
                 </div>
 
-                {/* Buy Button */}
-                <Link 
-                  href="/contact-us"
+                {/* Create Order Button */}
+                <button 
+                  onClick={() => setIsOrderModalOpen(true)}
                   className="w-full inline-flex items-center justify-center rounded bg-[#ffd13b] hover:bg-[#ffc83b] px-4 py-3.5 text-sm font-bold text-neutral-900 shadow-md transition-all border-none cursor-pointer mb-5"
-                  style={{ textDecoration: 'none' }}
                 >
-                  Buy now
-                </Link>
+                  Create Order
+                </button>
 
                 {/* Secure Trust lines */}
                 <div className="flex flex-col gap-3 text-xs text-[#8a9bb4] pt-2 border-t border-[#1d2736]">
@@ -318,6 +319,15 @@ export default function ProductDetailsClient({ product, relatedProducts }: Produ
 
       {/* Footer */}
       <Footer />
+
+      {/* Order Modal */}
+      <OrderFormModal 
+        isOpen={isOrderModalOpen} 
+        onClose={() => setIsOrderModalOpen(false)} 
+        product={product} 
+        currencySymbol={currency.symbol}
+        currencyRate={currency.rate}
+      />
     </div>
   );
 }
