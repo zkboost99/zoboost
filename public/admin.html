@@ -1618,6 +1618,41 @@ select.fi { appearance: none; cursor: pointer;
 -->
 
   <style>
+    /* Dynamic Premium Backgrounds for Content Area */
+    .content {
+      transition: background 0.3s ease;
+    }
+
+    body:has(#s-all-items.active) .content {
+      background: 
+        linear-gradient(90deg, rgba(15,15,18,0.97) 0%, rgba(15,15,18,0.93) 40%, rgba(15,15,18,0.82) 70%, rgba(15,15,18,0.65) 100%),
+        url('https://pub-bc67e2c069bd4bbeac1a9624c01f79db.r2.dev/uploads/discord%20background.png');
+      background-size: cover;
+      background-position: right center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+    }
+
+    body:has(#s-all-exchange.active) .content {
+      background: 
+        linear-gradient(90deg, rgba(15,15,18,0.97) 0%, rgba(15,15,18,0.93) 40%, rgba(15,15,18,0.82) 70%, rgba(15,15,18,0.65) 100%),
+        url('https://pub-bc67e2c069bd4bbeac1a9624c01f79db.r2.dev/uploads/money%20exchange.png');
+      background-size: cover;
+      background-position: right center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+    }
+
+    body:has(#s-all-netflix.active) .content {
+      background: 
+        linear-gradient(90deg, rgba(15,15,18,0.97) 0%, rgba(15,15,18,0.93) 40%, rgba(15,15,18,0.82) 70%, rgba(15,15,18,0.65) 100%),
+        url('https://pub-bc67e2c069bd4bbeac1a9624c01f79db.r2.dev/uploads/NETFLIX.png');
+      background-size: cover;
+      background-position: right center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+    }
+
     /* Discord Chat Styles */
     .discord-chat-section {
       padding: 32px 0;
