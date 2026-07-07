@@ -2921,70 +2921,79 @@ select.fi { appearance: none; cursor: pointer;
 
         <!-- ═══ ALL ITEMS ═══ -->
         <section class="section" id="s-all-items">
-          <div class="pg-head">
-            <div class="pg-head-r">
-              <button class="btn bp" onclick="nav('add-item',null)"><i class="fas fa-plus"></i> Add Item</button>
+          <div class="premium-listing-layout-wrapper">
+            <div class="admin-toolbar">
+              <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="items-search" placeholder="Search products, IDs, or categories...">
+              </div>
+              <select id="items-filter-category" class="filter-select">
+                <option value="">All Categories</option>
+                <option value="boost">Server Boosts</option>
+                <option value="account">Aged Accounts</option>
+                <option value="nitro">Nitro</option>
+                <option value="decoration">Decorations</option>
+              </select>
+              <select id="items-filter-status" class="filter-select">
+                <option value="">All Status</option>
+                <option value="active">Active / Published</option>
+                <option value="draft">Draft / Hidden</option>
+              </select>
+              <select id="items-sort" class="filter-select">
+                <option value="newest">Sort: Newest First</option>
+                <option value="price-high">Price: High to Low</option>
+                <option value="price-low">Price: Low to High</option>
+              </select>
+              <div style="display: flex; align-items: center; gap: 8px; margin-left: 8px; padding-left: 8px; border-left: 1px solid rgba(255,255,255,0.1);">
+                <input type="checkbox" id="items-select-all" style="width: 16px; height: 16px; cursor: pointer;">
+              </div>
+              <select id="items-bulk-action" class="filter-select" style="max-width: 150px;">
+                <option value="">Bulk Actions</option>
+                <option value="delete">Delete Selected</option>
+                <option value="publish">Publish Selected</option>
+                <option value="hide">Hide Selected</option>
+              </select>
+              <button class="btn-add" onclick="nav('add-item',null)">
+                <i class="fas fa-plus"></i> Add Item
+              </button>
             </div>
-          </div>
-          <div class="frow">
-            <div class="fsearch"><i class="fas fa-search"></i><input placeholder="Search items…"></div>
-            <select class="fsel">
-              <option>All Categories</option>
-              <option>Server Boosts</option>
-              <option>Aged Accounts</option>
-              <option>Nitro</option>
-              <option>Decorations</option>
-            </select>
-            <select class="fsel">
-              <option>All Status</option>
-              <option>Active</option>
-              <option>Inactive</option>
-            </select>
-          </div>
-          <div class="ig" id="all-items-list">
+            <div class="premium-list-container" id="all-items-list">
+              <!-- Populated by JS -->
+            </div>
           </div>
         </section>
 
         <!-- ═══ ALL EXCHANGE OFFERS ═══ -->
         <section class="section" id="s-all-exchange">
-          <div class="pg-head">
-            <div class="pg-head-r">
-              <button class="btn bp" onclick="nav('add-exchange',null)"><i class="fas fa-plus"></i> Add Exchange
-                Offer</button>
+          <div class="premium-listing-layout-wrapper">
+            <div class="admin-toolbar">
+              <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search exchange offers by currency...">
+              </div>
+              <select class="filter-select">
+                <option value="">All Status</option>
+                <option value="active">Active / Published</option>
+                <option value="draft">Draft / Hidden</option>
+              </select>
+              <select class="filter-select">
+                <option value="newest">Sort: Newest First</option>
+                <option value="rate-high">Rate: High to Low</option>
+                <option value="rate-low">Rate: Low to High</option>
+              </select>
+              <select class="filter-select" style="max-width: 150px;">
+                <option value="">Bulk Actions</option>
+                <option value="delete">Delete Selected</option>
+                <option value="publish">Publish Selected</option>
+                <option value="hide">Hide Selected</option>
+              </select>
+              <button class="btn-add" onclick="nav('add-exchange',null)">
+                <i class="fas fa-plus"></i> Add Exchange Offer
+              </button>
             </div>
-          </div>
-          <div
-            style="margin-top: 16px; background: var(--wh); border-radius: var(--r-md); border: 1px solid var(--b1); overflow: hidden;">
-            <table class="otable" style="width: 100%; border-collapse: collapse;">
-              <thead>
-                <tr style="border-bottom: 1px solid var(--b1); background: var(--bg-main);">
-                  <th
-                    style="padding: 14px 16px; text-align: left; font-size: 12px; font-weight: bold; color: var(--t-sub);">
-                    ICON</th>
-                  <th
-                    style="padding: 14px 16px; text-align: left; font-size: 12px; font-weight: bold; color: var(--t-sub);">
-                    GIVING</th>
-                  <th
-                    style="padding: 14px 16px; text-align: left; font-size: 12px; font-weight: bold; color: var(--t-sub);">
-                    GETTING</th>
-                  <th
-                    style="padding: 14px 16px; text-align: left; font-size: 12px; font-weight: bold; color: var(--t-sub);">
-                    EXCHANGE RATE</th>
-                  <th
-                    style="padding: 14px 16px; text-align: left; font-size: 12px; font-weight: bold; color: var(--t-sub);">
-                    RESERVE STOCK</th>
-                  <th
-                    style="padding: 14px 16px; text-align: left; font-size: 12px; font-weight: bold; color: var(--t-sub);">
-                    PRICE / FEE</th>
-                  <th
-                    style="padding: 14px 16px; text-align: right; font-size: 12px; font-weight: bold; color: var(--t-sub);">
-                    ACTIONS</th>
-                </tr>
-              </thead>
-              <tbody id="tbody-money-exchange">
-                <!-- Populated by JS -->
-              </tbody>
-            </table>
+            <div class="premium-list-container" id="tbody-money-exchange">
+              <!-- Populated by JS -->
+            </div>
           </div>
         </section>
 
@@ -3054,47 +3063,40 @@ select.fi { appearance: none; cursor: pointer;
 
         <!-- ═══ ALL NETFLIX ITEMS ═══ -->
         <section class="section" id="s-all-netflix">
-          <div class="pg-head">
-            <div class="pg-head-r">
-              <button class="btn bp" onclick="nav('add-netflix',null)"><i class="fas fa-plus"></i> Add Netflix
-                Item</button>
+          <div class="premium-listing-layout-wrapper">
+            <div class="admin-toolbar">
+              <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search Netflix accounts...">
+              </div>
+              <select class="filter-select">
+                <option value="">All Categories</option>
+                <option value="premium">Premium 4K</option>
+                <option value="standard">Standard HD</option>
+              </select>
+              <select class="filter-select">
+                <option value="">All Status</option>
+                <option value="active">Active / Published</option>
+                <option value="draft">Draft / Hidden</option>
+              </select>
+              <select class="filter-select">
+                <option value="newest">Sort: Newest First</option>
+                <option value="price-high">Price: High to Low</option>
+                <option value="price-low">Price: Low to High</option>
+              </select>
+              <select class="filter-select" style="max-width: 150px;">
+                <option value="">Bulk Actions</option>
+                <option value="delete">Delete Selected</option>
+                <option value="publish">Publish Selected</option>
+                <option value="hide">Hide Selected</option>
+              </select>
+              <button class="btn-add" onclick="nav('add-netflix',null)">
+                <i class="fas fa-plus"></i> Add Netflix Item
+              </button>
             </div>
-          </div>
-          <div
-            style="margin-top: 16px; background: var(--wh); border-radius: var(--r-md); border: 1px solid var(--b1); overflow: hidden;">
-            <table class="otable" style="width: 100%; border-collapse: collapse;">
-              <thead>
-                <tr style="border-bottom: 1px solid var(--b1); background: var(--bg-main);">
-                  <th
-                    style="padding: 14px 16px; text-align: left; font-size: 12px; font-weight: bold; color: var(--t-sub);">
-                    THUMBNAIL</th>
-                  <th
-                    style="padding: 14px 16px; text-align: left; font-size: 12px; font-weight: bold; color: var(--t-sub);">
-                    ACCOUNT TYPE</th>
-                  <th
-                    style="padding: 14px 16px; text-align: left; font-size: 12px; font-weight: bold; color: var(--t-sub);">
-                    DURATION</th>
-                  <th
-                    style="padding: 14px 16px; text-align: left; font-size: 12px; font-weight: bold; color: var(--t-sub);">
-                    PRICE</th>
-                  <th
-                    style="padding: 14px 16px; text-align: left; font-size: 12px; font-weight: bold; color: var(--t-sub);">
-                    STOCK</th>
-                  <th
-                    style="padding: 14px 16px; text-align: left; font-size: 12px; font-weight: bold; color: var(--t-sub);">
-                    DELIVERY</th>
-                  <th
-                    style="padding: 14px 16px; text-align: left; font-size: 12px; font-weight: bold; color: var(--t-sub);">
-                    BADGE</th>
-                  <th
-                    style="padding: 14px 16px; text-align: right; font-size: 12px; font-weight: bold; color: var(--t-sub);">
-                    ACTIONS</th>
-                </tr>
-              </thead>
-              <tbody id="tbody-netflix-products">
-                <!-- Populated by JS -->
-              </tbody>
-            </table>
+            <div class="premium-list-container" id="tbody-netflix-products">
+              <!-- Populated by JS -->
+            </div>
           </div>
         </section>
 
@@ -7104,6 +7106,38 @@ select.fi { appearance: none; cursor: pointer;
     document.addEventListener('DOMContentLoaded', () => {
 
       // Generic fetch
+      window.showToast = function(msg) {
+        let toast = document.createElement('div');
+        toast.innerText = msg;
+        toast.style.position = 'fixed';
+        toast.style.bottom = '20px';
+        toast.style.right = '20px';
+        toast.style.background = 'var(--brand)';
+        toast.style.color = '#000';
+        toast.style.padding = '12px 24px';
+        toast.style.borderRadius = '8px';
+        toast.style.fontWeight = '600';
+        toast.style.zIndex = '9999';
+        toast.style.boxShadow = '0 4px 12px rgba(0,0,0,0.5)';
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(20px)';
+        toast.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+        document.body.appendChild(toast);
+        
+        // animate in
+        setTimeout(() => {
+          toast.style.opacity = '1';
+          toast.style.transform = 'translateY(0)';
+        }, 10);
+        
+        // animate out and remove
+        setTimeout(() => {
+          toast.style.opacity = '0';
+          toast.style.transform = 'translateY(20px)';
+          setTimeout(() => toast.remove(), 300);
+        }, 3000);
+      };
+
       async function fetchData(url) {
         const res = await fetch(url);
         const data = await res.json();
@@ -7111,33 +7145,237 @@ select.fi { appearance: none; cursor: pointer;
       }
 
       // LOAD ITEMS
+      window.adminProducts = [];
+      
       async function loadItems() {
         const list = document.getElementById('all-items-list');
         if (!list) return;
-        list.innerHTML = 'Loading...';
+        
+        list.innerHTML = Array(5).fill(`
+          <div class="skeleton-card">
+            <div class="plist-top" style="border: none; margin-bottom: 0; padding-bottom: 0;">
+              <div class="skel-box" style="width: 120px; height: 16px;"></div>
+              <div class="skel-box" style="width: 200px; height: 24px; border-radius: 20px;"></div>
+            </div>
+            <div class="plist-main" style="margin-top: 16px;">
+              <div class="plist-identity">
+                <div class="skel-box" style="width: 48px; height: 48px; border-radius: 8px;"></div>
+                <div class="skel-box" style="width: 180px; height: 16px;"></div>
+              </div>
+              <div class="plist-data-group">
+                <div class="skel-box" style="width: 80px; height: 32px;"></div>
+                <div class="skel-box" style="width: 80px; height: 32px;"></div>
+              </div>
+              <div class="skel-box" style="width: 100px; height: 40px; border-radius: 8px;"></div>
+            </div>
+          </div>
+        `).join('');
+
         const res = await fetchData('/api/admin/products');
         if (res && res.products) {
-          list.innerHTML = res.products.map(p => `
-            <div class="icard">
-              <div class="ithumb">
-                ${p.media_url ? `<img src="${p.media_url}" style="width:100%;height:100%;object-fit:cover;border-radius:12px">` : '📦'}
-                <div class="ibadge-pos"><span class="badge ok">${p.status || 'Active'}</span></div>
-              </div>
-              <div class="ibody">
-                <div class="iname">${p.title}</div>
-                <div class="iprice">$${p.price}</div>
-                <div class="ifoot">
-                  <div class="istock"><i class="fas fa-box"></i> ${p.category}</div>
-                  <div class="iacts">
-                    <button class="ibtn ed" onclick='editItem(${JSON.stringify(p)})'><i class="fas fa-pen"></i></button>
-                    <button class="ibtn dl" onclick='deleteItem("${p.id}")'><i class="fas fa-trash"></i></button>
+          window.adminProducts = res.products;
+          applyItemFilters(); // Apply initial sort/filter and render
+        } else {
+           list.innerHTML = '<div style="padding: 32px; text-align: center; color: var(--red);">Failed to load items.</div>';
+        }
+      }
+
+      function renderAdminItems(productsToRender) {
+        const list = document.getElementById('all-items-list');
+        if (!list) return;
+        
+        if (productsToRender.length === 0) {
+          list.innerHTML = '<div style="padding: 32px; text-align: center; color: var(--t-sub);">No items found matching your filters.</div>';
+          return;
+        }
+        
+        list.innerHTML = productsToRender.map(p => {
+          const thumbHtml = p.media_url 
+            ? `<img src="${p.media_url}" class="plist-thumb" />` 
+            : `<div class="plist-thumb"><i class="fas fa-box"></i></div>`;
+          
+          const visibilityBadge = p.status === 'Inactive' ? '<span class="premium-badge neutral">Paused</span>' : '<span class="premium-badge success">Published</span>';
+          const toggleIcon = p.status === 'Inactive' ? '<i class="fas fa-play"></i>' : '<i class="fas fa-pause"></i>';
+          const toggleTitle = p.status === 'Inactive' ? 'Publish Item' : 'Pause Item';
+          const dateStr = p.created_at ? new Date(p.created_at).toLocaleDateString() : 'N/A';
+
+          return `
+            <div class="plist-item">
+              <div class="plist-top">
+                <div class="plist-category">
+                  <input type="checkbox" class="item-checkbox" value="${p.id}" style="margin-right: 8px; width: 14px; height: 14px; cursor: pointer;">
+                  <i class="fas fa-folder"></i> ${p.category}
+                </div>
+                <div class="plist-top-right">
+                  <span class="plist-date">Added ${dateStr}</span>
+                  ${visibilityBadge}
+                  <div class="plist-actions">
+                    <button class="act-btn" onclick='toggleItemVisibility("${p.id}", "${p.status}")' title="${toggleTitle}">${toggleIcon}</button>
+                    <button class="act-btn edit" onclick='editItem(${JSON.stringify(p).replace(/'/g, "&#39;")})' title="Edit"><i class="fas fa-pen"></i></button>
+                    <button class="act-btn delete" onclick='deleteItem("${p.id}")' title="Delete"><i class="fas fa-trash"></i></button>
                   </div>
                 </div>
               </div>
+              <div class="plist-main">
+                <div class="plist-identity">
+                  ${thumbHtml}
+                  <div class="plist-name">${p.title}</div>
+                </div>
+                <div class="plist-data-group" style="margin-top: 12px;">
+                  <div class="plist-data">
+                    <span class="plist-data-label">Stock Status</span>
+                    <span class="plist-data-value" style="color: var(--green);">In Stock</span>
+                  </div>
+                  <div class="plist-data">
+                    <span class="plist-data-label">Delivery Time</span>
+                    <span class="plist-data-value">${p.delivery_time || '10 - 20 mins'}</span>
+                  </div>
+                  <div class="plist-data">
+                    <span class="plist-data-label">Product ID</span>
+                    <span class="plist-data-value" style="font-family: monospace;">${p.id.substring(0, 8)}...</span>
+                  </div>
+                </div>
+                <div class="plist-price-box" style="margin-top: 12px;">
+                  $${Number(p.price).toFixed(2)}
+                </div>
+              </div>
             </div>
-          `).join('');
-        }
+          `;
+        }).join('');
       }
+
+      window.toggleItemVisibility = async function(id, currentStatus) {
+        const newStatus = currentStatus === 'Active' ? 'Inactive' : 'Active';
+        const p = window.adminProducts.find(x => x.id === id);
+        if (!p) return;
+        
+        try {
+            // Optimistic UI Update locally
+            p.status = newStatus;
+            window.applyItemFilters(); // Immediately re-render with new status to feel instantaneous
+            
+            const res = await fetch(`/api/admin/products`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ...p, status: newStatus })
+            });
+            
+            const data = await res.json();
+            if (data.success) {
+                if (typeof window.showToast === 'function') {
+                    window.showToast(newStatus === 'Active' ? 'Product published successfully!' : 'Product paused successfully!');
+                }
+            } else {
+                // Revert if failed
+                p.status = currentStatus;
+                window.applyItemFilters();
+                alert('Failed to update product visibility');
+            }
+        } catch (err) {
+            console.error(err);
+            // Revert if failed
+            p.status = currentStatus;
+            window.applyItemFilters();
+            alert('An error occurred while updating visibility');
+        }
+      };
+
+      window.applyItemFilters = function() {
+        if (!window.adminProducts) return;
+        
+        let filtered = [...window.adminProducts];
+        
+        // Search
+        const searchQ = document.getElementById('items-search')?.value.toLowerCase() || '';
+        if (searchQ) {
+          filtered = filtered.filter(p => 
+            p.title.toLowerCase().includes(searchQ) || 
+            p.id.toLowerCase().includes(searchQ) || 
+            p.category.toLowerCase().includes(searchQ)
+          );
+        }
+        
+        // Category
+        const catFilter = document.getElementById('items-filter-category')?.value || '';
+        if (catFilter) {
+          filtered = filtered.filter(p => p.category.toLowerCase().includes(catFilter.toLowerCase()));
+        }
+        
+        // Status
+        const statusFilter = document.getElementById('items-filter-status')?.value || '';
+        if (statusFilter === 'active') {
+          filtered = filtered.filter(p => p.status !== 'Inactive');
+        } else if (statusFilter === 'draft') {
+          filtered = filtered.filter(p => p.status === 'Inactive');
+        }
+        
+        // Sort
+        const sortVal = document.getElementById('items-sort')?.value || 'newest';
+        if (sortVal === 'newest') {
+          filtered.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        } else if (sortVal === 'price-high') {
+          filtered.sort((a, b) => Number(b.price) - Number(a.price));
+        } else if (sortVal === 'price-low') {
+          filtered.sort((a, b) => Number(a.price) - Number(b.price));
+        }
+        
+        renderAdminItems(filtered);
+        
+        // Reset select all
+        const selectAllCheckbox = document.getElementById('items-select-all');
+        if (selectAllCheckbox) selectAllCheckbox.checked = false;
+      };
+      
+      // Bind event listeners
+      document.getElementById('items-search')?.addEventListener('input', window.applyItemFilters);
+      document.getElementById('items-filter-category')?.addEventListener('change', window.applyItemFilters);
+      document.getElementById('items-filter-status')?.addEventListener('change', window.applyItemFilters);
+      document.getElementById('items-sort')?.addEventListener('change', window.applyItemFilters);
+      
+      document.getElementById('items-select-all')?.addEventListener('change', (e) => {
+        const isChecked = e.target.checked;
+        document.querySelectorAll('#all-items-list .item-checkbox').forEach(cb => {
+          cb.checked = isChecked;
+        });
+      });
+      
+      document.getElementById('items-bulk-action')?.addEventListener('change', async (e) => {
+        const action = e.target.value;
+        if (!action) return;
+        
+        const selectedIds = Array.from(document.querySelectorAll('#all-items-list .item-checkbox:checked')).map(cb => cb.value);
+        if (selectedIds.length === 0) {
+          alert('Please select at least one item.');
+          e.target.value = '';
+          return;
+        }
+        
+        if (action === 'delete') {
+          if (confirm(`Are you sure you want to delete ${selectedIds.length} items?`)) {
+            for (const id of selectedIds) {
+               await fetch(`/api/admin/products?id=${id}`, { method: 'DELETE' });
+            }
+            alert('Items deleted successfully.');
+            loadItems();
+          }
+        } else if (action === 'publish' || action === 'hide') {
+            const newStatus = action === 'publish' ? 'Active' : 'Inactive';
+            for (const id of selectedIds) {
+                const p = window.adminProducts.find(x => x.id === id);
+                if(p) {
+                   await fetch(`/api/admin/products`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ ...p, status: newStatus })
+                   });
+                }
+            }
+            alert(`Items updated successfully.`);
+            loadItems();
+        }
+        
+        e.target.value = '';
+      });
 
       // LOAD POSTS
       async function loadPosts() {
@@ -7619,43 +7857,109 @@ select.fi { appearance: none; cursor: pointer;
       window.loadMoneyExchange = async function () {
         const tbody = document.getElementById('tbody-money-exchange');
         if (!tbody) return;
-        tbody.innerHTML = '<tr><td colspan="7" style="padding: 24px; text-align: center;"><i class="fas fa-spinner fa-spin"></i> Loading offers...</td></tr>';
+        
+        tbody.innerHTML = Array(5).fill(`
+          <div class="skeleton-card">
+            <div class="plist-top" style="border: none; margin-bottom: 0; padding-bottom: 0;">
+              <div class="skel-box" style="width: 120px; height: 16px;"></div>
+              <div class="skel-box" style="width: 200px; height: 24px; border-radius: 20px;"></div>
+            </div>
+            <div class="plist-main" style="margin-top: 16px;">
+              <div class="plist-identity">
+                <div class="skel-box" style="width: 48px; height: 48px; border-radius: 8px;"></div>
+                <div class="skel-box" style="width: 180px; height: 16px;"></div>
+              </div>
+              <div class="plist-data-group">
+                <div class="skel-box" style="width: 80px; height: 32px;"></div>
+                <div class="skel-box" style="width: 80px; height: 32px;"></div>
+              </div>
+              <div class="skel-box" style="width: 100px; height: 40px; border-radius: 8px;"></div>
+            </div>
+          </div>
+        `).join('');
 
         try {
           const res = await fetch('/api/admin/money-exchange');
           const data = await res.json();
           if (data.success && data.offers) {
             if (data.offers.length === 0) {
-              tbody.innerHTML = '<tr><td colspan="7" style="padding: 24px; text-align: center; color: var(--t-sub);">No exchange offers created yet.</td></tr>';
+              tbody.innerHTML = '<div style="padding: 32px; text-align: center; color: var(--t-sub);">No exchange offers created yet.</div>';
               return;
             }
             tbody.innerHTML = data.offers.map(offer => {
               const iconHtml = offer.media_url
-                ? `<img src="${offer.media_url}" style="width:32px; height:32px; border-radius:4px; object-fit:cover;" />`
-                : `<div style="width:32px; height:32px; border-radius:4px; background:var(--green-light); color:var(--green); display:grid; place-items:center;"><i class="fas fa-coins"></i></div>`;
+                ? `<img src="${offer.media_url}" class="plist-thumb" />`
+                : `<div class="plist-thumb" style="color:var(--brand);"><i class="fas fa-coins"></i></div>`;
+
+              const visibilityBadge = offer.status === 'Inactive' ? '<span class="premium-badge neutral">Paused</span>' : '<span class="premium-badge success">Published</span>';
+              const toggleIcon = offer.status === 'Inactive' ? '<i class="fas fa-play"></i>' : '<i class="fas fa-pause"></i>';
+              const toggleTitle = offer.status === 'Inactive' ? 'Publish Item' : 'Pause Item';
+              const dateStr = offer.created_at ? new Date(offer.created_at).toLocaleDateString() : 'N/A';
 
               return `
-                <tr style="border-bottom: 1px solid var(--b1);">
-                  <td style="padding: 12px 16px;">${iconHtml}</td>
-                  <td style="padding: 12px 16px; font-weight: 600; color: var(--t-main);">${offer.giving_currency}</td>
-                  <td style="padding: 12px 16px; font-weight: 600; color: var(--t-main);">${offer.getting_currency}</td>
-                  <td style="padding: 12px 16px; color: var(--t-main); font-family: monospace;">${offer.exchange_rate}</td>
-                  <td style="padding: 12px 16px; color: var(--t-main); font-weight: bold;">${offer.reserve_stock}</td>
-                  <td style="padding: 12px 16px;"><span style="background:var(--brand-light); color:var(--brand); padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold;">${offer.price_text}</span></td>
-                  <td style="padding: 12px 16px; text-align: right;">
-                    <div style="display: flex; gap: 8px; justify-content: flex-end;">
-                      <button class="btn bs bsm" onclick="editExchangeOffer('${offer.id}')"><i class="fas fa-pen"></i> Edit</button>
-                      <button class="btn bd bsm" onclick="deleteExchangeOffer('${offer.id}')"><i class="fas fa-trash"></i> Delete</button>
+                <div class="plist-item">
+                  <div class="plist-top">
+                    <div class="plist-category"><i class="fas fa-exchange-alt"></i> Exchange Offer</div>
+                    <div class="plist-top-right">
+                      <span class="plist-date">Added ${dateStr}</span>
+                      ${visibilityBadge}
+                      <div class="plist-actions">
+                        <button class="act-btn" onclick='toggleExchangeVisibility("${offer.id}", "${offer.status}")' title="${toggleTitle}">${toggleIcon}</button>
+                        <button class="act-btn edit" onclick="editExchangeOffer('${offer.id}')" title="Edit"><i class="fas fa-pen"></i></button>
+                        <button class="act-btn delete" onclick="deleteExchangeOffer('${offer.id}')" title="Delete"><i class="fas fa-trash"></i></button>
+                      </div>
                     </div>
-                  </td>
-                </tr>
+                  </div>
+                  <div class="plist-main">
+                    <div class="plist-identity">
+                      ${iconHtml}
+                      <div class="plist-name">${offer.giving_currency} to ${offer.getting_currency}</div>
+                    </div>
+                    <div class="plist-data-group" style="margin-top: 12px;">
+                      <div class="plist-data">
+                        <span class="plist-data-label">Exchange Rate</span>
+                        <span class="plist-data-value">${offer.exchange_rate}</span>
+                      </div>
+                      <div class="plist-data">
+                        <span class="plist-data-label">Reserve Stock</span>
+                        <span class="plist-data-value">${offer.reserve_stock}</span>
+                      </div>
+                    </div>
+                    <div class="plist-price-box" style="color: var(--brand); margin-top: 12px;">
+                      Fee: ${offer.price_text}
+                    </div>
+                  </div>
+                </div>
               `;
             }).join('');
           } else {
             throw new Error(data.error);
           }
         } catch (err) {
-          tbody.innerHTML = `<tr><td colspan="7" style="padding: 24px; text-align: center; color: var(--red);">Failed to load exchange offers: ${err.message}</td></tr>`;
+          tbody.innerHTML = `<div style="padding: 32px; text-align: center; color: var(--red);">Failed to load exchange offers: ${err.message}</div>`;
+        }
+      };
+
+      window.toggleExchangeVisibility = async function(id, currentStatus) {
+        const newStatus = currentStatus === 'Active' ? 'Inactive' : 'Active';
+        try {
+            const res = await fetch(`/api/admin/money-exchange`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id, status: newStatus })
+            });
+            const data = await res.json();
+            if (data.success) {
+                if (typeof window.showToast === 'function') {
+                    window.showToast(newStatus === 'Active' ? 'Offer published successfully!' : 'Offer paused successfully!');
+                }
+                loadMoneyExchange();
+            } else {
+                alert('Failed to update offer visibility');
+            }
+        } catch (err) {
+            console.error(err);
+            alert('An error occurred while updating visibility');
         }
       };
 
@@ -7811,47 +8115,118 @@ select.fi { appearance: none; cursor: pointer;
       // ==========================================
       // NETFLIX PRODUCTS CRUD OPERATIONS
       // ==========================================
+      window.toggleNetflixVisibility = async function(id, currentStatus) {
+        const newStatus = currentStatus === 'Active' ? 'Inactive' : 'Active';
+        try {
+            const res = await fetch(`/api/admin/netflix-products`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id, status: newStatus })
+            });
+            const data = await res.json();
+            if (data.success) {
+                if (typeof window.showToast === 'function') {
+                    window.showToast(newStatus === 'Active' ? 'Product published successfully!' : 'Product paused successfully!');
+                }
+                loadNetflixProducts();
+            } else {
+                alert('Failed to update product visibility');
+            }
+        } catch (err) {
+            console.error(err);
+            alert('An error occurred while updating visibility');
+        }
+      };
+
       window.loadNetflixProducts = async function () {
         const tbody = document.getElementById('tbody-netflix-products');
         if (!tbody) return;
-        tbody.innerHTML = '<tr><td colspan="8" style="padding: 24px; text-align: center;"><i class="fas fa-spinner fa-spin"></i> Loading Netflix items...</td></tr>';
+
+        tbody.innerHTML = Array(5).fill(`
+          <div class="skeleton-card">
+            <div class="plist-top" style="border: none; margin-bottom: 0; padding-bottom: 0;">
+              <div class="skel-box" style="width: 120px; height: 16px;"></div>
+              <div class="skel-box" style="width: 200px; height: 24px; border-radius: 20px;"></div>
+            </div>
+            <div class="plist-main" style="margin-top: 16px;">
+              <div class="plist-identity">
+                <div class="skel-box" style="width: 48px; height: 48px; border-radius: 8px;"></div>
+                <div class="skel-box" style="width: 180px; height: 16px;"></div>
+              </div>
+              <div class="plist-data-group">
+                <div class="skel-box" style="width: 80px; height: 32px;"></div>
+                <div class="skel-box" style="width: 80px; height: 32px;"></div>
+              </div>
+              <div class="skel-box" style="width: 100px; height: 40px; border-radius: 8px;"></div>
+            </div>
+          </div>
+        `).join('');
 
         try {
           const res = await fetch('/api/admin/netflix-products');
           const data = await res.json();
           if (data.success && data.products) {
             if (data.products.length === 0) {
-              tbody.innerHTML = '<tr><td colspan="8" style="padding: 24px; text-align: center; color: var(--t-sub);">No Netflix listings created yet.</td></tr>';
+              tbody.innerHTML = '<div style="padding: 32px; text-align: center; color: var(--t-sub);">No Netflix listings created yet.</div>';
               return;
             }
             tbody.innerHTML = data.products.map(p => {
               const thumbnailHtml = p.media_url
-                ? `<img src="${p.media_url}" style="width:48px; height:32px; border-radius:4px; object-fit:cover;" />`
-                : `<div style="width:48px; height:32px; border-radius:4px; background:var(--red-light); color:var(--red); display:grid; place-items:center; font-size:11px; font-weight:bold;">NETFLIX</div>`;
+                ? `<img src="${p.media_url}" class="plist-thumb" />`
+                : `<div class="plist-thumb" style="color:var(--red);"><i class="fas fa-tv"></i></div>`;
+
+              const visibilityBadge = p.status === 'Inactive' ? '<span class="premium-badge neutral">Paused</span>' : '<span class="premium-badge success">Published</span>';
+              const toggleIcon = p.status === 'Inactive' ? '<i class="fas fa-play"></i>' : '<i class="fas fa-pause"></i>';
+              const toggleTitle = p.status === 'Inactive' ? 'Publish Item' : 'Pause Item';
+              const dateStr = p.created_at ? new Date(p.created_at).toLocaleDateString() : 'N/A';
+              const durationText = p.duration || 'N/A';
+              const stockNum = parseInt(p.stock_quantity) || 0;
 
               return `
-                <tr style="border-bottom: 1px solid var(--b1);">
-                  <td style="padding: 12px 16px;">${thumbnailHtml}</td>
-                  <td style="padding: 12px 16px; font-weight: 600; color: var(--t-main);">${p.account_type}</td>
-                  <td style="padding: 12px 16px; color: var(--t-main);">${p.duration}</td>
-                  <td style="padding: 12px 16px; font-weight: bold; color: var(--t-main);">$${Number(p.price).toFixed(2)}</td>
-                  <td style="padding: 12px 16px; color: var(--t-main);">${p.stock_quantity} available</td>
-                  <td style="padding: 12px 16px; color: var(--t-sub); font-size: 13px;">${p.delivery_method}</td>
-                  <td style="padding: 12px 16px;">${p.badge_text ? `<span style="background:var(--orange-light); color:var(--orange); padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: bold;">${p.badge_text}</span>` : '<span style="color:var(--t-muted)">None</span>'}</td>
-                  <td style="padding: 12px 16px; text-align: right;">
-                    <div style="display: flex; gap: 8px; justify-content: flex-end;">
-                      <button class="btn bs bsm" onclick="editNetflixProduct('${p.id}')"><i class="fas fa-pen"></i> Edit</button>
-                      <button class="btn bd bsm" onclick="deleteNetflixProduct('${p.id}')"><i class="fas fa-trash"></i> Delete</button>
+                <div class="plist-item">
+                  <div class="plist-top">
+                    <div class="plist-category"><i class="fas fa-tv"></i> ${p.account_type}</div>
+                    <div class="plist-top-right">
+                      <span class="plist-date">Added ${dateStr}</span>
+                      ${visibilityBadge}
+                      <div class="plist-actions">
+                        <button class="act-btn" onclick='toggleNetflixVisibility("${p.id}", "${p.status}")' title="${toggleTitle}">${toggleIcon}</button>
+                        <button class="act-btn edit" onclick="editNetflixProduct('${p.id}')" title="Edit"><i class="fas fa-pen"></i></button>
+                        <button class="act-btn delete" onclick="deleteNetflixProduct('${p.id}')" title="Delete"><i class="fas fa-trash"></i></button>
+                      </div>
                     </div>
-                  </td>
-                </tr>
+                  </div>
+                  <div class="plist-main">
+                    <div class="plist-identity">
+                      ${thumbnailHtml}
+                      <div class="plist-name">Netflix Premium</div>
+                    </div>
+                    <div class="plist-data-group" style="margin-top: 12px;">
+                      <div class="plist-data">
+                        <span class="plist-data-label">Duration</span>
+                        <span class="plist-data-value">${durationText}</span>
+                      </div>
+                      <div class="plist-data">
+                        <span class="plist-data-label">Delivery</span>
+                        <span class="plist-data-value">${p.delivery_method || 'Auto'}</span>
+                      </div>
+                      <div class="plist-data">
+                        <span class="plist-data-label">Stock</span>
+                        <span class="plist-data-value">${stockNum > 0 ? stockNum : 'Out of Stock'}</span>
+                      </div>
+                    </div>
+                    <div class="plist-price-box" style="color: var(--red); margin-top: 12px;">
+                      $${Number(p.price).toFixed(2)}
+                    </div>
+                  </div>
+                </div>
               `;
             }).join('');
           } else {
             throw new Error(data.error);
           }
         } catch (err) {
-          tbody.innerHTML = `<tr><td colspan="8" style="padding: 24px; text-align: center; color: var(--red);">Failed to load Netflix items: ${err.message}</td></tr>`;
+          tbody.innerHTML = `<div style="padding: 32px; text-align: center; color: var(--red);">Failed to load Netflix items: ${err.message}</div>`;
         }
       };
 

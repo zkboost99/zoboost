@@ -14,6 +14,7 @@ export default async function ProductDetails({ params }: { params: Promise<{ id:
     .from('products')
     .select('*')
     .eq('id', id)
+    .neq('status', 'Inactive')
     .single();
 
   if (product) {
@@ -76,7 +77,8 @@ export default async function ProductDetails({ params }: { params: Promise<{ id:
     const { data: related } = await supabase
       .from('products')
       .select('*')
-      .eq('category', categoryName)
+      .neq('status', 'Inactive')
+      .ilike('category', `%${categoryName.split(' ')[0]}%`)
       .neq('id', id)
       .limit(4);
       

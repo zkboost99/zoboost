@@ -21,6 +21,7 @@ export default async function MoneyExchangePage() {
   const { data: offers } = await supabase
     .from('money_exchange')
     .select('*')
+    .neq('status', 'Inactive')
     .order('order_index', { ascending: true });
 
   // Map to generic Product interface

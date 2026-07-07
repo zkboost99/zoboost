@@ -23,6 +23,7 @@ export default async function NetflixPage() {
   const { data: netflixData } = await supabase
     .from('netflix_products')
     .select('*')
+    .neq('status', 'Inactive')
     .order('order_index', { ascending: true });
 
   // Map to generic Product interface

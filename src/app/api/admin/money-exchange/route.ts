@@ -47,6 +47,7 @@ export async function POST(req: Request) {
           reserve_stock: data.reserve_stock,
           price_text: data.price_text,
           media_url: data.media_url || null,
+          status: data.status || 'Active',
           order_index: data.order_index !== undefined ? parseInt(data.order_index) : nextOrderIndex
         }
       ])
@@ -77,6 +78,7 @@ export async function PUT(req: Request) {
       reserve_stock: data.reserve_stock,
       price_text: data.price_text,
       media_url: data.media_url,
+      status: data.status,
       order_index: data.order_index !== undefined ? parseInt(data.order_index) : undefined
     };
 

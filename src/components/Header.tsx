@@ -168,8 +168,9 @@ export default function Header() {
     const setupRealtime = async () => {
       const { createClient } = await import('@/utils/supabase/client');
       const supabase = createClient();
+      const channelName = `public:notifications:${Math.random().toString(36).substring(7)}`;
       const channel = supabase
-        .channel('public:notifications')
+        .channel(channelName)
         .on('postgres_changes', { event: '*', schema: 'public', table: 'notifications' }, () => {
           fetchNotifications();
         })
@@ -210,7 +211,7 @@ export default function Header() {
       try {
         const { createClient } = await import('@/utils/supabase/client');
         const supabase = createClient();
-        const { data } = await supabase.from('products').select('*').limit(50);
+        const { data } = await supabase.from('products').select('*').neq('status', 'Inactive').limit(50);
         if (data) setDbProducts(data);
       } catch (err) {}
     };

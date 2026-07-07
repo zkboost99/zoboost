@@ -21,6 +21,7 @@ export default async function TopUpsPage() {
   const { data: products } = await supabase
     .from('products')
     .select('*')
+    .neq('status', 'Inactive')
     .order('created_at', { ascending: false });
 
   // Filter top-up specific products

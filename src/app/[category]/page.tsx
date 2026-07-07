@@ -102,7 +102,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
     }
   } else {
     // Fetch all regular products
-    const { data, error } = await supabase.from('products').select('*').order('created_at', { ascending: false });
+    const { data, error } = await supabase.from('products').select('*').neq('status', 'Inactive').order('created_at', { ascending: false });
     if (error) {
       console.error('Error fetching products:', error);
     }

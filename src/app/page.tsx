@@ -8,6 +8,7 @@ export default async function Home() {
   const { data: products } = await supabase
     .from('products')
     .select('*')
+    .neq('status', 'Inactive')
     .order('created_at', { ascending: false });
     
   const { data: posts } = await supabase
@@ -23,11 +24,13 @@ export default async function Home() {
   const { data: moneyExchange } = await supabase
     .from('money_exchange')
     .select('*')
+    .neq('status', 'Inactive')
     .order('order_index', { ascending: true });
 
   const { data: netflixProducts } = await supabase
     .from('netflix_products')
     .select('*')
+    .neq('status', 'Inactive')
     .order('order_index', { ascending: true });
 
   return (

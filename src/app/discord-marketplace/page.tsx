@@ -25,6 +25,7 @@ export default async function DiscordMarketplacePage() {
   const { data: products } = await supabase
     .from('products')
     .select('*')
+    .neq('status', 'Inactive')
     .order('created_at', { ascending: false });
 
   // Filter Discord specific products

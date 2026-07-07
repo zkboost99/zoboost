@@ -48,6 +48,7 @@ export async function POST(req: Request) {
           delivery_method: data.delivery_method,
           badge_text: data.badge_text || null,
           media_url: data.media_url || null,
+          status: data.status || 'Active',
           order_index: data.order_index !== undefined ? parseInt(data.order_index) : nextOrderIndex
         }
       ])
@@ -79,6 +80,7 @@ export async function PUT(req: Request) {
       delivery_method: data.delivery_method,
       badge_text: data.badge_text,
       media_url: data.media_url,
+      status: data.status,
       order_index: data.order_index !== undefined ? parseInt(data.order_index) : undefined
     };
 
