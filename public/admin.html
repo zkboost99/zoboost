@@ -4471,6 +4471,25 @@ select.fi { appearance: none; cursor: pointer;
       const sec = document.getElementById('s-' + id);
       if (sec) sec.classList.add('active');
 
+      // Comprehensive Layout Reset: Disable scroll anchoring and forcefully reset scroll position
+      // both synchronously and asynchronously after the skeleton loader finishes rendering.
+      const contentContainer = document.querySelector('.content');
+      const mainContainer = document.querySelector('.main');
+      
+      // Fix browser forceful scrolling of overflow:hidden containers
+      if (mainContainer) mainContainer.scrollTop = 0;
+      document.body.scrollTop = 0;
+      document.documentElement.scrollTop = 0;
+
+      if (contentContainer) {
+        contentContainer.style.overflowAnchor = 'none';
+        contentContainer.scrollTop = 0;
+        setTimeout(() => {
+          if (contentContainer) contentContainer.scrollTop = 0;
+          if (mainContainer) mainContainer.scrollTop = 0;
+        }, 610);
+      }
+
       document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
       document.querySelectorAll('.sub-link').forEach(l => l.classList.remove('active'));
 
@@ -5654,40 +5673,7 @@ select.fi { appearance: none; cursor: pointer;
         });
       }
 
-      // 2. Contacts/Live Chats
-      if (typeof ALL_CONTACTS !== 'undefined') {
-        ALL_CONTACTS.forEach(c => {
-          const notifId = 'contact-' + c.id;
-          const isUnread = c.status === 'Unread';
 
-          let preview = c.message;
-          let isChat = false;
-          try {
-            const parsed = JSON.parse(c.message);
-            if (parsed) {
-              if (parsed.type === 'chat') {
-                isChat = true;
-                const msgs = parsed.messages || [];
-                preview = msgs[msgs.length - 1] ? msgs[msgs.length - 1].text : "Live Chat Room";
-              } else {
-                preview = parsed.comments || c.message;
-              }
-            }
-          } catch (e) { }
-
-          list.push({
-            id: notifId,
-            title: isChat ? 'Live Chat Support Room' : 'New Contact Inquiry',
-            body: `${c.name || 'Customer'}: "${preview.substring(0, 60)}"`,
-            time: new Date(c.created_at),
-            icon: isChat ? 'fa-comments' : 'fa-envelope',
-            iconBg: 'rgba(6,182,212,.08)',
-            iconColor: 'var(--cy)',
-            unread: isUnread,
-            action: `openChatFromDropdown('${c.id}')`
-          });
-        });
-      }
 
       // 3. Suggestions
       if (typeof ALL_SUGGESTIONS !== 'undefined') {
@@ -8544,14 +8530,37 @@ select.fi { appearance: none; cursor: pointer;
 
     window.handleTopChatIconClick = function (event) {
       event.stopPropagation();
-      if (typeof toggleChatDropdown === 'function') {
-        toggleChatDropdown(event);
-      } else {
-        const dd = document.getElementById('tbChatDropdown');
-        if (dd) {
-          dd.style.display = dd.style.display === 'block' ? 'none' : 'block';
-        }
+      
+      // Close dropdown if it's open, do NOT toggle it
+      const dd = document.getElementById('tbChatDropdown');
+      if (dd) {
+        dd.style.display = 'none';
+        dd.classList.remove('show');
       }
+
+      // Navigate to Contact & Tickets page
+      const contactLink = document.querySelector('.nav-link[data-tip="Contact"]');
+      if (typeof nav === 'function') nav('contact', contactLink);
+
+      // Automatically open an unread chat if available
+      setTimeout(() => {
+        const unreadContact = (typeof ALL_CONTACTS !== 'undefined' ? ALL_CONTACTS : []).find(c => c.status === 'Unread');
+        if (unreadContact && typeof window.selectDcChat === 'function') {
+           // check if ticket or message
+           let isTicket = false;
+           try {
+             const parsed = JSON.parse(unreadContact.message);
+             if (parsed && parsed.type === 'ticket') isTicket = true;
+           } catch (e) { }
+
+           if (isTicket) {
+             if (typeof switchContactTab === 'function') switchContactTab('tickets');
+           } else {
+             if (typeof switchContactTab === 'function') switchContactTab('messages');
+           }
+           window.selectDcChat(unreadContact.id);
+        }
+      }, 200);
     };
 
     window.handleTopNotifIconClick = function (event) {
