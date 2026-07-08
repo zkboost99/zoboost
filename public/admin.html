@@ -5776,7 +5776,7 @@ select.fi { appearance: none; cursor: pointer;
           list.push({
             id: notifId,
             title: 'New Suggestion Submitted',
-            body: `User: "${s.message.substring(0, 60)}"`,
+            body: `User: "${(s.message || '').substring(0, 60)}"`,
             time: new Date(s.created_at),
             icon: 'fa-lightbulb',
             iconBg: 'rgba(245,158,11,.08)',
@@ -5795,7 +5795,7 @@ select.fi { appearance: none; cursor: pointer;
           list.push({
             id: notifId,
             title: 'New Bug Report',
-            body: `[${b.severity || 'Normal'}] ${b.description.substring(0, 60)}`,
+            body: `[${b.severity || 'Normal'}] ${(b.description || '').substring(0, 60)}`,
             time: new Date(b.created_at),
             icon: 'fa-bug',
             iconBg: 'rgba(239,68,68,.08)',
@@ -6641,13 +6641,17 @@ select.fi { appearance: none; cursor: pointer;
     }
 
     function updateBadges() {
-      const sugBadge = document.getElementById('badge-suggestions-count');
-      if (sugBadge) sugBadge.innerText = ALL_SUGGESTIONS.length;
+      try {
+        const sugBadge = document.getElementById('badge-suggestions-count');
+        if (sugBadge) sugBadge.innerText = ALL_SUGGESTIONS.length;
 
-      const bugBadge = document.getElementById('badge-bugs-count');
-      if (bugBadge) bugBadge.innerText = ALL_BUG_REPORTS.length;
+        const bugBadge = document.getElementById('badge-bugs-count');
+        if (bugBadge) bugBadge.innerText = ALL_BUG_REPORTS.length;
 
-      updateNotifications();
+        updateNotifications();
+      } catch (err) {
+        console.error("Error updating badges:", err);
+      }
     }
 
     function renderSuggestions() {
