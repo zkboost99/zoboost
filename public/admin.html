@@ -6903,30 +6903,30 @@ select.fi { appearance: none; cursor: pointer;
       else if (s.status === 'Closed') statusClass = 'ok';
 
       body.innerHTML = `
-    <div style="background:#FAFBFC; padding: 16px; border-radius: 10px; border: 1px solid rgba(0,0,0,0.03);">
+    <div style="background:var(--s2); padding: 16px; border-radius: 10px; border: 1px solid var(--border);">
       <div style="font-size:11px; font-weight:800; color:var(--t-muted); text-transform:uppercase; margin-bottom:4px;">Title</div>
       <div style="font-size:15px; font-weight:800; color:var(--t-main);">${title}</div>
     </div>
-    <div style="background:#FAFBFC; padding: 16px; border-radius: 10px; border: 1px solid rgba(0,0,0,0.03);">
+    <div style="background:var(--s2); padding: 16px; border-radius: 10px; border: 1px solid var(--border);">
       <div style="font-size:11px; font-weight:800; color:var(--t-muted); text-transform:uppercase; margin-bottom:4px;">Details / Message</div>
       <div style="font-size:13.5px; color:var(--t-sub); line-height:1.6; white-space:pre-wrap;">${desc}</div>
     </div>
     <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
-      <div style="background:#FAFBFC; padding: 12px; border-radius: 10px; border: 1px solid rgba(0,0,0,0.03);">
+      <div style="background:var(--s2); padding: 12px; border-radius: 10px; border: 1px solid var(--border);">
         <div style="font-size:10px; font-weight:800; color:var(--t-muted); text-transform:uppercase; margin-bottom:4px;">Submitted By</div>
         <div style="font-size:13px; font-weight:700; color:var(--t-main);">${s.name || 'Anonymous'}</div>
       </div>
-      <div style="background:#FAFBFC; padding: 12px; border-radius: 10px; border: 1px solid rgba(0,0,0,0.03);">
+      <div style="background:var(--s2); padding: 12px; border-radius: 10px; border: 1px solid var(--border);">
         <div style="font-size:10px; font-weight:800; color:var(--t-muted); text-transform:uppercase; margin-bottom:4px;">Email Address</div>
         <div style="font-size:13px; font-weight:700; color:var(--t-main);">${s.email || 'N/A'} ${s.email ? renderCopyable(s.email, "Email") : ""}</div>
       </div>
     </div>
     <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
-      <div style="background:#FAFBFC; padding: 12px; border-radius: 10px; border: 1px solid rgba(0,0,0,0.03);">
+      <div style="background:var(--s2); padding: 12px; border-radius: 10px; border: 1px solid var(--border);">
         <div style="font-size:10px; font-weight:800; color:var(--t-muted); text-transform:uppercase; margin-bottom:4px;">Date Submitted</div>
         <div style="font-size:13px; font-weight:700; color:var(--t-main);">${new Date(s.created_at).toLocaleString()}</div>
       </div>
-      <div style="background:#FAFBFC; padding: 12px; border-radius: 10px; border: 1px solid rgba(0,0,0,0.03); display:flex; align-items:center; justify-content:space-between;">
+      <div style="background:var(--s2); padding: 12px; border-radius: 10px; border: 1px solid var(--border); display:flex; align-items:center; justify-content:space-between;">
         <div>
           <div style="font-size:10px; font-weight:800; color:var(--t-muted); text-transform:uppercase; margin-bottom:2px;">Current Status</div>
           <span class="badge ${statusClass}">${s.status}</span>
@@ -6965,7 +6965,7 @@ select.fi { appearance: none; cursor: pointer;
       else statBadge = `<span class="badge sc" style="font-weight: 800;">Fixed</span>`;
 
       body.innerHTML = `
-    <div style="display:flex; justify-content:space-between; align-items:center; background:#FAFBFC; padding: 12px 16px; border-radius: 10px; border: 1px solid rgba(0,0,0,0.03);">
+    <div style="display:flex; justify-content:space-between; align-items:center; background:var(--s2); padding: 12px 16px; border-radius: 10px; border: 1px solid var(--border);">
       <div>
         <div style="font-size:10px; font-weight:800; color:var(--t-muted); text-transform:uppercase; margin-bottom:2px;">Bug Report ID</div>
         <div style="font-size:12.5px; font-weight:800; color:var(--brand); font-family:monospace;">#${b.id}</div>
@@ -6975,25 +6975,25 @@ select.fi { appearance: none; cursor: pointer;
         ${statBadge}
       </div>
     </div>
-    <div style="background:#FAFBFC; padding: 16px; border-radius: 10px; border: 1px solid rgba(0,0,0,0.03);">
+    <div style="background:var(--s2); padding: 16px; border-radius: 10px; border: 1px solid var(--border);">
       <div style="font-size:11px; font-weight:800; color:var(--t-muted); text-transform:uppercase; margin-bottom:4px;">Issue Title</div>
       <div style="font-size:15px; font-weight:800; color:var(--t-main);">${b.title}</div>
     </div>
-    <div style="background:#FAFBFC; padding: 16px; border-radius: 10px; border: 1px solid rgba(0,0,0,0.03);">
+    <div style="background:var(--s2); padding: 16px; border-radius: 10px; border: 1px solid var(--border);">
       <div style="font-size:11px; font-weight:800; color:var(--t-muted); text-transform:uppercase; margin-bottom:4px;">Description Details</div>
       <div style="font-size:13.5px; color:var(--t-sub); line-height:1.6; white-space:pre-wrap;">${b.description}</div>
     </div>
     <div style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
-      <div style="background:#FAFBFC; padding: 12px; border-radius: 10px; border: 1px solid rgba(0,0,0,0.03);">
+      <div style="background:var(--s2); padding: 12px; border-radius: 10px; border: 1px solid var(--border);">
         <div style="font-size:10px; font-weight:800; color:var(--t-muted); text-transform:uppercase; margin-bottom:4px;">Reporter Name</div>
         <div style="font-size:13px; font-weight:700; color:var(--t-main);">${b.name || 'Anonymous'}</div>
       </div>
-      <div style="background:#FAFBFC; padding: 12px; border-radius: 10px; border: 1px solid rgba(0,0,0,0.03);">
+      <div style="background:var(--s2); padding: 12px; border-radius: 10px; border: 1px solid var(--border);">
         <div style="font-size:10px; font-weight:800; color:var(--t-muted); text-transform:uppercase; margin-bottom:4px;">Email Address</div>
         <div style="font-size:13px; font-weight:700; color:var(--t-main);">${b.email || 'N/A'} ${b.email ? renderCopyable(b.email, "Email") : ""}</div>
       </div>
     </div>
-    <div style="background:#FAFBFC; padding: 12px; border-radius: 10px; border: 1px solid rgba(0,0,0,0.03);">
+    <div style="background:var(--s2); padding: 12px; border-radius: 10px; border: 1px solid var(--border);">
       <div style="font-size:10px; font-weight:800; color:var(--t-muted); text-transform:uppercase; margin-bottom:4px;">Date Reported</div>
       <div style="font-size:13px; font-weight:700; color:var(--t-main);">${new Date(b.created_at).toLocaleString()}</div>
     </div>
