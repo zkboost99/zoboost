@@ -123,9 +123,7 @@ export default function OrderManagementClient({ order, customerInfo }: { order: 
     if (status === 'Failed' || status === 'Cancelled') return 'om-status-failed'
     return 'om-status-pending'
   }
-
-  const statusText = status === 'Completed' ? 'Delivered' : status === 'Failed' ? 'Cancelled' : 'Pending delivery'
-
+  const statusText = status === 'Completed' ? 'Complete' : status === 'Failed' ? 'Cancelled' : 'Pending delivery'
   return (
     <div className="om-page-container">
       <div className="om-content-wrapper">
@@ -178,7 +176,7 @@ export default function OrderManagementClient({ order, customerInfo }: { order: 
                       disabled={isProcessing || status === 'Completed'}
                       className="om-btn om-btn-deliver"
                     >
-                      Order delivered
+                      Mark as Complete
                     </button>
                     <button 
                       onClick={() => updateOrderStatus('Failed')}

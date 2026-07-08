@@ -3082,7 +3082,7 @@ select.fi { appearance: none; cursor: pointer;
             </div>
             <select class="fsel" onchange="filterAllOrders(this.value)">
               <option value="all">All Status</option>
-              <option value="Completed">Completed</option>
+              <option value="Completed">Complete</option>
               <option value="Pending">Pending</option>
               <option value="Processing">Processing</option>
               <option value="Failed">Failed</option>
@@ -3193,7 +3193,7 @@ select.fi { appearance: none; cursor: pointer;
             <div class="fsearch"><i class="fas fa-search"></i><input id="purchased-search" placeholder="Search by Order ID, User..." oninput="filterPurchasedOrders()"></div>
             <select id="purchased-status" class="fsel" onchange="filterPurchasedOrders()">
               <option>All Status</option>
-              <option>Completed</option>
+              <option>Complete</option>
               <option>Pending</option>
               <option>Failed</option>
             </select>
@@ -3507,7 +3507,7 @@ select.fi { appearance: none; cursor: pointer;
                   </td>
                   <td>Server Boost x7</td>
                   <td style="font-weight:700;color:var(--t1)">$49.99</td>
-                  <td><span class="badge ok">Completed</span></td>
+                  <td><span class="badge ok">Complete</span></td>
                   <td>Jun 26</td>
                   <td><button class="btn bs bsm">View</button></td>
                 </tr>
@@ -3535,7 +3535,7 @@ select.fi { appearance: none; cursor: pointer;
                   </td>
                   <td>Nitro 1 Month</td>
                   <td style="font-weight:700;color:var(--t1)">$9.99</td>
-                  <td><span class="badge ok">Completed</span></td>
+                  <td><span class="badge ok">Complete</span></td>
                   <td>Jun 24</td>
                   <td><button class="btn bs bsm">View</button></td>
                 </tr>
@@ -3577,7 +3577,7 @@ select.fi { appearance: none; cursor: pointer;
                   </td>
                   <td>Aged Account 5yr</td>
                   <td style="font-weight:700;color:var(--t1)">$59.99</td>
-                  <td><span class="badge ok">Completed</span></td>
+                  <td><span class="badge ok">Complete</span></td>
                   <td>Jun 21</td>
                   <td><button class="btn bs bsm">View</button></td>
                 </tr>
@@ -3681,7 +3681,7 @@ select.fi { appearance: none; cursor: pointer;
             </div>
             <div class="rm">
               <div class="rv" style="color:var(--t1)">1,284</div>
-              <div class="rl">Orders Completed</div>
+              <div class="rl">Orders Complete</div>
               <div class="rc"><i class="fas fa-arrow-up"></i> +18% vs last month</div>
             </div>
             <div class="rm">
@@ -4454,7 +4454,7 @@ select.fi { appearance: none; cursor: pointer;
       'add-post': '<h2>Posts <span class="sep">/</span> <span class="sub">Add Post</span></h2><p>Write and publish an article</p>',
       'purchased-orders': '<h2>Orders <span class="sep">/</span> <span class="sub">Purchased Orders</span></h2><p>View and manage all customer orders</p>',
       'all-orders': '<h2>Orders <span class="sep">/</span> <span class="sub">All Orders</span></h2><p>Manage and update all customer orders</p>',
-      'completed-orders': '<h2>Orders <span class="sep">/</span> <span class="sub"><span style="color:var(--green)">Completed</span> Orders</span></h2><p>All successfully delivered orders</p>',
+      'completed-orders': '<h2>Orders <span class="sep">/</span> <span class="sub"><span style="color:var(--green)">Complete</span> Orders</span></h2><p>All successfully delivered orders</p>',
       'pending-orders': '<h2>Orders <span class="sep">/</span> <span class="sub"><span style="color:var(--orange)">Pending</span> Orders</span></h2><p>Orders awaiting processing</p>',
       'failed-orders': '<h2>Orders <span class="sep">/</span> <span class="sub"><span style="color:var(--red)">Failed</span> Orders</span></h2><p>Orders that failed to complete</p>',
       contact: '<h2>Contact & Tickets</h2><p>Customer inquiries and support tickets</p>',
@@ -4769,7 +4769,7 @@ select.fi { appearance: none; cursor: pointer;
     }
 
     function statClass(s) { return s === 'Completed' ? 'c' : s === 'Failed' ? 'f' : s === 'Processing' ? 'r' : 'p'; }
-    function statLabel(s) { return `<span class="ostat ${statClass(s)}">${s}</span>`; }
+    function statLabel(s) { const txt = s === 'Completed' ? 'Complete' : s; return `<span class="ostat ${statClass(s)}">${txt}</span>`; }
 
     function initAllOrders() {
       renderAllOrders();
@@ -4795,7 +4795,7 @@ select.fi { appearance: none; cursor: pointer;
       <td class="ao-date">${o.date}</td>
       <td>
         <select class="status-sel ${statClass(o.status)}" onchange="updateOrderStatus('${o.id}', this)" onclick="event.stopPropagation()">
-          <option value="Completed" ${o.status === 'Completed' ? 'selected="selected"' : ''}>Completed</option>
+          <option value="Completed" ${o.status === 'Completed' ? 'selected="selected"' : ''}>Complete</option>
           <option value="Pending" ${o.status === 'Pending' ? 'selected="selected"' : ''}>Pending</option>
           <option value="Processing" ${o.status === 'Processing' ? 'selected="selected"' : ''}>Processing</option>
           <option value="Failed" ${o.status === 'Failed' ? 'selected="selected"' : ''}>Failed</option>
@@ -5551,7 +5551,7 @@ select.fi { appearance: none; cursor: pointer;
                         </div>
                       </div>
                     </td>
-                    <td><span class="badge ${badgeClass}">${o.status}</span></td>
+                    <td><span class="badge ${badgeClass}">${o.status === 'Completed' ? 'Complete' : o.status}</span></td>
                     <td style="font-weight:800; color:var(--t-main);">$${o.amount || '0.00'} <i class="fas fa-chevron-right" style="color:var(--t-muted); font-size:10px; margin-left:8px;"></i></td>
                   </tr>
              `;
