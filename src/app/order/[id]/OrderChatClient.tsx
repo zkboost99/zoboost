@@ -119,13 +119,7 @@ export default function OrderChatClient({ initialOrder }: { initialOrder: any })
                     </div>
                   </div>
                   <div className="uc-delivery-timer">
-                    <div className="uc-timer-label">
-                      <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      Delivery In
-                    </div>
-                    <div className="uc-timer-value">15 min 17 s</div>
+                    {/* Removed Delivery In timer */}
                   </div>
                 </div>
                 <div className="uc-trade-shield">
@@ -202,12 +196,11 @@ export default function OrderChatClient({ initialOrder }: { initialOrder: any })
                             {isCustomer ? (
                               <div className="uc-msg-bubble">
                                 <span>{msg.message}</span>
-                                <span className="uc-msg-meta-inline">{formatTime(msg.created_at)} ✓</span>
+                                <span className="uc-msg-meta-inline">✓</span>
                               </div>
                             ) : (
                               <>
                                 <div className="uc-msg-bubble">{msg.message}</div>
-                                <div className="uc-msg-meta-outside">{formatTime(msg.created_at)}</div>
                               </>
                             )}
                           </div>

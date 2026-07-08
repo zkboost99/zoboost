@@ -9,7 +9,7 @@
 }
 
 .uc-content-wrapper {
-  max-width: 1160px;
+  max-width: 900px;
   width: 100%;
   margin: 0 auto;
 }
@@ -37,7 +37,6 @@
 .uc-left-col {
   display: flex;
   flex-direction: column;
-  width: 75%;
 }
 .uc-right-col {
   display: flex;
