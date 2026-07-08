@@ -217,16 +217,23 @@ export default function OrderManagementClient({ order, customerInfo }: { order: 
 
               <div className="om-chat-messages" ref={messagesContainerRef}>
                 <div className="om-sys-msg">
-                  <div className="om-sys-title">Order Created: {order.id}</div>
-                  <div className="om-sys-link-box">
-                    <div className="om-sys-link">
-                      <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/>
-                      </svg>
-                      {order.id}
-                    </div>
-                    <span className="om-sys-time">0m</span>
+                  <div className="om-sys-title">
+                    Product Link:{' '}
+                    <a href={`/product/${order.product_id}`} target="_blank" rel="noreferrer" style={{ color: 'var(--primary)', textDecoration: 'none' }}>
+                      https://www.zoroboost.com/product/{order.product_id}
+                    </a>
                   </div>
+                  <a href={`/product/${order.product_id}`} target="_blank" rel="noreferrer" style={{ textDecoration: 'none', color: 'inherit' }}>
+                    <div className="om-sys-link-box" style={{ cursor: 'pointer' }}>
+                      <div className="om-sys-link">
+                        <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/>
+                        </svg>
+                        View Product
+                      </div>
+                      <span className="om-sys-time">0m</span>
+                    </div>
+                  </a>
                 </div>
 
                 {messages.map((msg, idx) => {

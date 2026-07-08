@@ -159,23 +159,25 @@ export default function OrderChatClient({ initialOrder }: { initialOrder: any })
                   {/* System message — Order Created */}
                   <div className="uc-sys-msg-container">
                     <div className="uc-sys-msg-title">
-                      Order Created:{' '}
-                      <a href={`https://www.zoroboost.com/order/${displayId}`} target="_blank" rel="noreferrer">
-                        https://www.zoroboost.com/order/{displayId}
+                      Product Link:{' '}
+                      <a href={`/product/${order.product_id}`} target="_blank" rel="noreferrer">
+                        https://www.zoroboost.com/product/{order.product_id}
                       </a>
                     </div>
-                    <div className="uc-sys-link-box">
-                      <div className="uc-sys-link-content">
-                        <div className="uc-sys-link-text">
-                          <svg width="13" height="13" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M12.586 4.586a2 2 0 112.828 2.828l-3 3a2 2 0 01-2.828 0 1 1 0 00-1.414 1.414 4 4 0 005.656 0l3-3a4 4 0 00-5.656-5.656l-1.5 1.5a1 1 0 101.414 1.414l1.5-1.5z" clipRule="evenodd" />
-                          </svg>
-                          {displayId}
+                    <a href={`/product/${order.product_id}`} target="_blank" rel="noreferrer" style={{ textDecoration: 'none', color: 'inherit' }}>
+                      <div className="uc-sys-link-box" style={{ cursor: 'pointer' }}>
+                        <div className="uc-sys-link-content">
+                          <div className="uc-sys-link-text">
+                            <svg width="13" height="13" fill="currentColor" viewBox="0 0 20 20">
+                              <path fillRule="evenodd" d="M12.586 4.586a2 2 0 112.828 2.828l-3 3a2 2 0 01-2.828 0 1 1 0 00-1.414 1.414 4 4 0 005.656 0l3-3a4 4 0 00-5.656-5.656l-1.5 1.5a1 1 0 101.414 1.414l1.5-1.5z" clipRule="evenodd" />
+                            </svg>
+                            View Product
+                          </div>
+                          <div className="uc-sys-link-domain">www.zoroboost.com</div>
                         </div>
-                        <div className="uc-sys-link-domain">www.zoroboost.com</div>
+                        <div className="uc-sys-time">4m</div>
                       </div>
-                      <div className="uc-sys-time">4m</div>
-                    </div>
+                    </a>
                   </div>
 
                   {/* Dynamic messages */}
