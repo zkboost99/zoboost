@@ -6615,7 +6615,7 @@ select.fi { appearance: none; cursor: pointer;
         }
       } catch (err) {
         console.error("Error loading suggestions:", err);
-        container.innerHTML = `<div style="text-align:center;padding:40px;color:var(--rd)">Network error loading suggestions.</div>`;
+        container.innerHTML = `<div style="text-align:center;padding:40px;color:var(--rd)">Network error loading suggestions. ${err.message}</div>`;
       }
     }
 
@@ -6636,7 +6636,7 @@ select.fi { appearance: none; cursor: pointer;
         }
       } catch (err) {
         console.error("Error loading bug reports:", err);
-        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--rd)">Network error loading bug reports.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--rd)">Network error loading bug reports. ${err.message}</td></tr>`;
       }
     }
 
@@ -6798,7 +6798,7 @@ select.fi { appearance: none; cursor: pointer;
 
         return `
       <tr id="bug-${b.id}" style="transition: background 0.2s;">
-        <td style="font-weight:800; color:var(--brand); font-family: monospace; font-size:12.5px;">#${b.id.substring(0, 8)}</td>
+        <td style="font-weight:800; color:var(--brand); font-family: monospace; font-size:12.5px;">#${(b.id || '').substring(0, 8)}</td>
         <td>
           <div style="display:flex; align-items:center; gap:10px;">
             <div style="width:32px; height:32px; border-radius:50%; background:rgba(99,102,241,0.08); color:var(--brand); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:12px;">
