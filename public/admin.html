@@ -4522,6 +4522,8 @@ select.fi { appearance: none; cursor: pointer;
             setTimeout(loadContacts, 10);
             setTimeout(function () { if (typeof window.renderDiscordContacts === 'function') window.renderDiscordContacts(); }, 50);
           }
+          if (id === 'suggestions') setTimeout(loadSuggestions, 10);
+          if (id === 'bug-reports') setTimeout(loadBugReports, 10);
           
           window.AdminSkeletons.hide(sec);
         }, 600);
@@ -4541,6 +4543,8 @@ select.fi { appearance: none; cursor: pointer;
           setTimeout(loadContacts, 30);
           setTimeout(function () { if (typeof window.renderDiscordContacts === 'function') window.renderDiscordContacts(); }, 500);
         }
+        if (id === 'suggestions') setTimeout(loadSuggestions, 30);
+        if (id === 'bug-reports') setTimeout(loadBugReports, 30);
       }
     }
 
