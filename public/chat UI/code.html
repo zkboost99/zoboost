@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Order Chat - Eldorado Mockup</title>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Custom Tailwind Configuration -->
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'eld-dark-bg': '#12141d',
+            'eld-card-bg': '#1e212d',
+            'eld-sidebar-bg': '#1e212d',
+            'eld-accent-blue': '#4e73df',
+            'eld-accent-yellow': '#f6c23e',
+            'eld-chat-msg': '#2a2e3f',
+            'eld-user-msg': '#3d68ff',
+            'eld-text-gray': '#a0a0a0',
+            'eld-border': '#2d3142'
+          }
+        }
+      }
+    }
+  </script>
+<!-- Custom Styles for Scrollbars and Fine Tuning -->
+<style data-purpose="custom-layout">
+    body {
+      background-color: #0b0c10;
+      color: #ffffff;
+      font-family: 'Inter', sans-serif;
+    }
+    .chat-container::-webkit-scrollbar {
+      width: 6px;
+    }
+    .chat-container::-webkit-scrollbar-thumb {
+      background: #3a3f50;
+      border-radius: 10px;
+    }
+    .nitro-badge {
+      background: linear-gradient(90deg, #ff00c1 0%, #00fff0 100%);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+<!-- BEGIN: Main Dashboard Wrapper -->
+<main class="w-full max-w-[1200px] grid grid-cols-12 gap-6" data-purpose="dashboard-container">
+<!-- LEFT COLUMN: Chat Section -->
+<div class="col-span-12 lg:col-span-8 flex flex-col gap-4">
+<!-- BEGIN: Header Status Banner -->
+<header class="bg-eld-card-bg rounded-xl p-6 border border-eld-border" data-purpose="chat-header">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-4">
+<!-- Seller Avatar Placeholder -->
+<div class="relative">
+<div class="w-16 h-16 rounded-full bg-eld-dark-bg flex items-center justify-center border-2 border-eld-accent-yellow overflow-hidden">
+<img alt="Seller Avatar" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCq4CKZHCiCNPkLESwgNOysYlSZf3tWKYp9QVptgq3eNSplqcC-AECXfwhQoOOBaxamnc5E7L_JVehMnKxeNaKeg7G-tBSGO-dAtCHfLsrQhjIZ9B-C3SmD--MuDIKlTsnTehXAAdiDDlqgGJ7u5Qte81m-EAP6oQhwbZp59NAN-MOEtTreLCR5syIM-U0EjNJwHuazxCHBiWFI8ORVOIoSeiDXKNpP--ln_8iElbc5q71Dn7kfHFwxsPId81GCUpl0TJNpLsoESzwI"/>
+</div>
+<span class="absolute bottom-1 right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-eld-card-bg"></span>
+</div>
+<div>
+<h1 class="text-xl font-bold flex items-center gap-2">
+                Chat with seller
+                <span class="text-lg">💬</span>
+</h1>
+<p class="text-eld-text-gray text-sm">Reply below if the seller asks for details to continue delivery.</p>
+</div>
+</div>
+<div class="text-right">
+<p class="text-eld-text-gray text-xs uppercase tracking-wider mb-1">
+<span class="inline-block mr-1">🕒</span> Delivery in
+            </p>
+<p class="text-2xl font-bold">15 min 6 s</p>
+</div>
+</div>
+<!-- TradeShield Banner -->
+<div class="mt-4 flex items-center gap-2 bg-eld-dark-bg/50 border border-eld-border p-3 rounded-lg text-eld-accent-blue text-sm">
+<svg class="w-5 h-5" fill="currentColor" viewbox="0 0 20 20"><path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"></path></svg>
+<span class="font-semibold">TradeShield</span>
+<span class="text-eld-text-gray">protects your order</span>
+</div>
+</header>
+<!-- END: Header Status Banner -->
+<!-- BEGIN: Chat Window -->
+<section class="bg-eld-card-bg rounded-xl border border-eld-border flex flex-col h-[600px] overflow-hidden" data-purpose="chat-window">
+<!-- Chat Area Header -->
+<div class="p-4 border-b border-eld-border flex items-center justify-between bg-eld-dark-bg/30">
+<div class="flex items-center gap-3">
+<img alt="Shop Avatar" class="w-10 h-10 rounded-full" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBg2XHTnS17Jw2iHLPGAZuHPL0rktxPMe4vuQiS0SC9--PtP1TElI7Fg5PjKwR3zzBP9y-SB7uJ4vPRmZ72FUXzB30BtIGrhvYoQUlag42C7xWwH8k3Emi4dns92s2V4xg-ijnuZuDUvbzcNuFiBzgKCwaHp-Iq4SrqzOpoaEeJl58EbpuM3qdbEsXIS6ztVZGQc6HkE0atI9flIhH9t_iN0wbcusZk5A_YXyhWfNJtTaG203M055C81LPim4fIuF7tUomehzQ0i0B4"/>
+<div>
+<h3 class="font-bold text-sm">EaseShop</h3>
+<p class="text-xs text-eld-text-gray">Order for items</p>
+</div>
+</div>
+<div class="text-eld-text-gray hover:text-white cursor-pointer">
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+</div>
+<!-- Chat History -->
+<div class="flex-1 overflow-y-auto p-6 space-y-6 chat-container" data-purpose="message-list">
+<!-- System Message: Order Created -->
+<div class="flex gap-4">
+<div class="w-1 h-auto bg-eld-accent-yellow rounded-full"></div>
+<div class="flex-1 bg-eld-dark-bg/40 p-4 rounded-lg border border-eld-border">
+<p class="text-sm mb-2">Order Created: <a class="text-eld-accent-blue underline" href="#">https://www.eldorado.gg/order/7973d127...</a></p>
+<div class="bg-black p-3 rounded flex items-center justify-between border border-gray-800">
+<div class="flex items-center gap-2">
+<svg class="w-4 h-4 text-eld-text-gray" fill="currentColor" viewbox="0 0 20 20"><path d="M12.586 4.586a2 2 0 112.828 2.828l-3 3a2 2 0 01-2.828 0 1 1 0 00-1.414 1.414 4 4 0 005.656 0l3-3a4 4 0 00-5.656-5.656l-1.5 1.5a1 1 0 101.414 1.414l1.5-1.5z"></path></svg>
+<span class="text-xs font-mono">7973d127-999f-4921-bb82-56e5905d34a6</span>
+</div>
+</div>
+<div class="flex justify-between mt-2">
+<span class="text-[10px] text-eld-text-gray">www.eldorado.gg</span>
+<span class="text-[10px] text-eld-text-gray">4m</span>
+</div>
+</div>
+</div>
+<!-- Seller Message -->
+<div class="flex gap-4">
+<img alt="EaseShop" class="w-10 h-10 rounded-full flex-shrink-0" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAUXfZzm-PpK3aIOnUl8NBUrKShYPnXseBNj8_D_zuTtd1H0U4QPfeM6BGiM5kru9DWctJXgXgYynwhXLOi1o2IbGKqe8szw0jevxUsEcJtZofCAaQKvPaqs2DrTi7BY5KAsID7AxIgnmvi6WB4SzJljiXL_LXq52vOkYygLocaIx61C6xMTBu-i4d4naMBEsZSyhWYcdXpUoycbpXX29VProi6huCBrL73BZarRwDxM8SCY6mF-syqR4Cn7pCB3hK6TCpxQ1mGDzcC"/>
+<div class="flex flex-col">
+<div class="bg-eld-chat-msg p-3 rounded-2xl rounded-tl-none">
+<p class="text-sm">Did you read the description, Can I send the link?</p>
+</div>
+<span class="text-[10px] text-eld-text-gray mt-1 ml-1">2m</span>
+</div>
+</div>
+<!-- User Reply -->
+<div class="flex justify-end gap-4">
+<div class="flex flex-col items-end">
+<div class="bg-eld-user-msg p-3 rounded-2xl rounded-tr-none text-white shadow-lg">
+<p class="text-sm font-medium">yes read</p>
+</div>
+<div class="flex items-center gap-1 mt-1 mr-1">
+<span class="text-[10px] text-eld-accent-blue italic font-semibold">just now</span>
+<svg class="w-3 h-3 text-eld-accent-blue" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+</div>
+</div>
+<img alt="Me" class="w-10 h-10 rounded-full flex-shrink-0" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC334EBnIw6yYO8yg6jkxXyB-Cau-TVnC8_WZhL7JjNvd9hbfqMk8dpItiUrYpbadScQyundPuujQ25qrlPwXiv7OayZriqVy8mBAVKFYFfta1pGAX2Ix0LJHWZcmlozdmZ4iKTsNV7MUz7wQxF2HUYirVvbX3jt7_l8CaOOGhwUIfaDJztYuw2XKYe5_Kw83lwV0Y80rCiI60Z4TbNMQb3HUCRb-7pVvGvHPw4WptHoV3nBi6PTzZWofc6A-rLjyKDThncpWgZyZh3"/>
+</div>
+</div>
+<!-- Chat Input Area -->
+<div class="p-4 bg-eld-dark-bg/20 border-t border-eld-border" data-purpose="chat-input-container">
+<div class="bg-eld-dark-bg border border-eld-border rounded-lg flex items-center px-4 py-2 gap-3 focus-within:ring-1 ring-eld-accent-blue transition">
+<input class="bg-transparent border-none focus:ring-0 flex-1 text-sm placeholder:text-eld-text-gray py-2" placeholder="Say something..." type="text"/>
+<div class="flex items-center gap-4 text-eld-text-gray">
+<button class="hover:text-white transition"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></button>
+<button class="hover:text-white transition"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg></button>
+<button class="text-eld-accent-blue hover:text-white transition"><svg class="w-6 h-6" fill="currentColor" viewbox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg></button>
+</div>
+</div>
+</div>
+</section>
+<!-- END: Chat Window -->
+</div>
+<!-- RIGHT COLUMN: Order Details Sidebar -->
+<aside class="col-span-12 lg:col-span-4 flex flex-col gap-4" data-purpose="sidebar">
+<!-- Safe Money Info -->
+<div class="bg-eld-card-bg/40 border border-eld-border rounded-xl p-4 flex items-center justify-between text-sm">
+<div class="flex items-center gap-2">
+<svg class="w-5 h-5 text-eld-accent-blue" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+<span class="font-medium">Your money is safe</span>
+</div>
+<span class="text-eld-text-gray text-xs">Until order is completed</span>
+</div>
+<!-- Main Order Card -->
+<div class="bg-eld-card-bg rounded-xl border border-eld-border p-6 shadow-2xl" data-purpose="order-details-card">
+<div class="flex justify-between items-center mb-6">
+<h2 class="text-lg font-bold">Order details</h2>
+<span class="bg-eld-accent-yellow/20 text-eld-accent-yellow text-[10px] uppercase font-bold px-2 py-1 rounded">Pending delivery</span>
+</div>
+<!-- Product Preview -->
+<div class="flex gap-4 mb-8">
+<div class="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0 bg-eld-dark-bg border border-eld-border">
+<!-- Representing the Nitro Trial Image -->
+<img alt="Nitro Product" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDkhrXveZdXRSRHXDdtQ7NsUOShvYfP1FI86cNmZ2qeAuM_pPYcMbJi9wXmgisXY8Cgv2NGAOLqOomCt-6ldH-VavUNZ34F-sQwWt1EImPaVf1jFjCQLa3mmRgQiKE6WN40rPUsd2blsY-_Mh9f5fZVesAj1-l9nGG94J8--Hs2vN-hQGiAUXZEVogIWzAjnhyNHUa0D5I5g8nzsH6fZL-hNkFECAvQN_deyb734sy0zarIh7VLAbVfW9HB_t8HdfWSoJWNlnnMsNOo"/>
+</div>
+<div>
+<h3 class="text-sm font-bold leading-tight hover:text-eld-accent-blue cursor-pointer transition">1 Month Nitro Trial Code (Read Description!)</h3>
+</div>
+</div>
+<!-- Details Grid -->
+<div class="space-y-4 text-sm">
+<div class="flex justify-between">
+<span class="text-eld-text-gray">Game</span>
+<span class="flex items-center gap-1 font-semibold"><span class="w-4 h-4 bg-blue-600 rounded-sm flex items-center justify-center text-[8px] text-white">DC</span> Discord</span>
+</div>
+<div class="flex justify-between">
+<span class="text-eld-text-gray">Delivery type</span>
+<span class="font-semibold">Gifting Method</span>
+</div>
+<div class="flex justify-between">
+<span class="text-eld-text-gray">Item Type</span>
+<span class="font-semibold">Nitro Premium Trial</span>
+</div>
+<div class="flex justify-between">
+<span class="text-eld-text-gray">Seller</span>
+<span class="font-semibold text-eld-accent-blue flex items-center gap-2">EaseShop | <span class="w-2 h-2 bg-green-500 rounded-full inline-block"></span> Online</span>
+</div>
+<div class="flex justify-between">
+<span class="text-eld-text-gray">Total price</span>
+<span class="font-bold text-lg">$0.50</span>
+</div>
+<div class="flex flex-col pt-2">
+<span class="text-eld-text-gray mb-1">Receipt sent</span>
+<span class="text-xs break-all font-mono">muntazir.mahdi047@gmail.com</span>
+</div>
+<div class="flex flex-col">
+<span class="text-eld-text-gray mb-1">Order ID</span>
+<span class="text-xs break-all font-mono text-eld-text-gray">7973d127-999f-4921-bb82-56e5905d34a6</span>
+</div>
+</div>
+<!-- Actions -->
+<button class="w-full mt-8 py-3 bg-eld-dark-bg border border-eld-border rounded-lg text-sm font-bold hover:bg-eld-border transition">
+          View full description
+        </button>
+</div>
+</aside>
+<!-- END: Sidebar -->
+</main>
+<!-- END: Main Dashboard Wrapper -->
+</body></html>

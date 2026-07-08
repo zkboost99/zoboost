@@ -14,11 +14,11 @@ const client = new Client({ connectionString: dbUrl });
 client.connect()
   .then(() => {
     console.log('Connected to DB');
-    const query = fs.readFileSync('supabase/migrations/20260707010000_add_order_chats.sql', 'utf8');
+    const query = `ALTER TABLE orders ADD COLUMN IF NOT EXISTS user_id UUID REFERENCES auth.users(id);`;
     return client.query(query);
   })
   .then((res) => {
-    console.log('Migration executed successfully');
+    console.log('Column added successfully');
   })
   .catch(err => console.error('Error:', err))
   .finally(() => client.end());

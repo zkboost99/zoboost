@@ -16,11 +16,12 @@ export default function SignUp() {
 
   const handleOAuthSignIn = async (provider: 'google' | 'discord') => {
     try {
+      const returnUrl = new URLSearchParams(window.location.search).get('returnUrl') || '/';
       const supabase = createClient();
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
-          redirectTo: `${window.location.origin}/api/auth/callback`,
+          redirectTo: `${window.location.origin}/api/auth/callback?next=${encodeURIComponent(returnUrl)}`,
         },
       });
       if (error) throw error;
@@ -78,7 +79,8 @@ export default function SignUp() {
       setAgreeTerms(false);
       
       setTimeout(() => {
-        router.push('/login');
+        const returnUrl = new URLSearchParams(window.location.search).get('returnUrl') || '/';
+        router.push(`/login?returnUrl=${encodeURIComponent(returnUrl)}`);
       }, 1500);
     } catch (err: any) {
       setToast({ type: 'error', message: err.message || 'Failed to sign up. Please try again.' });

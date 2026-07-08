@@ -13,6 +13,11 @@ export async function GET(request: Request) {
     if (!error) {
       const forwardedHost = request.headers.get('x-forwarded-host') // original origin before load balancer
       const isLocalEnv = process.env.NODE_ENV === 'development'
+      
+      // Temporarily forced to localhost for testing as requested by user
+      return NextResponse.redirect(`http://localhost:3000${next}`)
+      
+      /* Original logic:
       if (isLocalEnv) {
         // we can be sure that there is no load balancer in development/local
         return NextResponse.redirect(`${origin}${next}`)
@@ -21,6 +26,7 @@ export async function GET(request: Request) {
       } else {
         return NextResponse.redirect(`${origin}${next}`)
       }
+      */
     }
   }
 

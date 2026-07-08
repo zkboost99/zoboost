@@ -23,7 +23,7 @@ export default async function ProfilePage() {
     const { data: ordersData } = await supabase
       .from('orders')
       .select('*')
-      .eq('user_id', session.user.id)
+      .eq('email', session.user.email)
       .order('created_at', { ascending: false });
     
     if (ordersData) {

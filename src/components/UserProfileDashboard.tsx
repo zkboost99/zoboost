@@ -319,8 +319,8 @@ export default function UserProfileDashboard({
                                 )}
                               </div>
                               <div>
-                                <p className="font-bold text-foreground text-sm m-0 group-hover:text-amber-400 transition-colors">{order.product_name}</p>
-                                <p className="text-[10px] text-muted-foreground uppercase tracking-widest mt-0.5">#{order.id.slice(0, 8)} • {order.category}</p>
+                                <p className="font-bold text-foreground text-sm m-0 group-hover:text-amber-400 transition-colors">{order.product_name || order.product || 'Unknown Product'}</p>
+                                <p className="text-[10px] text-muted-foreground uppercase tracking-widest mt-0.5">#{order.id.slice(0, 8)} • {order.category || order.payment_method || 'Order'}</p>
                               </div>
                             </div>
                           </td>
@@ -328,7 +328,7 @@ export default function UserProfileDashboard({
                             {new Date(order.created_at).toLocaleDateString()}
                           </td>
                           <td className="p-4 font-black text-foreground">
-                            ${Number(order.price).toFixed(2)}
+                            ${Number(order.amount || order.price || 0).toFixed(2)}
                           </td>
                           <td className="p-4">
                             <span className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${
@@ -342,7 +342,7 @@ export default function UserProfileDashboard({
                           </td>
                           <td className="p-4 text-right">
                             <button 
-                              onClick={() => setSelectedOrder(order)}
+                              onClick={() => router.push(`/order/${order.id}`)}
                               className="text-amber-400 hover:text-amber-300 font-bold text-sm bg-amber-400/10 hover:bg-amber-400/20 px-3 py-1.5 rounded transition-colors border-none cursor-pointer flex items-center gap-2 ml-auto"
                             >
                               <Eye className="w-4 h-4" /> View
@@ -396,8 +396,8 @@ export default function UserProfileDashboard({
                       )}
                     </div>
                     <div className="flex-1">
-                      <h4 className="text-lg font-bold text-foreground m-0">{selectedOrder.product_name}</h4>
-                      <p className="text-sm text-amber-400 font-medium mt-1">{selectedOrder.category}</p>
+                      <h4 className="text-lg font-bold text-foreground m-0">{selectedOrder.product_name || selectedOrder.product || 'Unknown Product'}</h4>
+                      <p className="text-sm text-amber-400 font-medium mt-1">{selectedOrder.category || selectedOrder.payment_method || 'Order'}</p>
                       
                       <div className="mt-4 grid grid-cols-2 gap-4">
                         <div>
@@ -406,7 +406,7 @@ export default function UserProfileDashboard({
                         </div>
                         <div>
                           <p className="text-xs text-muted-foreground uppercase font-bold">Price</p>
-                          <p className="font-medium text-foreground">${Number(selectedOrder.price).toFixed(2)}</p>
+                          <p className="font-medium text-foreground">${Number(selectedOrder.amount || selectedOrder.price || 0).toFixed(2)}</p>
                         </div>
                       </div>
                     </div>

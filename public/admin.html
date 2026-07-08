@@ -8915,10 +8915,10 @@ select.fi { appearance: none; cursor: pointer;
             if (orderData && orderData.length > 0 && orderData[0].products) {
               const product = orderData[0].products;
               const pName = product.title || 'Unknown Product';
-              const pUrl = '/product/' + product.id;
+              const pUrl = '/admin/order-management/' + orderIdToFetch;
               const headerTag = document.querySelector('.dc-chat-header-tag');
               if (headerTag) {
-                headerTag.innerHTML = `${c.email ? c.email + ' &bull; ' : ''}Order #${orderIdToFetch} &bull; <strong>Product:</strong> ${pName} &bull; <a href="${pUrl}" target="_blank" style="color: #60A5FA; text-decoration: underline;">View Product <i class="fas fa-external-link-alt" style="font-size: 10px;"></i></a>`;
+                headerTag.innerHTML = `${c.email ? c.email + ' &bull; ' : ''}Order #${orderIdToFetch} &bull; <strong>Product:</strong> ${pName} &bull; <a href="${pUrl}" target="_blank" style="color: #60A5FA; text-decoration: underline;">Manage Order <i class="fas fa-external-link-alt" style="font-size: 10px;"></i></a>`;
               }
             }
           } catch (e) {

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { X, CheckCircle2, AlertCircle, Loader2 } from 'lucide-react';
 
 interface OrderFormModalProps {
@@ -23,6 +24,7 @@ const PAYMENT_METHODS = {
 };
 
 export default function OrderFormModal({ isOpen, onClose, product, currencySymbol, currencyRate }: OrderFormModalProps) {
+  const router = useRouter();
   const [selectedPayment, setSelectedPayment] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -71,10 +73,8 @@ export default function OrderFormModal({ isOpen, onClose, product, currencySymbo
       if (data.success) {
         setSuccess(true);
         setTimeout(() => {
-          onClose();
-          setSuccess(false);
-          setSelectedPayment('');
-        }, 3000);
+          router.push('/order/' + data.orderId);
+        }, 100);
       } else {
         setError(data.error || 'Failed to create order. Please try again.');
         // Note: If columns don't exist yet, it will throw an error. We show it here.
@@ -115,7 +115,8 @@ export default function OrderFormModal({ isOpen, onClose, product, currencySymbo
                 <CheckCircle2 className="w-8 h-8 text-[#00c853]" />
               </div>
               <h3 className="text-xl font-bold text-white mb-2">Order Created Successfully!</h3>
-              <p className="text-sm text-[#8a9bb4] mb-4">Please contact admin on Discord to complete your payment.</p>
+              <p className="text-sm text-[#8a9bb4] mb-4">Redirecting you to the Order Chat...</p>
+              <Loader2 className="w-6 h-6 animate-spin text-[#ffd13b]" />
             </div>
           ) : (
             <form id="orderForm" onSubmit={handleSubmit} className="flex flex-col gap-6">

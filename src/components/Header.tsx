@@ -123,20 +123,41 @@ export default function Header() {
   }, [pathname]);
 
   useEffect(() => {
-    const initAuth = async () => {
+    let subscription: any = null;
+
+    const fetchSession = async () => {
       try {
         const { createClient } = await import('@/utils/supabase/client');
         const supabase = createClient();
         const { data: { session } } = await supabase.auth.getSession();
         setUser(session?.user || null);
-
-        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-          setUser(session?.user || null);
-        });
-        return () => subscription.unsubscribe();
       } catch (e) {}
     };
+
+    const initAuth = async () => {
+      try {
+        const { createClient } = await import('@/utils/supabase/client');
+        const supabase = createClient();
+        
+        await fetchSession();
+
+        const { data } = supabase.auth.onAuthStateChange((_event, session) => {
+          setUser(session?.user || null);
+        });
+        subscription = data.subscription;
+      } catch (e) {}
+    };
+
     initAuth();
+
+    // Listen to our custom event
+    const handleAuthChange = () => fetchSession();
+    window.addEventListener('authStateChanged', handleAuthChange);
+
+    return () => {
+      if (subscription) subscription.unsubscribe();
+      window.removeEventListener('authStateChanged', handleAuthChange);
+    };
   }, []);
 
   useEffect(() => {

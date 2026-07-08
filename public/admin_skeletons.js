@@ -75,7 +75,7 @@ const SKELETON_CSS = `
 
 const SKELETON_TEMPLATES = {
   // DASHBOARD SKELETON
-  'dashboard': \`
+  'dashboard': `
     <div style="padding-top: 32px;">
       <div class="skel-text" style="width: 200px; height: 28px; margin-bottom: 8px;"></div>
       <div class="skel-text" style="width: 300px; height: 14px; margin-bottom: 32px; opacity: 0.5;"></div>
@@ -94,10 +94,10 @@ const SKELETON_TEMPLATES = {
         <div class="skel-box" style="height: 300px;"></div>
       </div>
     </div>
-  \`,
+  `,
 
   // ORDERS SKELETON (Applies to all order tabs)
-  'orders': \`
+  'orders': `
     <div style="padding-top: 32px;">
       <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
         <div class="skel-box" style="width: 100px; height: 36px; border-radius: 8px;"></div>
@@ -118,7 +118,7 @@ const SKELETON_TEMPLATES = {
         </div>
         
         <div class="skel-flex-col">
-          \${Array(6).fill(\`
+          ${Array(6).fill(`
             <div class="skel-box" style="height: 72px; width: 100%; border-radius: 12px; display: flex; align-items: center; padding: 0 16px; gap: 20px;">
               <div class="skel-text" style="width: 60px; margin:0;"></div>
               <div style="display: flex; align-items: center; gap: 12px; width: 200px;">
@@ -135,20 +135,20 @@ const SKELETON_TEMPLATES = {
                  <div class="skel-box" style="width: 32px; height: 32px; border-radius: 8px;"></div>
               </div>
             </div>
-          \`).join('')}
+          `).join('')}
         </div>
       </div>
     </div>
-  \`,
+  `,
 
   // NOTIFICATIONS SKELETON
-  'notifications': \`
+  'notifications': `
     <div style="padding-top: 32px;">
       <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
         <div class="skel-box" style="width: 140px; height: 36px; border-radius: 8px;"></div>
       </div>
       <div class="skel-grid-5">
-        \${Array(12).fill(\`
+        ${Array(12).fill(`
           <div class="skel-box" style="height: 180px; padding: 20px; display: flex; flex-direction: column;">
             <div style="display: flex; justify-content: space-between; margin-bottom: 16px;">
               <div class="skel-circle" style="width: 40px; height: 40px;"></div>
@@ -163,13 +163,13 @@ const SKELETON_TEMPLATES = {
               <div class="skel-text" style="width: 40px; height: 10px; margin: 0;"></div>
             </div>
           </div>
-        \`).join('')}
+        `).join('')}
       </div>
     </div>
-  \`,
+  `,
 
   // CONTACT & TICKETS SKELETON
-  'contact': \`
+  'contact': `
     <div style="padding-top: 32px; display: flex; height: calc(100vh - 100px); gap: 24px;">
       <div class="skel-box" style="width: 340px; height: 100%; display: flex; flex-direction: column;">
         <div style="padding: 24px; border-bottom: 1px solid rgba(255,255,255,0.05);">
@@ -177,7 +177,7 @@ const SKELETON_TEMPLATES = {
            <div class="skel-box" style="width: 100%; height: 40px; border-radius: 8px; margin-top: 16px;"></div>
         </div>
         <div style="padding: 16px; flex: 1; display: flex; flex-direction: column; gap: 16px;">
-          \${Array(6).fill(\`
+          ${Array(6).fill(`
             <div style="display: flex; gap: 16px; align-items: center;">
               <div class="skel-circle" style="width: 48px; height: 48px; flex-shrink: 0;"></div>
               <div style="flex: 1;">
@@ -185,7 +185,7 @@ const SKELETON_TEMPLATES = {
                 <div class="skel-text" style="width: 90%; height: 10px; opacity: 0.6;"></div>
               </div>
             </div>
-          \`).join('')}
+          `).join('')}
         </div>
       </div>
       
@@ -213,10 +213,10 @@ const SKELETON_TEMPLATES = {
         </div>
       </div>
     </div>
-  \`,
+  `,
 
   // GENERIC SKELETON (For Settings, Analytics, etc.)
-  'generic': \`
+  'generic': `
     <div style="padding-top: 32px;">
       <div class="skel-text" style="width: 250px; height: 24px; margin-bottom: 32px;"></div>
       <div class="skel-grid-4">
@@ -227,7 +227,7 @@ const SKELETON_TEMPLATES = {
       </div>
       <div class="skel-box" style="width: 100%; height: 500px;"></div>
     </div>
-  \`
+  `
 };
 
 const PAGE_SKELETON_MAP = {

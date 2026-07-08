@@ -1,0 +1,620 @@
+/* userChat.css — exact match to reference screenshots */
+
+.uc-page-container {
+  min-height: 100vh;
+  background-color: #13141a;
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  padding: 110px 32px 80px;
+}
+
+.uc-content-wrapper {
+  max-width: 1160px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* ── Back link ── */
+.uc-top-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #aaa;
+  font-size: 13px;
+  text-decoration: none;
+  margin-bottom: 18px;
+}
+.uc-top-nav:hover { color: #fff; }
+
+/* ── Two-column grid ── */
+.uc-grid {
+  display: grid;
+  grid-template-columns: 1fr 310px;
+  gap: 16px;
+  align-items: start;
+}
+
+.uc-left-col {
+  display: flex;
+  flex-direction: column;
+}
+.uc-right-col {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Shared card ── */
+.uc-card {
+  background-color: #1e2030;
+  border-radius: 10px;
+  border: 1px solid #2a2d3e;
+  overflow: hidden;
+}
+
+/* ════════════════════════════
+   TOP — "Chat with seller"
+════════════════════════════ */
+.uc-top-card-inner {
+  padding: 20px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+.uc-top-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.uc-top-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 8px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: #252838;
+}
+.uc-top-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.uc-top-text h1 {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0 0 5px;
+  color: #fff;
+}
+.uc-top-text p {
+  font-size: 12px;
+  color: #888;
+  margin: 0;
+  line-height: 1.5;
+  max-width: 300px;
+}
+.uc-delivery-timer {
+  text-align: right;
+  flex-shrink: 0;
+  border-left: 1px solid #2a2d3e;
+  padding-left: 24px;
+}
+.uc-timer-label {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 5px;
+  font-size: 11px;
+  color: #888;
+  margin-bottom: 5px;
+}
+.uc-timer-value {
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+}
+
+/* TradeShield bar */
+.uc-trade-shield {
+  background: #181a28;
+  padding: 10px 24px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12.5px;
+  color: #4a7de8;
+  font-weight: 600;
+  border-top: 1px solid #2a2d3e;
+}
+.uc-trade-shield-sub {
+  color: #888;
+  font-weight: 400;
+}
+
+/* ════════════════════════════
+   CHAT CARD
+════════════════════════════ */
+.uc-chat-card {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  height: 500px;
+  border-radius: 10px;
+}
+
+/* Chat header */
+.uc-chat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 18px;
+  border-bottom: 1px solid #2a2d3e;
+  flex-shrink: 0;
+  background: #1e2030;
+  border-radius: 10px 10px 0 0;
+}
+.uc-chat-header-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.uc-chat-header-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #7b68ee;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.uc-chat-header-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.uc-chat-header-info h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+}
+.uc-chat-header-info p {
+  margin: 0;
+  font-size: 11px;
+  color: #666;
+}
+.uc-chat-search {
+  color: #555;
+  cursor: pointer;
+  display: flex;
+  transition: color 0.15s;
+}
+.uc-chat-search:hover { color: #ccc; }
+
+/* ── Messages area ── */
+.uc-chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 16px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  /* Very dark — almost black like reference */
+  background: #090b14;
+}
+.uc-chat-messages::-webkit-scrollbar { width: 5px; }
+.uc-chat-messages::-webkit-scrollbar-track { background: #090b14; }
+.uc-chat-messages::-webkit-scrollbar-thumb { background: #2a2d3e; border-radius: 3px; }
+
+/* ── System message block ── */
+.uc-sys-msg-container {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.uc-sys-msg-wrapper {
+  background: #141620;
+  border-radius: 6px;
+  padding: 10px 14px;
+}
+.uc-sys-msg-title {
+  font-size: 12.5px;
+  color: #c8cad8;
+  margin-bottom: 8px;
+}
+.uc-sys-msg-title a {
+  color: #6b8fd4;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.uc-sys-link-box {
+  background: #030305;
+  border-left: 3px solid #c98a1a;
+  padding: 10px 14px;
+  border-radius: 2px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 8px;
+}
+.uc-sys-link-content { display: flex; flex-direction: column; gap: 4px; flex: 1; }
+.uc-sys-link-text {
+  color: #d0d3e0;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  word-break: break-all;
+}
+.uc-sys-link-domain { color: #444; font-size: 11px; }
+.uc-sys-time { color: #444; font-size: 11px; flex-shrink: 0; align-self: flex-end; }
+
+/* ── Message group ── */
+.uc-msg-group {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Message row ── */
+.uc-msg-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+.uc-msg-row.seller { justify-content: flex-start; }
+.uc-msg-row.buyer  { justify-content: flex-end; }
+
+/* Seller avatar — round, left */
+.uc-msg-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: #252838;
+  align-self: flex-end;
+}
+.uc-msg-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+/* Buyer avatar — round, right, dark */
+.uc-msg-avatar-buyer {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #2a2d3e;
+  border: 2px solid #3a3d52;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  align-self: flex-end;
+  overflow: hidden;
+}
+
+.uc-msg-content {
+  display: flex;
+  flex-direction: column;
+  max-width: 72%;
+}
+.uc-msg-row.seller .uc-msg-content { align-items: flex-start; }
+.uc-msg-row.buyer  .uc-msg-content { align-items: flex-end; }
+
+/* ── Bubbles ── */
+.uc-msg-bubble {
+  padding: 9px 14px;
+  border-radius: 16px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  word-break: break-word;
+  display: inline-block;
+}
+
+/* Seller: dark bubble, flat bottom-left */
+.uc-msg-row.seller .uc-msg-bubble {
+  background: #1e2232;
+  color: #d5d8e8;
+  border-bottom-left-radius: 3px;
+}
+
+/* Buyer: blue bubble, flat bottom-right, inline meta */
+.uc-msg-row.buyer .uc-msg-bubble {
+  background: #3a5bd4;
+  color: #fff;
+  border-bottom-right-radius: 3px;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 10px;
+}
+.uc-msg-meta-inline {
+  font-size: 10px;
+  color: rgba(255,255,255,0.5);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.uc-msg-meta-outside {
+  font-size: 11px;
+  color: #3a3d55;
+  margin-top: 4px;
+  padding-left: 3px;
+}
+
+/* ── Quick reply row ── */
+/* RIGHT aligned: [yes read] [not now /] [buyer avatar] */
+.uc-quick-reply-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 8px;
+}
+.uc-qr-yes {
+  background: #3a5bd4;
+  color: #fff;
+  border: none;
+  padding: 7px 20px;
+  border-radius: 22px;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+.uc-qr-yes:hover:not(:disabled) { background: #4a6de8; }
+.uc-qr-yes:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.uc-qr-no {
+  background: transparent;
+  color: #5a5d70;
+  border: none;
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: inherit;
+  padding: 4px 0;
+  transition: color 0.15s;
+  white-space: nowrap;
+}
+.uc-qr-no:hover:not(:disabled) { color: #ccc; }
+.uc-qr-no:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* ── Chat input ── */
+.uc-chat-input-area {
+  padding: 10px 14px;
+  background: #1e2030;
+  border-top: 1px solid #2a2d3e;
+  flex-shrink: 0;
+  border-radius: 0 0 10px 10px;
+}
+.uc-chat-input-wrapper {
+  background: #12141e;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  padding: 0 14px;
+  border: 1px solid #2a2d3e;
+  min-height: 46px;
+  gap: 10px;
+}
+.uc-chat-input-wrapper input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #d5d8e8;
+  font-size: 13px;
+  outline: none;
+  padding: 12px 0;
+  font-family: inherit;
+}
+.uc-chat-input-wrapper input::placeholder { color: #3a3d52; }
+.uc-input-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-shrink: 0;
+}
+.uc-input-icon {
+  color: #4a4d62;
+  cursor: pointer;
+  display: flex;
+  transition: color 0.15s;
+}
+.uc-input-icon:hover { color: #aaa; }
+.uc-send-btn {
+  background: transparent;
+  color: #4a7de8;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 0;
+  transition: color 0.15s;
+}
+.uc-send-btn:hover { color: #6b9aff; }
+.uc-send-btn:disabled { opacity: 0.25; cursor: not-allowed; }
+
+/* ════════════════════════════
+   RIGHT COLUMN
+════════════════════════════ */
+
+/* Your money is safe */
+.uc-safe-banner {
+  background: #1e2030;
+  border: 1px solid #2a2d3e;
+  border-radius: 10px;
+  padding: 12px 18px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.uc-safe-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+}
+.uc-safe-right { color: #666; font-size: 12px; }
+
+/* Order details card */
+.uc-details-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 18px 12px;
+}
+.uc-details-header h2 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: #fff;
+}
+
+/* Status pill */
+.uc-status-pill {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+.uc-status-pill.pending  { background: #b8721a; color: #fff; }
+.uc-status-pill.completed { background: #15803d; color: #fff; }
+.uc-status-pill.failed   { background: #b91c1c; color: #fff; }
+.uc-status-pill.rejected { background: #7c3aed; color: #fff; }
+
+/* Product */
+.uc-product-preview {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 18px 14px;
+}
+.uc-product-img {
+  width: 50px;
+  height: 50px;
+  background: #252838;
+  border-radius: 6px;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 1px solid #3a3d52;
+}
+.uc-product-img img { width: 100%; height: 100%; object-fit: cover; }
+.uc-product-name {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #fff;
+  line-height: 1.4;
+}
+
+/* Details rows */
+.uc-details-list {
+  padding: 12px 18px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  border-top: 1px solid #2a2d3e;
+}
+.uc-detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  font-size: 12px;
+}
+.uc-detail-label { color: #666; }
+.uc-detail-value {
+  color: #fff;
+  font-weight: 600;
+  text-align: right;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 5px;
+  word-break: break-all;
+  max-width: 60%;
+  line-height: 1.5;
+}
+.uc-detail-value.total-price { font-size: 14px; font-weight: 700; }
+.uc-detail-value.seller-name { color: #4a7de8; }
+.uc-detail-value.receipt-email {
+  font-weight: 400;
+  font-size: 11px;
+  color: #ccc;
+}
+.uc-detail-value.order-id {
+  font-family: monospace;
+  font-size: 11px;
+  font-weight: 400;
+  color: #bbb;
+  text-align: right;
+  line-height: 1.6;
+}
+
+/* Discord badge */
+.uc-discord-badge {
+  width: 18px;
+  height: 18px;
+  background: #2563eb;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 7px;
+  color: #fff;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+/* Seller online indicators */
+.uc-sep { color: #444; font-weight: 400; margin: 0 2px; }
+.uc-online-dot {
+  width: 8px; height: 8px;
+  background: #22c55e;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+.uc-online-txt { color: #22c55e; font-weight: 600; }
+
+/* View full description */
+.uc-view-desc-btn {
+  display: block;
+  width: calc(100% - 36px);
+  margin: 0 18px 14px;
+  padding: 10px;
+  background: #252838;
+  color: #bbb;
+  border: 1px solid #2a2d3e;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+.uc-view-desc-btn:hover { background: #2e3048; color: #fff; }
+
+/* Actions */
+.uc-actions-area {
+  padding: 0 18px 18px;
+  display: flex;
+  gap: 10px;
+}
+.uc-action-btn {
+  flex: 1;
+  background: #191b28;
+  color: #999;
+  border: 1px solid #2a2d3e;
+  padding: 9px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+.uc-action-btn:hover { background: #252838; color: #fff; }
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .uc-grid { grid-template-columns: 1fr; }
+  .uc-delivery-timer { border-left: none; padding-left: 0; text-align: left; }
+  .uc-timer-label { justify-content: flex-start; }
+  .uc-page-container { padding: 90px 16px 60px; }
+  .uc-chat-card { height: 420px; }
+}

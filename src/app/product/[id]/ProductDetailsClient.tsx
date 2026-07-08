@@ -6,6 +6,8 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ProductDescriptionSection from './ProductDescriptionSection';
 import OrderFormModal from '@/components/OrderFormModal';
+import AuthRequiredModal from '@/components/AuthRequiredModal';
+import { createClient } from '@/utils/supabase/client';
 import { 
   ArrowLeft,
   ShieldCheck, 
@@ -46,6 +48,9 @@ export default function ProductDetailsClient({ product, relatedProducts }: Produ
   const [currency, setCurrency] = useState<Currency>({ code: 'USD', symbol: '$', label: 'USD - $', rate: 1 });
   const [protectExpanded, setProtectExpanded] = useState(true);
   const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const [loadingAuth, setLoadingAuth] = useState(true);
 
   useEffect(() => {
     const stored = localStorage.getItem('selected_currency');
@@ -55,6 +60,19 @@ export default function ProductDetailsClient({ product, relatedProducts }: Produ
         setCurrency(parsed);
       } catch (e) {}
     }
+
+    const checkUser = async () => {
+      const supabase = createClient();
+      const { data: { session } } = await supabase.auth.getSession();
+      setUser(session?.user || null);
+      setLoadingAuth(false);
+
+      if (session?.user && localStorage.getItem('pending_buy_intent') === 'true') {
+        localStorage.removeItem('pending_buy_intent');
+        setIsOrderModalOpen(true);
+      }
+    };
+    checkUser();
   }, []);
 
   const formatPrice = (usdPrice: number) => {
@@ -233,8 +251,16 @@ export default function ProductDetailsClient({ product, relatedProducts }: Produ
 
                 {/* Create Order Button */}
                 <button 
-                  onClick={() => setIsOrderModalOpen(true)}
-                  className="w-full inline-flex items-center justify-center rounded bg-[#ffd13b] hover:bg-[#ffc83b] px-4 py-3.5 text-sm font-bold text-neutral-900 shadow-md transition-all border-none cursor-pointer mb-5"
+                  onClick={() => {
+                    if (loadingAuth) return;
+                    if (!user) {
+                      setIsAuthModalOpen(true);
+                    } else {
+                      setIsOrderModalOpen(true);
+                    }
+                  }}
+                  disabled={loadingAuth}
+                  className="w-full inline-flex items-center justify-center rounded bg-[#ffd13b] hover:bg-[#ffc83b] px-4 py-3.5 text-sm font-bold text-neutral-900 shadow-md transition-all border-none cursor-pointer mb-5 disabled:opacity-50"
                 >
                   Create Order
                 </button>
@@ -327,6 +353,12 @@ export default function ProductDetailsClient({ product, relatedProducts }: Produ
         product={product} 
         currencySymbol={currency.symbol}
         currencyRate={currency.rate}
+      />
+
+      {/* Auth Modal */}
+      <AuthRequiredModal 
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
       />
     </div>
   );

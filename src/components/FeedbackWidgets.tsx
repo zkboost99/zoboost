@@ -105,6 +105,146 @@ export default function FeedbackWidgets() {
           from { transform: translateY(100px); opacity: 0; }
           to { transform: translateY(0); opacity: 1; }
         }
+        
+        .macos-modal-overlay {
+          position: fixed;
+          top: 0; left: 0; right: 0; bottom: 0;
+          background: rgba(0, 0, 0, 0.7);
+          backdrop-filter: blur(5px);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 10000;
+        }
+
+        .macos-window.feedback-window {
+          background-color: #1B1D22;
+          width: 90%;
+          max-width: 500px;
+          border-radius: 12px;
+          box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+          overflow: hidden;
+          border: 1px solid rgba(255,255,255,0.1);
+          color: #fff;
+          font-family: 'Inter', sans-serif;
+        }
+
+        .feedback-modal-header {
+          padding: 24px;
+          position: relative;
+        }
+
+        .suggestion-header { background: linear-gradient(135deg, #4f46e5, #7c3aed); }
+        .report-header { background: linear-gradient(135deg, #e11d48, #be123c); }
+
+        .macos-controls-feedback {
+          position: absolute;
+          top: 12px;
+          right: 12px;
+        }
+
+        .macos-btn.close {
+          width: 14px;
+          height: 14px;
+          border-radius: 50%;
+          background-color: #ff5f56;
+          cursor: pointer;
+          position: relative;
+        }
+        .macos-btn.close::before, .macos-btn.close::after {
+          content: ''; position: absolute; top: 50%; left: 50%;
+          width: 8px; height: 1.5px; background: #990000;
+          transform-origin: center; opacity: 0; transition: opacity 0.2s;
+        }
+        .macos-btn.close:hover::before { transform: translate(-50%, -50%) rotate(45deg); opacity: 1; }
+        .macos-btn.close:hover::after { transform: translate(-50%, -50%) rotate(-45deg); opacity: 1; }
+
+        .header-content {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+        }
+
+        .header-content i {
+          font-size: 32px;
+          opacity: 0.9;
+        }
+
+        .header-content h3 {
+          margin: 0 0 4px 0;
+          font-size: 20px;
+          font-weight: 700;
+        }
+
+        .header-content p {
+          margin: 0;
+          font-size: 13px;
+          opacity: 0.8;
+        }
+
+        .feedback-modal-body {
+          padding: 24px;
+          background: #1B1D22;
+        }
+
+        .form-group {
+          margin-bottom: 16px;
+          display: flex;
+          flex-direction: column;
+        }
+
+        .form-group label {
+          font-size: 11px;
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          color: #9CA3AF;
+          margin-bottom: 8px;
+        }
+
+        .form-control {
+          background-color: #111827;
+          border: 1px solid rgba(255,255,255,0.1);
+          padding: 12px 16px;
+          border-radius: 8px;
+          color: #fff;
+          font-size: 14px;
+          outline: none;
+          transition: border-color 0.2s;
+          font-family: inherit;
+        }
+
+        .form-control:focus {
+          border-color: #3b82f6;
+        }
+
+        .input-row {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 16px;
+        }
+
+        .feedback-submit-btn {
+          width: 100%;
+          padding: 14px;
+          border-radius: 8px;
+          font-weight: 600;
+          font-size: 15px;
+          border: none;
+          cursor: pointer;
+          margin-top: 16px;
+          color: #fff;
+          transition: opacity 0.2s;
+        }
+
+        .feedback-submit-btn:hover { opacity: 0.9; }
+        .feedback-submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .suggestion-submit { background-color: #6d28d9; }
+        .report-submit { background-color: #be123c; }
+
+        .genie-open-anim { animation: slideIn 0.3s ease-out forwards; }
+        .genie-close-anim { animation: slideIn 0.3s ease-out reverse backwards; }
       `}</style>
 
       {/* Toast Notification */}
