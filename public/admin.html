@@ -9176,6 +9176,11 @@ select.fi { appearance: none; cursor: pointer;
         setTimeout(() => toast.remove(), 300);
       }, 2500);
     }
+    function renderCopyable(text, label) {
+      if (!text) return '';
+      const safeText = text.replace(/'/g, "\\'").replace(/"/g, "&quot;");
+      return `<i class="fas fa-copy copy-btn" data-tooltip="Copy ${label}" onclick="copyAdminField('${safeText}', '${label}')" style="margin-left:6px; cursor:pointer; color:var(--brand); font-size:12px;"></i>`;
+    }
 
     function copyAdminField(textToCopy, label) {
       // Remove any # prefix from Order IDs if it accidentally slips in
