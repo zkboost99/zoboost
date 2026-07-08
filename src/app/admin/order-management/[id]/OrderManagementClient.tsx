@@ -117,7 +117,7 @@ export default function OrderManagementClient({ order, customerInfo }: { order: 
   const pImg = order.products?.media_url || order.products?.images?.[0] || 'https://img.icons8.com/color/48/discord-logo.png'
   const buyerName = order.discord_username || customerInfo?.discord_username || order.username || 'Anonymous'
 
-  const basePrice = order.total_price || 0
+  const basePrice = Number(order.amount) || 0
   const commission = basePrice * 0.10
   const receiveAmount = basePrice - commission
 
