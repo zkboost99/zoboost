@@ -297,6 +297,7 @@
   line-height: 1.5;
   word-break: break-word;
   display: inline-block;
+  white-space: pre-wrap;
 }
 
 /* Seller: dark bubble, flat bottom-left */

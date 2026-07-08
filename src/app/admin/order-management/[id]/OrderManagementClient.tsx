@@ -94,7 +94,7 @@ export default function OrderManagementClient({ order, customerInfo }: { order: 
       if (data.success) {
         setStatus(newStatus)
         const msg = newStatus === 'Completed' 
-          ? 'Order has been delivered. Thank you!'
+          ? '✅ Order Completed\n🔎 confirm your order delivery and leave me good review\n\n💝 Thank you'
           : 'Order has been cancelled.'
         
         await fetch('/api/admin/chat', {
@@ -124,7 +124,7 @@ export default function OrderManagementClient({ order, customerInfo }: { order: 
     if (status === 'Failed' || status === 'Cancelled') return 'om-status-failed'
     return 'om-status-pending'
   }
-  const statusText = status === 'Completed' ? 'Complete' : status === 'Failed' ? 'Cancelled' : 'Pending delivery'
+  const statusText = status === 'Completed' ? 'Complete' : (status === 'Failed' || status === 'Cancelled') ? 'Cancelled' : 'Pending delivery'
   return (
     <div className="om-page-container">
       <div className="om-content-wrapper">
@@ -180,7 +180,7 @@ export default function OrderManagementClient({ order, customerInfo }: { order: 
                       Mark as Complete
                     </button>
                     <button 
-                      onClick={() => updateOrderStatus('Failed')}
+                      onClick={() => updateOrderStatus('Cancelled')}
                       disabled={isProcessing || status === 'Failed' || status === 'Cancelled'}
                       className="om-btn om-btn-cancel"
                     >

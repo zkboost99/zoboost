@@ -2729,7 +2729,7 @@ select.fi { appearance: none; cursor: pointer;
                 </div>
                 <div class="stat-body">
                   <div class="st-val" id="db-total-orders">0</div>
-                  <div class="st-trend up"><i class="fas fa-arrow-up"></i> 20.4% <span>from last 7 days</span></div>
+
                 </div>
               </div>
               <div class="stat-card">
@@ -2740,7 +2740,7 @@ select.fi { appearance: none; cursor: pointer;
                 </div>
                 <div class="stat-body">
                   <div class="st-val" id="db-completed-orders">0</div>
-                  <div class="st-trend up"><i class="fas fa-arrow-up"></i> 18.2% <span>from last 7 days</span></div>
+
                 </div>
               </div>
               <div class="stat-card">
@@ -2751,7 +2751,7 @@ select.fi { appearance: none; cursor: pointer;
                 </div>
                 <div class="stat-body">
                   <div class="st-val" id="db-pending-orders">0</div>
-                  <div class="st-trend dn"><i class="fas fa-arrow-down"></i> 5.4% <span>from last 7 days</span></div>
+
                 </div>
               </div>
               <div class="stat-card">
@@ -2762,7 +2762,7 @@ select.fi { appearance: none; cursor: pointer;
                 </div>
                 <div class="stat-body">
                   <div class="st-val" id="db-failed-orders">0</div>
-                  <div class="st-trend dn"><i class="fas fa-arrow-down"></i> 12.6% <span>from last 7 days</span></div>
+
                 </div>
               </div>
             </div>
@@ -2777,7 +2777,7 @@ select.fi { appearance: none; cursor: pointer;
                 </div>
                 <div style="margin-bottom:14px;">
                   <div class="dash-total" id="db-sales-overview-total">$0.00</div>
-                  <div class="dash-trend"><i class="fas fa-arrow-up"></i> 0.0% from last month</div>
+
                 </div>
                 <div class="chart-area">
                   <canvas id="revenueChart"></canvas>
@@ -3771,11 +3771,8 @@ select.fi { appearance: none; cursor: pointer;
             </div>
           </div>
 
-              </thead>
-              <tbody id="tbody-bug-reports">
-                <!-- Bug reports will be populated here by JS -->
-              </tbody>
-            </table>
+          <div id="tbody-bug-reports" style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+            <!-- Bug reports will be populated here by JS -->
           </div>
         </section>
 
@@ -4350,15 +4347,7 @@ select.fi { appearance: none; cursor: pointer;
         ? ALL_CONTACTS.filter(c => c.status === 'Unread').length 
         : 0;
         
-      // Mock order modification for demonstration so revenue isn't $0
-      if (typeof ALL_ORDERS_DATA !== 'undefined' && ALL_ORDERS_DATA.length > 0) {
-        const todayStr = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-        if (ALL_ORDERS_DATA[0].date !== todayStr) {
-          ALL_ORDERS_DATA[0].date = todayStr;
-          ALL_ORDERS_DATA[0].status = 'Completed';
-          ALL_ORDERS_DATA[0].amount = '$420.00';
-        }
-      }
+
 
       const todayStr = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
       const revenueToday = typeof ALL_ORDERS_DATA !== 'undefined' 
@@ -4558,10 +4547,10 @@ select.fi { appearance: none; cursor: pointer;
       rC = new Chart(rc, {
         type: 'line',
         data: {
-          labels: ['1 May', '5 May', '10 May', '15 May', '20 May', '25 May', '31 May'],
+          labels: [],
           datasets: [{
             label: 'Revenue',
-            data: [15000, 19000, 22000, 20000, 32000, 28000, 47520],
+            data: [],
             borderColor: '#5B8DEF', backgroundColor: rg,
             borderWidth: 2.5, tension: .42, fill: true,
             pointBackgroundColor: '#5B8DEF', pointBorderColor: '#fff',
@@ -4745,8 +4734,12 @@ select.fi { appearance: none; cursor: pointer;
       }
     }
 
-    function statClass(s) { return s === 'Completed' ? 'c' : s === 'Failed' ? 'f' : s === 'Processing' ? 'r' : 'p'; }
-    function statLabel(s) { const txt = s === 'Completed' ? 'Complete' : s; return `<span class="ostat ${statClass(s)}">${txt}</span>`; }
+    function statClass(s) { return s === 'Completed' ? 'c' : (s === 'Failed' || s === 'Cancelled') ? 'f' : s === 'Processing' ? 'r' : 'p'; }
+    function statLabel(s) {
+      if (s === 'Completed') return `<div style="display:inline-flex; align-items:center; gap:6px; background:#15803d; color:#fff; padding:4px 12px; border-radius:999px; font-size:12px; font-weight:700; border:none;"><i class="fas fa-check-circle" style="font-size:11px;"></i> Completed</div>`;
+      if (s === 'Failed' || s === 'Cancelled') return `<div style="display:inline-flex; align-items:center; gap:6px; background:#b91c1c; color:#fff; padding:4px 12px; border-radius:999px; font-size:12px; font-weight:700; border:none;"><i class="fas fa-times-circle" style="font-size:11px;"></i> Cancelled</div>`;
+      return `<span class="ostat ${statClass(s)}">${s}</span>`;
+    }
 
     function initAllOrders() {
       renderAllOrders();
@@ -4771,12 +4764,15 @@ select.fi { appearance: none; cursor: pointer;
       <td class="ao-price">${o.amount}</td>
       <td class="ao-date">${o.date}</td>
       <td>
-        <select class="status-sel ${statClass(o.status)}" onchange="updateOrderStatus('${o.id}', this)" onclick="event.stopPropagation()">
-          <option value="Completed" ${o.status === 'Completed' ? 'selected="selected"' : ''}>Complete</option>
-          <option value="Pending" ${o.status === 'Pending' ? 'selected="selected"' : ''}>Pending</option>
-          <option value="Processing" ${o.status === 'Processing' ? 'selected="selected"' : ''}>Processing</option>
-          <option value="Failed" ${o.status === 'Failed' ? 'selected="selected"' : ''}>Failed</option>
-        </select>
+        ${['Completed', 'Failed', 'Cancelled'].includes(o.status) 
+          ? statLabel(o.status)
+          : `<select class="status-sel ${statClass(o.status)}" onchange="updateOrderStatus('${o.id}', this)" onclick="event.stopPropagation()">
+               <option value="Completed" ${o.status === 'Completed' ? 'selected="selected"' : ''}>Complete</option>
+               <option value="Pending" ${o.status === 'Pending' ? 'selected="selected"' : ''}>Pending</option>
+               <option value="Processing" ${o.status === 'Processing' ? 'selected="selected"' : ''}>Processing</option>
+               <option value="Cancelled" ${['Failed','Cancelled'].includes(o.status) ? 'selected="selected"' : ''}>Cancelled</option>
+             </select>`
+        }
       </td>
       <td>
         <div class="ao-acts">
@@ -5108,7 +5104,12 @@ select.fi { appearance: none; cursor: pointer;
       const tbody = document.getElementById(tbodyId);
       if (!tbody) return;
       const q = orderSearchQueries[status.toLowerCase()] || '';
-      const rows = ALL_ORDERS_DATA.filter(o => o.status === status && matchOrderSearch(o, q));
+      const rows = ALL_ORDERS_DATA.filter(o => {
+        const statusMatch = status === 'Failed'
+          ? (o.status === 'Failed' || o.status === 'Cancelled')
+          : o.status === status;
+        return statusMatch && matchOrderSearch(o, q);
+      });
       if (rows.length === 0) {
         tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--m2)"><i class="fas fa-search" style="font-size:28px;display:block;margin-bottom:10px"></i>No ${status.toLowerCase()} orders found matching your criteria.</td></tr>`;
         return;
@@ -5485,7 +5486,7 @@ select.fi { appearance: none; cursor: pointer;
         const total = ALL_ORDERS_DATA.length;
         const completed = ALL_ORDERS_DATA.filter(o => o.status === 'Completed').length;
         const pending = ALL_ORDERS_DATA.filter(o => o.status === 'Pending' || o.status === 'Processing').length;
-        const failed = ALL_ORDERS_DATA.filter(o => o.status === 'Failed').length;
+        const failed = ALL_ORDERS_DATA.filter(o => o.status === 'Failed' || o.status === 'Cancelled').length;
 
         const elTotal = document.getElementById('db-total-orders');
         if (elTotal) elTotal.innerText = total;
@@ -5764,7 +5765,7 @@ select.fi { appearance: none; cursor: pointer;
       if (typeof ALL_BUG_REPORTS !== 'undefined') {
         ALL_BUG_REPORTS.forEach(b => {
           const notifId = 'bug-' + b.id;
-          const isUnread = b.status === 'New';
+          const isUnread = !readNotifIds.includes(notifId) && b.status === 'New';
           list.push({
             id: notifId,
             title: 'New Bug Report',
@@ -5938,14 +5939,19 @@ select.fi { appearance: none; cursor: pointer;
 
     function markAllNotificationsRead() {
       const readNotifIds = JSON.parse(localStorage.getItem('read_notif_ids') || '[]');
-      const unreadItems = document.querySelectorAll('.nlist .nitem.unr');
-      unreadItems.forEach(el => {
-        const id = el.id.substring(6); // remove 'notif-'
-        if (!readNotifIds.includes(id)) {
-          readNotifIds.push(id);
-        }
-        el.classList.remove('unr');
+
+      // Correct selector: notif-grid-card[id^="notif-"]
+      document.querySelectorAll('.notif-grid-card[id^="notif-"]').forEach(el => {
+        const id = el.id.replace('notif-', '');
+        if (id && !readNotifIds.includes(id)) readNotifIds.push(id);
       });
+
+      // Also cover dropdown items
+      document.querySelectorAll('#notifDdBody .chat-dd-item[id]').forEach(el => {
+        const id = el.id.replace('dd-notif-', '');
+        if (id && !readNotifIds.includes(id)) readNotifIds.push(id);
+      });
+
       localStorage.setItem('read_notif_ids', JSON.stringify(readNotifIds));
 
       if (typeof ALL_CONTACTS !== 'undefined') {
@@ -5954,6 +5960,11 @@ select.fi { appearance: none; cursor: pointer;
       }
 
       updateNotifications();
+    }
+
+    // Dropdown "Mark all read" button — was completely missing, causing silent no-op
+    function markAllNotifsRead() {
+      markAllNotificationsRead();
     }
 
     // Initial update on page load and start global background polling
@@ -6565,52 +6576,59 @@ select.fi { appearance: none; cursor: pointer;
       }
     }
 
-    document.getElementById('tab-btn-messages').style.background = 'rgba(99, 102, 241, 0.1)';
+    const _tabBtnMsgs = document.getElementById('tab-btn-messages');
+    if (_tabBtnMsgs) _tabBtnMsgs.style.background = 'rgba(99, 102, 241, 0.1)';
 
     /* ─── FEEDBACK: SUGGESTIONS & REPORTS ─── */
     var ALL_SUGGESTIONS = [];
     var ALL_BUG_REPORTS = [];
 
-    async function loadSuggestions() {
+    async function loadSuggestions(silent) {
       const container = document.getElementById('sglist-container');
-      if (!container) return;
-      container.innerHTML = `<div style="text-align:center;padding:40px;color:var(--m2)"><i class="fas fa-spinner fa-spin" style="font-size:24px;display:block;margin-bottom:10px"></i>Loading suggestions...</div>`;
+      // Agar container nahi hai toh spinner mat dikhao, lekin fetch zaroor karo
+      if (container && !silent) container.innerHTML = `<div style="text-align:center;padding:40px;color:var(--m2)"><i class="fas fa-spinner fa-spin" style="font-size:24px;display:block;margin-bottom:10px"></i>Loading suggestions...</div>`;
 
       try {
         const res = await fetch('/api/admin/suggestions');
         const data = await res.json();
         if (data.success) {
           ALL_SUGGESTIONS = data.suggestions;
-          renderSuggestions();
-          updateBadges();
+          if (container) renderSuggestions(); // sirf tab render karo jab container ho
+          if (!silent) updateBadges();
         } else {
-          container.innerHTML = `<div style="text-align:center;padding:40px;color:var(--rd)">Failed to load suggestions: ${data.error}</div>`;
+          if (container) container.innerHTML = `<div style="text-align:center;padding:40px;color:var(--rd)">Failed to load suggestions: ${data.error}</div>`;
         }
       } catch (err) {
         console.error("Error loading suggestions:", err);
-        container.innerHTML = `<div style="text-align:center;padding:40px;color:var(--rd)">Network error loading suggestions. ${err.message}</div>`;
+        if (container) container.innerHTML = `<div style="text-align:center;padding:40px;color:var(--rd)">Network error loading suggestions. ${err.message}</div>`;
       }
     }
 
-    async function loadBugReports() {
-      const tbody = document.getElementById('tbody-bug-reports');
-      if (!tbody) return;
-      tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--m2)"><i class="fas fa-spinner fa-spin" style="font-size:24px;display:block;margin-bottom:10px"></i>Loading bug reports...</td></tr>`;
+    async function loadBugReports(silent) {
+      const container = document.getElementById('tbody-bug-reports');
+      // Agar container nahi hai toh spinner mat dikhao, lekin fetch zaroor karo
+      if (container && !silent) container.innerHTML = `<div style="text-align:center;padding:40px;color:var(--m2)"><i class="fas fa-spinner fa-spin" style="font-size:24px;display:block;margin-bottom:10px"></i>Loading bug reports...</div>`;
 
       try {
         const res = await fetch('/api/admin/bug-reports');
         const data = await res.json();
         if (data.success) {
           ALL_BUG_REPORTS = data.bug_reports;
-          renderBugReports();
-          updateBadges();
+          if (container) renderBugReports(); // sirf tab render karo jab container ho
+          if (!silent) updateBadges();
         } else {
-          tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--rd)">Failed to load bug reports: ${data.error}</td></tr>`;
+          if (container) container.innerHTML = `<div style="text-align:center;padding:40px;color:var(--rd)">Failed to load bug reports: ${data.error}</div>`;
         }
       } catch (err) {
         console.error("Error loading bug reports:", err);
-        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--rd)">Network error loading bug reports. ${err.message}</td></tr>`;
+        if (container) container.innerHTML = `<div style="text-align:center;padding:40px;color:var(--rd)">Network error loading bug reports. ${err.message}</div>`;
       }
+    }
+
+    // Load both in parallel on page start — badges update correctly after both complete
+    async function loadAllFeedback() {
+      await Promise.all([loadSuggestions(true), loadBugReports(true)]);
+      updateBadges();
     }
 
     function updateBadges() {
@@ -6773,15 +6791,15 @@ select.fi { appearance: none; cursor: pointer;
     }
 
     function renderBugReports() {
-      const tbody = document.getElementById('tbody-bug-reports');
-      if (!tbody) return;
+      const container = document.getElementById('tbody-bug-reports');
+      if (!container) return;
 
       if (ALL_BUG_REPORTS.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--m2)"><i class="fas fa-inbox" style="font-size:28px;display:block;margin-bottom:10px"></i>No bug reports found.</td></tr>`;
+        container.innerHTML = `<div style="text-align:center;padding:40px;color:var(--m2)"><i class="fas fa-inbox" style="font-size:28px;display:block;margin-bottom:10px"></i>No bug reports found.</div>`;
         return;
       }
 
-      tbody.innerHTML = ALL_BUG_REPORTS.map(b => {
+      container.innerHTML = ALL_BUG_REPORTS.map(b => {
         let statBadge = '';
         if (b.status === 'New') statBadge = `<span class="badge er" style="font-weight: 800;">New</span>`;
         else if (b.status === 'In Progress') statBadge = `<span class="badge pn" style="font-weight: 800;">In Progress</span>`;
@@ -6881,8 +6899,7 @@ select.fi { appearance: none; cursor: pointer;
       });
     }
 
-    loadSuggestions();
-    loadBugReports();
+    loadAllFeedback();
     loadContacts();
 
     function openSuggestionDetailsModal(s) {

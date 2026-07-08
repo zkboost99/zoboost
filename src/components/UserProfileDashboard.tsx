@@ -53,7 +53,7 @@ export default function UserProfileDashboard({
 
   // Derived Stats
   const totalOrders = initialOrders.length;
-  const completedOrders = initialOrders.filter(o => o.status === 'completed').length;
+  const completedOrders = initialOrders.filter(o => o.status?.toLowerCase() === 'completed').length;
   const pendingOrders = initialOrders.filter(o => o.status === 'pending').length;
   const processingOrders = initialOrders.filter(o => o.status === 'processing').length;
   const cancelledOrders = initialOrders.filter(o => o.status === 'cancelled').length;
@@ -332,12 +332,12 @@ export default function UserProfileDashboard({
                           </td>
                           <td className="p-4">
                             <span className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${
-                              order.status === 'completed' ? 'bg-emerald-500/20 text-emerald-400' :
-                              order.status === 'pending' ? 'bg-amber-400/20 text-amber-400' :
-                              order.status === 'processing' ? 'bg-blue-400/20 text-blue-400' :
-                              'bg-red-500/20 text-red-400'
+                              order.status?.toLowerCase() === 'completed' ? 'bg-[#15803d] text-white' :
+                              order.status?.toLowerCase() === 'pending' ? 'bg-amber-400/20 text-amber-400' :
+                              order.status?.toLowerCase() === 'processing' ? 'bg-blue-400/20 text-blue-400' :
+                              'bg-[#b91c1c] text-white'
                             }`}>
-                              {order.status || 'Pending'}
+                              {order.status?.toLowerCase() === 'failed' || order.status?.toLowerCase() === 'cancelled' ? 'Cancelled' : order.status || 'Pending'}
                             </span>
                           </td>
                           <td className="p-4 text-right">
@@ -428,11 +428,12 @@ export default function UserProfileDashboard({
                     <div className="flex justify-between items-center">
                       <span className="text-sm text-muted-foreground">Order Status</span>
                       <span className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${
-                        selectedOrder.status === 'completed' ? 'bg-emerald-500/20 text-emerald-400' :
-                        selectedOrder.status === 'pending' ? 'bg-amber-400/20 text-amber-400' :
-                        'bg-blue-400/20 text-blue-400'
+                        selectedOrder.status?.toLowerCase() === 'completed' ? 'bg-[#15803d] text-white' :
+                        selectedOrder.status?.toLowerCase() === 'pending' ? 'bg-amber-400/20 text-amber-400' :
+                        selectedOrder.status?.toLowerCase() === 'processing' ? 'bg-blue-400/20 text-blue-400' :
+                        'bg-[#b91c1c] text-white'
                       }`}>
-                        {selectedOrder.status || 'Pending'}
+                        {selectedOrder.status?.toLowerCase() === 'failed' || selectedOrder.status?.toLowerCase() === 'cancelled' ? 'Cancelled' : selectedOrder.status || 'Pending'}
                       </span>
                     </div>
                     <div className="flex justify-between items-center">

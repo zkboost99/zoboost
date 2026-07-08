@@ -77,7 +77,7 @@ export default function OrderChatClient({ initialOrder }: { initialOrder: any })
     } finally { setIsSending(false); }
   };
 
-  const isFinalized = ['Completed', 'Failed', 'Rejected'].includes(order.status);
+  const isFinalized = ['Completed', 'Failed', 'Cancelled', 'Rejected'].includes(order.status);
 
   // Show quick reply row below the LAST seller message if customer hasn't replied yet
   const showQuickRepliesAfter = (idx: number) => {
@@ -302,9 +302,9 @@ export default function OrderChatClient({ initialOrder }: { initialOrder: any })
               <div className="uc-card">
                 <div className="uc-details-header">
                   <h2>Order details</h2>
-                  <span className={`uc-status-pill ${order.status === 'Completed' ? 'completed' : order.status === 'Failed' ? 'failed' : order.status === 'Rejected' ? 'rejected' : 'pending'}`}>
+                  <span className={`uc-status-pill ${order.status === 'Completed' ? 'completed' : (order.status === 'Failed' || order.status === 'Cancelled') ? 'cancelled' : order.status === 'Rejected' ? 'rejected' : 'pending'}`}>
                     {order.status === 'Completed' ? 'Completed'
-                      : order.status === 'Failed' ? 'Failed'
+                      : (order.status === 'Failed' || order.status === 'Cancelled') ? 'Cancelled'
                       : order.status === 'Rejected' ? 'Rejected'
                       : 'Pending delivery'}
                   </span>

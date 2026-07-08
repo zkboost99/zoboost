@@ -78,8 +78,8 @@
 }
 
 .om-status-pending { background-color: #FACC15; color: #000; }
-.om-status-completed { background-color: #22C55E; color: #000; }
-.om-status-failed { background-color: #EF4444; color: #FFF; }
+.om-status-completed { background-color: #15803d; color: #ffffff; }
+.om-status-failed { background-color: #b91c1c; color: #ffffff; }
 
 /* MAIN GRID */
 .om-grid {
@@ -301,6 +301,7 @@
   font-size: 14px;
   max-width: 75%;
   line-height: 1.5;
+  white-space: pre-wrap;
 }
 
 .om-msg-row.admin .om-msg-bubble {
