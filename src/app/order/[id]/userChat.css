@@ -37,6 +37,7 @@
 .uc-left-col {
   display: flex;
   flex-direction: column;
+  width: 75%;
 }
 .uc-right-col {
   display: flex;
