@@ -118,8 +118,6 @@ export default function OrderManagementClient({ order, customerInfo }: { order: 
   const buyerName = order.discord_username || customerInfo?.discord_username || order.username || 'Anonymous'
 
   const basePrice = Number(order.amount) || 0
-  const commission = basePrice * 0.10
-  const receiveAmount = basePrice - commission
 
   const getStatusClass = () => {
     if (status === 'Completed') return 'om-status-completed'
@@ -288,22 +286,6 @@ export default function OrderManagementClient({ order, customerInfo }: { order: 
           {/* RIGHT COLUMN */}
           <div className="om-right-col">
             
-            {/* Delivery Deadline */}
-            <div className="om-card om-timer-card">
-              <h3 className="om-timer-title">Guaranteed delivery deadline</h3>
-              <div className="om-timer-display">
-                <div className="om-time-block">
-                  <span className="om-time-num">{String(timeLeft.minutes).padStart(2, '0')}</span>
-                  <span className="om-time-label">Minutes</span>
-                </div>
-                <div className="om-time-colon">:</div>
-                <div className="om-time-block">
-                  <span className="om-time-num">{String(timeLeft.seconds).padStart(2, '0')}</span>
-                  <span className="om-time-label">Seconds</span>
-                </div>
-              </div>
-              <p className="om-timer-desc">Deliver before the timer ends to avoid penalties</p>
-            </div>
 
             {/* Order Details */}
             <div className="om-card">
@@ -348,15 +330,7 @@ export default function OrderManagementClient({ order, customerInfo }: { order: 
               <div className="om-details-list">
                 <div className="om-detail-row">
                   <span className="om-detail-label">Order Price</span>
-                  <span className="om-detail-value">${basePrice.toFixed(2)}</span>
-                </div>
-                <div className="om-detail-row">
-                  <span className="om-detail-label">Commission</span>
-                  <span className="om-detail-value">-${commission.toFixed(2)}</span>
-                </div>
-                <div className="om-detail-row">
-                  <span className="om-detail-label">You receive</span>
-                  <span className="om-detail-value" style={{fontWeight: 700, color: '#FFF'}}>${receiveAmount.toFixed(2)}</span>
+                  <span className="om-detail-value" style={{fontWeight: 700, color: '#FFF'}}>${basePrice.toFixed(2)}</span>
                 </div>
               </div>
               <div className="om-payment-footer">
