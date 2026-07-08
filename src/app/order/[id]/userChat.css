@@ -570,25 +570,6 @@
 }
 .uc-online-txt { color: #22c55e; font-weight: 600; }
 
-/* View full description */
-.uc-view-desc-btn {
-  display: block;
-  width: calc(100% - 36px);
-  margin: 0 18px 14px;
-  padding: 10px;
-  background: #252838;
-  color: #bbb;
-  border: 1px solid #2a2d3e;
-  border-radius: 6px;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  text-align: center;
-  font-family: inherit;
-  transition: all 0.15s;
-}
-.uc-view-desc-btn:hover { background: #2e3048; color: #fff; }
-
 /* Actions */
 .uc-actions-area {
   padding: 0 18px 18px;

@@ -364,8 +364,6 @@ export default function OrderChatClient({ initialOrder }: { initialOrder: any })
                   </div>
                 </div>
 
-                <button className="uc-view-desc-btn">View full description</button>
-
                 <div className="uc-actions-area">
                   <button className="uc-action-btn" onClick={e => {
                     const rect = e.currentTarget.getBoundingClientRect();
