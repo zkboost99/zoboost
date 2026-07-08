@@ -11,6 +11,7 @@ export default function OrderManagementClient({ order, customerInfo }: { order: 
   const [newMessage, setNewMessage] = useState('')
   const [isSending, setIsSending] = useState(false)
   const [isProcessing, setIsProcessing] = useState(false)
+  const [confirmModal, setConfirmModal] = useState<{isOpen: boolean, newStatus: string, message: string}>({ isOpen: false, newStatus: '', message: '' })
 
   // Timer state
   const [timeLeft, setTimeLeft] = useState({ minutes: 10, seconds: 15 })
@@ -73,13 +74,15 @@ export default function OrderManagementClient({ order, customerInfo }: { order: 
     }
   }
 
-  const updateOrderStatus = async (newStatus: string) => {
+  const updateOrderStatus = (newStatus: string) => {
     const confirmMessage = newStatus === 'Completed' 
-      ? 'Are you sure you want to DELIVER this order?' 
+      ? 'Are you sure you want to MARK this order as COMPLETE?' 
       : 'Are you sure you want to CANCEL this order?'
     
-    if (!window.confirm(confirmMessage)) return
-    
+    setConfirmModal({ isOpen: true, newStatus, message: confirmMessage })
+  }
+
+  const executeStatusChange = async (newStatus: string) => {
     setIsProcessing(true)
     try {
       const res = await fetch('/api/admin/orders', {
@@ -358,6 +361,30 @@ export default function OrderManagementClient({ order, customerInfo }: { order: 
           </div>
         </div>
       </div>
+
+      {/* CUSTOM CONFIRM MODAL */}
+      {confirmModal.isOpen && (
+        <div className="om-modal-overlay">
+          <div className="om-modal">
+            <div className="om-modal-icon">
+              <svg width="32" height="32" fill="none" stroke="#FACC15" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h3 className="om-modal-title">Confirm Action</h3>
+            <p className="om-modal-text">{confirmModal.message}</p>
+            <div className="om-modal-actions">
+              <button onClick={() => setConfirmModal({isOpen: false, newStatus: '', message: ''})} className="om-btn om-btn-cancel">Cancel</button>
+              <button onClick={() => { 
+                setConfirmModal({isOpen: false, newStatus: '', message: ''}); 
+                executeStatusChange(confirmModal.newStatus); 
+              }} className="om-btn om-btn-deliver" style={{ marginLeft: '12px' }}>
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
