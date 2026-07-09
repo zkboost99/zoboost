@@ -4757,7 +4757,7 @@ select.fi { appearance: none; cursor: pointer;
         return;
       }
       tbody.innerHTML = rows.map(o => `
-    <tr id="row-${o.id}" class="clickable-row" onclick="viewOrder('${o.id}', null)">
+    <tr id="row-${o.id}" class="clickable-row" onclick="window.open('/admin/order-management/${o.id}', '_blank')">
       <td class="ao-oid">${o.displayId}</td>
       <td><div class="ao-user"><div class="ao-av" style="background:${o.color || '#3b82f6'}">${o.initials || o.name.substring(0, 2).toUpperCase()}</div><span class="ao-name">${o.name}</span></div></td>
       <td class="ao-product">${o.product}</td>
@@ -5115,7 +5115,7 @@ select.fi { appearance: none; cursor: pointer;
         return;
       }
       tbody.innerHTML = rows.map(o => `
-    <tr id="srow-${tbodyId}-${o.id}" class="clickable-row" onclick="viewOrder('${o.id}', null)">
+    <tr id="srow-${tbodyId}-${o.id}" class="clickable-row" onclick="window.open('/admin/order-management/${o.id}', '_blank')">
       <td class="ao-oid">${o.displayId}</td>
       <td><div class="ao-user"><div class="ao-av" style="background:${o.color || '#3b82f6'}">${o.initials || o.name.substring(0, 2).toUpperCase()}</div><span class="ao-name">${o.name}</span></div></td>
       <td class="ao-product">${o.product}</td>
@@ -5755,7 +5755,7 @@ select.fi { appearance: none; cursor: pointer;
               iconBg: 'rgba(239,68,68,.08)',
               iconColor: 'var(--rd)',
               unread: isUnread,
-              action: `window.location.href='/admin/order-management/${o.id}'`
+              action: `window.open('/admin/order-management/${o.id}', '_blank')`
             });
           } else if (o.status === 'Pending' || o.status === 'Processing') {
             list.push({
@@ -5767,7 +5767,7 @@ select.fi { appearance: none; cursor: pointer;
               iconBg: 'rgba(99,102,241,.08)',
               iconColor: 'var(--ac)',
               unread: isUnread,
-              action: `window.location.href='/admin/order-management/${o.id}'`
+              action: `window.open('/admin/order-management/${o.id}', '_blank')`
             });
           }
         });
