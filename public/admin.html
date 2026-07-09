@@ -4629,12 +4629,18 @@ select.fi { appearance: none; cursor: pointer;
 
     /* ─────────────────────────── ALL ORDERS ─────────────────────────── */
     let ALL_ORDERS_DATA = [];
+    let isOrdersFirstLoad = true;
 
     async function loadOrdersSilent() {
       try {
         const res = await fetch('/api/admin/orders');
         const data = await res.json();
         if (data.success) {
+          if (!isOrdersFirstLoad && data.orders.length > ALL_ORDERS_DATA.length) {
+            if (typeof window.playOrderSound === 'function') {
+              window.playOrderSound();
+            }
+          }
           ALL_ORDERS_DATA = data.orders.map(o => ({
             ...o,
             displayId: o.displayId || ('ORD-' + (parseInt((o.id || '').substring(0, 8), 16) % 1000000).toString().padStart(6, '0')),
@@ -4650,14 +4656,18 @@ select.fi { appearance: none; cursor: pointer;
           renderStatusOrders('Processing', 'tbody-purchased'); // Reusing processing as purchased
           updateSidebarBadges();
           updateDashboardStats();
+          isOrdersFirstLoad = false;
         }
       } catch (e) {
         console.error('Failed to load orders', e);
       }
     }
 
-    // Call it on page load
-    window.addEventListener('load', loadOrdersSilent);
+    // Call it on page load and poll every 3 seconds
+    window.addEventListener('load', () => {
+      loadOrdersSilent();
+      setInterval(loadOrdersSilent, 3000);
+    });
 
     // Set up realtime for orders
     window.addEventListener('DOMContentLoaded', () => {
