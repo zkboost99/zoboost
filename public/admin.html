@@ -9204,6 +9204,8 @@ select.fi { appearance: none; cursor: pointer;
           time: new Date().toLocaleString()
         });
 
+        parsed.customerUnread = true; // Added this line
+
         const updatedMsgStr = JSON.stringify(parsed);
 
         // optimistically update local state
