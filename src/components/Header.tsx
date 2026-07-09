@@ -89,7 +89,7 @@ export default function Header() {
         .eq('is_read', false)
         .eq('user_id', user.id);
       
-      setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
+      setNotifications([]);
     } catch (err) {}
   };
 
@@ -170,6 +170,7 @@ export default function Header() {
         let query = supabase
           .from('notifications')
           .select('*')
+          .eq('is_read', false)
           .order('created_at', { ascending: false })
           .limit(10);
           
