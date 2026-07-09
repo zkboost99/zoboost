@@ -511,7 +511,46 @@ export default function UserProfileDashboard({
                     </div>
                   ))}
                 </div>
+                </div>
               </div>
+            </div>
+
+            <div className="bg-card border border-border-subtle rounded-xl p-8 mt-6">
+              <h3 className="text-lg font-bold text-foreground mb-6">Order Chats</h3>
+              {initialOrders.length === 0 ? (
+                <p className="text-sm text-muted-foreground text-center py-4">You have no previous orders.</p>
+              ) : (
+                <div className="space-y-4">
+                  {initialOrders.map((order: any) => (
+                    <div 
+                      key={order.id} 
+                      className="border border-border-subtle rounded-lg p-4 flex flex-col sm:flex-row justify-between sm:items-center gap-4 hover:bg-white/5 transition-colors cursor-pointer" 
+                      onClick={() => router.push(`/order/${order.id}`)}
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-full bg-amber-400/10 flex items-center justify-center shrink-0 border border-amber-400/20">
+                          <Package className="w-6 h-6 text-amber-400" />
+                        </div>
+                        <div>
+                          <h4 className="text-sm font-bold text-foreground m-0">{order.product_name || order.product || 'Unknown Product'}</h4>
+                          <p className="text-xs text-muted-foreground mt-1 mb-0 uppercase tracking-wider">
+                            Order #{order.displayId || (order.id ? order.id.substring(0, 8) : '0000')} &bull; 
+                            <span className={`ml-2 ${
+                              order.status?.toLowerCase() === 'completed' ? 'text-emerald-400' :
+                              order.status?.toLowerCase() === 'pending' ? 'text-amber-400' :
+                              order.status?.toLowerCase() === 'processing' ? 'text-blue-400' :
+                              'text-red-400'
+                            }`}>{order.status || 'Pending'}</span>
+                          </p>
+                        </div>
+                      </div>
+                      <button className="text-sm font-bold bg-amber-400 text-neutral-900 px-6 py-2 rounded-md hover:bg-amber-500 transition-colors shrink-0">
+                        Open Chat
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         )}
