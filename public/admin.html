@@ -9266,6 +9266,39 @@ select.fi { appearance: none; cursor: pointer;
       }
 
       window.playOrderSound = function () {
+        if (typeof initAudio === 'function') {
+           try {
+             initAudio();
+             if (typeof audioCtx !== 'undefined' && audioCtx) {
+                const now = audioCtx.currentTime;
+                // Order chime: E5 then C5
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(659.25, now);
+                gain.gain.setValueAtTime(0.5, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+                
+                const osc2 = audioCtx.createOscillator();
+                const gain2 = audioCtx.createGain();
+                osc2.type = 'sine';
+                osc2.frequency.setValueAtTime(523.25, now + 0.2);
+                gain2.gain.setValueAtTime(0.5, now + 0.2);
+                gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+                
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc2.connect(gain2);
+                gain2.connect(audioCtx.destination);
+                
+                osc.start(now);
+                osc.stop(now + 0.4);
+                osc2.start(now + 0.2);
+                osc2.stop(now + 0.6);
+             }
+           } catch(e) { console.log('Synth order sound error', e); }
+        }
+
         const audio = document.getElementById('orderSound');
         const soundToggleIcon = document.getElementById('soundToggleIcon');
         if (audio && (!soundToggleIcon || soundToggleIcon.classList.contains('fa-volume-up'))) {
