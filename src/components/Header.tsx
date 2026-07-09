@@ -398,7 +398,7 @@ export default function Header() {
           >
             <MessageSquare className="h-5 w-5" />
             {unreadChats.count > 0 && (
-              <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white ring-2 ring-background">
+              <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-amber-400 text-[10px] font-bold text-black ring-2 ring-background">
                 {unreadChats.count > 9 ? '9+' : unreadChats.count}
               </span>
             )}
@@ -800,7 +800,7 @@ export default function Header() {
                 >
                   <MessageSquare className="w-4 h-4 text-amber-400" /> Support
                   {unreadChats.count > 0 && (
-                    <span className="absolute top-0 right-0 flex h-5 w-5 -mt-1 -mr-1 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white ring-2 ring-background">
+                    <span className="absolute top-0 right-0 flex h-5 w-5 -mt-1 -mr-1 items-center justify-center rounded-full bg-amber-400 text-[10px] font-bold text-black ring-2 ring-background">
                       {unreadChats.count > 9 ? '9+' : unreadChats.count}
                     </span>
                   )}
