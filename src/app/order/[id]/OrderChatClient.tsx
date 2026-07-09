@@ -24,6 +24,7 @@ export default function OrderChatClient({ initialOrder }: { initialOrder: any })
   const [isUploadingFile, setIsUploadingFile] = useState(false);
   
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const displayId = order.id || 'ORD-000000';
 
@@ -296,6 +297,7 @@ export default function OrderChatClient({ initialOrder }: { initialOrder: any })
                       <EmojiPicker onEmojiClick={(emojiData) => {
                         setNewMessage(prev => prev + emojiData.emoji);
                         setShowEmojiPicker(false);
+                        setTimeout(() => inputRef.current?.focus(), 0);
                       }} />
                     </div>
                   )}
@@ -310,6 +312,7 @@ export default function OrderChatClient({ initialOrder }: { initialOrder: any })
                     />
                     <input
                       type="text"
+                      ref={inputRef}
                       value={newMessage}
                       onChange={e => setNewMessage(e.target.value)}
                       placeholder={isFinalized ? 'This order is finalized.' : isUploadingFile ? 'Uploading file...' : 'Say something...'}
