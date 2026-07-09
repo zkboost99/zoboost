@@ -512,6 +512,7 @@ export default function UserProfileDashboard({
                   ))}
                 </div>
               </div>
+            </div>
 
             <div className="bg-card border border-border-subtle rounded-xl p-8 mt-6">
               <h3 className="text-lg font-bold text-foreground mb-6">Order Chats</h3>
