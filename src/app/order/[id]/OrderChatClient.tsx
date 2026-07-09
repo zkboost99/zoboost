@@ -6,7 +6,10 @@ import { Loader2 } from 'lucide-react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import FeedbackWidgets from '@/components/FeedbackWidgets';
+import dynamic from 'next/dynamic';
 import './userChat.css';
+
+const EmojiPicker = dynamic(() => import('emoji-picker-react'), { ssr: false });
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
@@ -17,6 +20,10 @@ export default function OrderChatClient({ initialOrder }: { initialOrder: any })
   const [messages, setMessages] = useState<any[]>([]);
   const [newMessage, setNewMessage] = useState('');
   const [isSending, setIsSending] = useState(false);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [isUploadingFile, setIsUploadingFile] = useState(false);
+  
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const displayId = order.id || 'ORD-000000';
 
@@ -75,6 +82,40 @@ export default function OrderChatClient({ initialOrder }: { initialOrder: any })
     } catch (err: any) {
       alert(err.message || 'Error sending message.');
     } finally { setIsSending(false); }
+  };
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    setIsUploadingFile(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData
+      });
+      const json = await res.json();
+      
+      if (!res.ok) throw new Error(json.error || 'Upload failed');
+      if (json.success && json.url) {
+        await sendMsg(json.url);
+      }
+    } catch (err: any) {
+      alert(err.message || 'Error uploading file.');
+    } finally {
+      setIsUploadingFile(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
+
+  const renderMessageContent = (text: string) => {
+    if (text.match(/\.(jpeg|jpg|gif|png|webp)($|\?)/i) || text.startsWith('https://pub-')) {
+      return <img src={text} alt="attachment" style={{ maxWidth: '200px', borderRadius: '8px', display: 'block' }} />;
+    }
+    return <span>{text}</span>;
   };
 
   const isFinalized = ['Failed', 'Cancelled', 'Rejected'].includes(order.status);
@@ -197,12 +238,12 @@ export default function OrderChatClient({ initialOrder }: { initialOrder: any })
                           <div className="uc-msg-content">
                             {isCustomer ? (
                               <div className="uc-msg-bubble">
-                                <span>{msg.message}</span>
+                                {renderMessageContent(msg.message)}
                                 <span className="uc-msg-meta-inline">✓</span>
                               </div>
                             ) : (
                               <>
-                                <div className="uc-msg-bubble">{msg.message}</div>
+                                <div className="uc-msg-bubble">{renderMessageContent(msg.message)}</div>
                               </>
                             )}
                           </div>
@@ -248,30 +289,49 @@ export default function OrderChatClient({ initialOrder }: { initialOrder: any })
                 </div>
 
                 {/* Input */}
-                <div className="uc-chat-input-area">
+                <div className="uc-chat-input-area" style={{ position: 'relative' }}>
+                  
+                  {showEmojiPicker && (
+                    <div style={{ position: 'absolute', bottom: '100%', right: '0', zIndex: 50, marginBottom: '10px' }}>
+                      <EmojiPicker onEmojiClick={(emojiData) => {
+                        setNewMessage(prev => prev + emojiData.emoji);
+                        setShowEmojiPicker(false);
+                      }} />
+                    </div>
+                  )}
+
                   <form onSubmit={e => { e.preventDefault(); sendMsg(newMessage); }} className="uc-chat-input-wrapper">
+                    <input
+                      type="file"
+                      ref={fileInputRef}
+                      style={{ display: 'none' }}
+                      onChange={handleFileUpload}
+                      accept="image/*"
+                    />
                     <input
                       type="text"
                       value={newMessage}
                       onChange={e => setNewMessage(e.target.value)}
-                      placeholder={isFinalized ? 'This order is finalized.' : 'Say something...'}
-                      disabled={isFinalized || isSending}
+                      placeholder={isFinalized ? 'This order is finalized.' : isUploadingFile ? 'Uploading file...' : 'Say something...'}
+                      disabled={isFinalized || isSending || isUploadingFile}
                     />
                     <div className="uc-input-actions">
                       {/* Paperclip */}
-                      <div className="uc-input-icon">
-                        <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
-                        </svg>
+                      <div className="uc-input-icon" onClick={() => fileInputRef.current?.click()} style={{ cursor: 'pointer' }}>
+                        {isUploadingFile ? <Loader2 className="w-4 h-4 animate-spin" /> : (
+                          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                          </svg>
+                        )}
                       </div>
                       {/* Emoji / sticker */}
-                      <div className="uc-input-icon">
+                      <div className="uc-input-icon" onClick={() => setShowEmojiPicker(!showEmojiPicker)} style={{ cursor: 'pointer' }}>
                         <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                       </div>
                       {/* Send */}
-                      <button type="submit" className="uc-send-btn" disabled={!newMessage.trim() || isSending || isFinalized}>
+                      <button type="submit" className="uc-send-btn" disabled={!newMessage.trim() || isSending || isFinalized || isUploadingFile}>
                         {isSending
                           ? <Loader2 className="w-4 h-4 animate-spin" />
                           : <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" /></svg>
@@ -344,6 +404,10 @@ export default function OrderChatClient({ initialOrder }: { initialOrder: any })
                       <span className="uc-online-dot" />
                       <span className="uc-online-txt">Online</span>
                     </span>
+                  </div>
+                  <div className="uc-detail-row">
+                    <span className="uc-detail-label">Payment Gateway</span>
+                    <span className="uc-detail-value">{order.payment_method || 'Unknown'}</span>
                   </div>
                   <div className="uc-detail-row">
                     <span className="uc-detail-label">Total price</span>

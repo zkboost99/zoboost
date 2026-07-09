@@ -113,6 +113,13 @@ export default function OrderManagementClient({ order, customerInfo }: { order: 
     }
   }
 
+  const renderMessageContent = (text: string) => {
+    if (text.match(/\.(jpeg|jpg|gif|png|webp)($|\?)/i) || text.startsWith('https://pub-')) {
+      return <img src={text} alt="attachment" style={{ maxWidth: '200px', borderRadius: '8px', display: 'block' }} />;
+    }
+    return <span>{text}</span>;
+  };
+
   const pName = order.products?.title || 'Unknown Product'
   const pImg = order.products?.media_url || order.products?.images?.[0] || 'https://img.icons8.com/color/48/discord-logo.png'
   const buyerName = order.discord_username || customerInfo?.discord_username || order.username || 'Anonymous'
@@ -244,7 +251,7 @@ export default function OrderManagementClient({ order, customerInfo }: { order: 
                         </div>
                       )}
                       <div className="om-msg-bubble">
-                        {msg.message}
+                        {renderMessageContent(msg.message)}
                         <span className="om-msg-time">
                           {msg.created_at ? new Date(msg.created_at).getMinutes() + 'm' : '1m'}
                         </span>
@@ -328,6 +335,10 @@ export default function OrderManagementClient({ order, customerInfo }: { order: 
             <div className="om-card">
               <div className="om-card-header">Payment details</div>
               <div className="om-details-list">
+                <div className="om-detail-row">
+                  <span className="om-detail-label">Payment Gateway</span>
+                  <span className="om-detail-value">{order.payment_method || 'Unknown'}</span>
+                </div>
                 <div className="om-detail-row">
                   <span className="om-detail-label">Order Price</span>
                   <span className="om-detail-value" style={{fontWeight: 700, color: '#FFF'}}>${basePrice.toFixed(2)}</span>
