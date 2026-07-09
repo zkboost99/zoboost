@@ -4673,6 +4673,11 @@ select.fi { appearance: none; cursor: pointer;
             { event: '*', schema: 'public', table: 'orders' },
             (payload) => {
               console.log('[Realtime] orders change:', payload.eventType);
+              if (payload.eventType === 'INSERT') {
+                if (typeof window.playOrderSound === 'function') {
+                  window.playOrderSound();
+                }
+              }
               loadOrdersSilent();
             }
           )
@@ -9193,6 +9198,7 @@ select.fi { appearance: none; cursor: pointer;
 
   </script>
   <!-- Realtime Safe Additions -->
+  <audio id="orderSound" src="https://assets.mixkit.co/sfx/preview/mixkit-positive-notification-951.mp3" preload="auto"></audio>
   <audio id="chatSound" src="https://assets.mixkit.co/sfx/preview/mixkit-software-interface-start-2574.mp3"
     preload="auto"></audio>
   <script>
@@ -9248,6 +9254,17 @@ select.fi { appearance: none; cursor: pointer;
           }
         };
       }
+
+      window.playOrderSound = function () {
+        const audio = document.getElementById('orderSound');
+        const soundToggleIcon = document.getElementById('soundToggleIcon');
+        if (audio && (!soundToggleIcon || soundToggleIcon.classList.contains('fa-volume-up'))) {
+          audio.play().catch(e => console.log('Audio error:', e));
+        }
+        if (Notification.permission === 'granted') {
+          new Notification('New Order', { body: 'A new order has been placed!', icon: '/favicon.ico' });
+        }
+      };
     });
 
     // Mobile Sidebar Logic
