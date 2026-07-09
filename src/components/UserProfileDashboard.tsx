@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { 
   User, Package, MessageSquare, Bell, Shield, Settings, Activity, 
   LogOut, ChevronRight, ShoppingBag, Clock, CheckCircle, XCircle, 
@@ -26,6 +26,16 @@ export default function UserProfileDashboard({
   const router = useRouter();
   const [activeTab, setActiveTab] = useState('overview');
   const [selectedOrder, setSelectedOrder] = useState<any | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const params = new URLSearchParams(window.location.search);
+      const tab = params.get('tab');
+      if (tab) {
+        setActiveTab(tab);
+      }
+    }
+  }, []);
 
   // Local user state for immediate reactivity
   const [user, setUser] = useState(initialUser);

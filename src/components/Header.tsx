@@ -348,7 +348,7 @@ export default function Header() {
               e.preventDefault(); 
               e.stopPropagation(); 
               if (user) {
-                window.dispatchEvent(new Event('toggleLiveChat')); 
+                router.push('/profile?tab=support');
               } else {
                 setShowLoginModal(true);
               }
@@ -589,7 +589,13 @@ export default function Header() {
           
           <div className="hidden items-center gap-5 text-sm text-muted-foreground md:flex">
             <button 
-              onClick={() => window.dispatchEvent(new CustomEvent('openLiveChat'))}
+              onClick={() => {
+                if (user) {
+                  router.push('/profile?tab=support');
+                } else {
+                  setShowLoginModal(true);
+                }
+              }}
               className="flex items-center gap-2 hover:text-foreground border-none bg-transparent cursor-pointer"
             >
               <HelpCircle className="h-4 w-4" />
@@ -734,7 +740,7 @@ export default function Header() {
                   onClick={() => { 
                     setIsMobileMenuOpen(false); 
                     if (user) {
-                      window.dispatchEvent(new CustomEvent('openLiveChat')); 
+                      router.push('/profile?tab=support');
                     } else {
                       setShowLoginModal(true);
                     }

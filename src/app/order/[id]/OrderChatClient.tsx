@@ -77,7 +77,7 @@ export default function OrderChatClient({ initialOrder }: { initialOrder: any })
     } finally { setIsSending(false); }
   };
 
-  const isFinalized = ['Completed', 'Failed', 'Cancelled', 'Rejected'].includes(order.status);
+  const isFinalized = ['Failed', 'Cancelled', 'Rejected'].includes(order.status);
 
   // Show quick reply row below the LAST seller message if customer hasn't replied yet
   const showQuickRepliesAfter = (idx: number) => {

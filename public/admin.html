@@ -2695,7 +2695,7 @@ select.fi { appearance: none; cursor: pointer;
             <div class="chat-dropdown" id="tbNotifDropdown" onclick="event.stopPropagation()">
               <div class="chat-dd-header">
                 <h4>Notifications</h4>
-                <span class="mark-read" onclick="markAllNotifsRead()">Mark all read</span>
+                <span class="mark-read" onclick="markAllNotifsRead(event)">Mark all read</span>
               </div>
               <div class="chat-dd-body" id="notifDdBody">
                 <!-- Dynamically populated -->
@@ -5655,10 +5655,29 @@ select.fi { appearance: none; cursor: pointer;
     // Mark single notification as read (does NOT navigate)
     function markNotifRead(id, event) {
       if (event) { event.stopPropagation(); event.preventDefault(); }
+      const els = [document.getElementById(`notif-${id}`), document.getElementById(`dd-notif-${id}`)].filter(Boolean);
+      if (els.length > 0) {
+        els.forEach(el => {
+          el.style.transition = 'all 0.4s ease';
+          el.style.opacity = '0';
+          el.style.transform = 'translateX(30px)';
+        });
+        setTimeout(() => performMarkSingleRead(id), 400);
+      } else {
+        performMarkSingleRead(id);
+      }
+    }
+
+    function performMarkSingleRead(id) {
       const readNotifIds = JSON.parse(localStorage.getItem('read_notif_ids') || '[]');
+      const deletedIds = JSON.parse(localStorage.getItem('deleted_notif_ids') || '[]');
       if (!readNotifIds.includes(id)) {
         readNotifIds.push(id);
         localStorage.setItem('read_notif_ids', JSON.stringify(readNotifIds));
+      }
+      if (!deletedIds.includes(id)) {
+        deletedIds.push(id);
+        localStorage.setItem('deleted_notif_ids', JSON.stringify(deletedIds));
       }
       if (id.startsWith('contact-')) {
         const contactId = id.substring(8);
@@ -5670,6 +5689,20 @@ select.fi { appearance: none; cursor: pointer;
     // Delete notification from Notification Center ONLY — no data deleted
     function deleteNotification(id, event) {
       if (event) { event.stopPropagation(); event.preventDefault(); }
+      const els = [document.getElementById(`notif-${id}`), document.getElementById(`dd-notif-${id}`)].filter(Boolean);
+      if (els.length > 0) {
+        els.forEach(el => {
+          el.style.transition = 'all 0.4s ease';
+          el.style.opacity = '0';
+          el.style.transform = 'translateX(30px)';
+        });
+        setTimeout(() => performDeleteSingleNotif(id), 400);
+      } else {
+        performDeleteSingleNotif(id);
+      }
+    }
+
+    function performDeleteSingleNotif(id) {
       const deletedIds = JSON.parse(localStorage.getItem('deleted_notif_ids') || '[]');
       if (!deletedIds.includes(id)) {
         deletedIds.push(id);
@@ -5722,7 +5755,7 @@ select.fi { appearance: none; cursor: pointer;
               iconBg: 'rgba(239,68,68,.08)',
               iconColor: 'var(--rd)',
               unread: isUnread,
-              action: `viewOrder('${o.id}')`
+              action: `window.location.href='/admin/order-management/${o.id}'`
             });
           } else if (o.status === 'Pending' || o.status === 'Processing') {
             list.push({
@@ -5734,7 +5767,7 @@ select.fi { appearance: none; cursor: pointer;
               iconBg: 'rgba(99,102,241,.08)',
               iconColor: 'var(--ac)',
               unread: isUnread,
-              action: `viewOrder('${o.id}')`
+              action: `window.location.href='/admin/order-management/${o.id}'`
             });
           }
         });
@@ -5779,6 +5812,9 @@ select.fi { appearance: none; cursor: pointer;
           });
         });
       }
+
+      // Store all current IDs so 'Mark All' can process everything at once
+      window.CURRENT_NOTIF_IDS = list.map(item => item.id);
 
       // Sort by time descending, filter out deleted
       list.sort((a, b) => b.time - a.time);
@@ -5938,32 +5974,114 @@ select.fi { appearance: none; cursor: pointer;
 
 
     function markAllNotificationsRead() {
-      const readNotifIds = JSON.parse(localStorage.getItem('read_notif_ids') || '[]');
+      console.log("[DEBUG] markAllNotificationsRead executed");
+      const gridItems = document.querySelectorAll('.notif-grid-card[id^="notif-"]');
+      const ddItems = document.querySelectorAll('#notifDdBody .chat-dd-item[id]');
+      const allItems = [...gridItems, ...ddItems];
+      console.log("[DEBUG] Found UI elements:", allItems.length);
+      
+      if (allItems.length > 0) {
+        allItems.forEach(el => {
+          el.style.transition = 'all 0.4s ease';
+          el.style.opacity = '0';
+          el.style.transform = 'translateX(30px)';
+        });
+        setTimeout(performMarkAllReadLogic, 400);
+      } else {
+        performMarkAllReadLogic();
+      }
+    }
 
-      // Correct selector: notif-grid-card[id^="notif-"]
-      document.querySelectorAll('.notif-grid-card[id^="notif-"]').forEach(el => {
-        const id = el.id.replace('notif-', '');
-        if (id && !readNotifIds.includes(id)) readNotifIds.push(id);
-      });
+    async function performMarkAllReadLogic() {
+      console.log("[DEBUG] performMarkAllReadLogic started");
+      const promises = [];
+      let updatedCount = 0;
 
-      // Also cover dropdown items
-      document.querySelectorAll('#notifDdBody .chat-dd-item[id]').forEach(el => {
-        const id = el.id.replace('dd-notif-', '');
-        if (id && !readNotifIds.includes(id)) readNotifIds.push(id);
-      });
+      // 1. Mark all unread Bug Reports as Reviewed via API
+      if (typeof ALL_BUG_REPORTS !== 'undefined') {
+        const unreadBugs = ALL_BUG_REPORTS.filter(b => b.status === 'New');
+        console.log("[DEBUG] Found unread bug reports:", unreadBugs.length);
+        unreadBugs.forEach(b => {
+          promises.push(
+            fetch('/api/admin/bug-reports', {
+              method: 'PATCH',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ id: b.id, status: 'Fixed' })
+            }).then(r => r.json()).then(data => {
+              console.log("[DEBUG] Bug API Response:", data);
+              if (data.success) updatedCount++;
+            }).catch(e => console.warn('Bug report patch failed:', e))
+          );
+        });
+      }
 
-      localStorage.setItem('read_notif_ids', JSON.stringify(readNotifIds));
+      // 2. Mark all unread Suggestions as Reviewed via API
+      if (typeof ALL_SUGGESTIONS !== 'undefined') {
+        const unreadSugs = ALL_SUGGESTIONS.filter(s => s.status === 'New');
+        console.log("[DEBUG] Found unread suggestions:", unreadSugs.length);
+        unreadSugs.forEach(s => {
+          promises.push(
+            fetch('/api/admin/suggestions', {
+              method: 'PATCH',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ id: s.id, status: 'Reviewed' })
+            }).then(r => r.json()).then(data => {
+              console.log("[DEBUG] Suggestion API Response:", data);
+              if (data.success) updatedCount++;
+            }).catch(e => console.warn('Suggestion patch failed:', e))
+          );
+        });
+      }
 
+      // 3. Mark all unread Contacts as Read via API
       if (typeof ALL_CONTACTS !== 'undefined') {
         const unreadContacts = ALL_CONTACTS.filter(c => c.status === 'Unread');
-        unreadContacts.forEach(c => changeContactStatus(c.id, 'Read'));
+        console.log("[DEBUG] Found unread contacts:", unreadContacts.length);
+        unreadContacts.forEach(c => {
+          promises.push(
+            fetch('/api/admin/contacts', {
+              method: 'PATCH',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ id: c.id, status: 'Read' })
+            }).then(r => r.json()).then(data => {
+              console.log("[DEBUG] Contact API Response:", data);
+              if (data.success) updatedCount++;
+            }).catch(e => console.warn('Contact patch failed:', e))
+          );
+        });
       }
+
+      // 4. Mark all order notifications in localStorage as deleted (orders cannot be deleted from DB)
+      if (window.CURRENT_NOTIF_IDS) {
+        const readNotifIds = JSON.parse(localStorage.getItem('read_notif_ids') || '[]');
+        const deletedIds = JSON.parse(localStorage.getItem('deleted_notif_ids') || '[]');
+        window.CURRENT_NOTIF_IDS.forEach(id => {
+          if (!readNotifIds.includes(id)) readNotifIds.push(id);
+          if (!deletedIds.includes(id)) deletedIds.push(id);
+        });
+        localStorage.setItem('read_notif_ids', JSON.stringify(readNotifIds));
+        localStorage.setItem('deleted_notif_ids', JSON.stringify(deletedIds));
+      }
+
+      // 5. Wait for all API calls, then reload data and refresh UI
+      await Promise.allSettled(promises);
+      console.log(`[DEBUG] API calls finished. Total rows updated via API: ${updatedCount}`);
+
+      // Reload fresh data from backend then refresh notification UI
+      const reloadPs = [];
+      console.log("[DEBUG] Reloading fresh data (loadAllFeedback, loadContacts)...");
+      if (typeof loadAllFeedback === 'function') reloadPs.push(loadAllFeedback());
+      if (typeof loadContacts === 'function') reloadPs.push(loadContacts());
+      await Promise.allSettled(reloadPs);
+      console.log("[DEBUG] Fresh data loaded. Calling updateNotifications()...");
 
       updateNotifications();
     }
 
-    // Dropdown "Mark all read" button — was completely missing, causing silent no-op
-    function markAllNotifsRead() {
+    // Dropdown "Mark all read" button
+    function markAllNotifsRead(event) {
+      console.log("[DEBUG] markAllNotifsRead button clicked! Event:", event);
+      if (event) { event.stopPropagation(); event.preventDefault(); }
       markAllNotificationsRead();
     }
 
@@ -8696,30 +8814,6 @@ select.fi { appearance: none; cursor: pointer;
       nav('notifications', null);
     };
 
-    window.markAllNotifsRead = function () {
-      const notifDdBody = document.getElementById('notifDdBody');
-      if (!notifDdBody) return;
-      const unreadItems = notifDdBody.querySelectorAll('.unread');
-      unreadItems.forEach(item => {
-         const onclickStr = item.getAttribute('onclick');
-         if (onclickStr) {
-           const match = onclickStr.match(/'([^']+)'/);
-           if (match) {
-             const id = match[1];
-             const readNotifIds = JSON.parse(localStorage.getItem('read_notif_ids') || '[]');
-             if (!readNotifIds.includes(id)) {
-               readNotifIds.push(id);
-               localStorage.setItem('read_notif_ids', JSON.stringify(readNotifIds));
-             }
-             if (id.startsWith('contact-')) {
-               const contactId = id.substring(8);
-               if (typeof changeContactStatus === 'function') changeContactStatus(contactId, 'Read');
-             }
-           }
-         }
-      });
-      updateNotifications();
-    };
 
     window.handleDropdownNotifClick = function (id, actionCode) {
       // Mark Read
