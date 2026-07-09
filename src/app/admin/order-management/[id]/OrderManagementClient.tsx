@@ -3,6 +3,10 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import './orderManagement.css' // Import Vanilla CSS
+import dynamic from 'next/dynamic'
+import { Loader2 } from 'lucide-react'
+
+const EmojiPicker = dynamic(() => import('emoji-picker-react'), { ssr: false })
 
 export default function OrderManagementClient({ order, customerInfo }: { order: any, customerInfo: any }) {
   const router = useRouter()
@@ -15,6 +19,11 @@ export default function OrderManagementClient({ order, customerInfo }: { order: 
 
   // Timer state
   const [timeLeft, setTimeLeft] = useState({ minutes: 10, seconds: 15 })
+
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false)
+  const [isUploadingFile, setIsUploadingFile] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
 
   const messagesContainerRef = useRef<HTMLDivElement>(null)
 
@@ -73,6 +82,40 @@ export default function OrderManagementClient({ order, customerInfo }: { order: 
       setIsSending(false)
     }
   }
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    setIsUploadingFile(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData
+      });
+      const json = await res.json();
+      
+      if (!res.ok) throw new Error(json.error || 'Upload failed');
+      if (json.success && json.url) {
+        // Automatically send the file URL as a message
+        const sendRes = await fetch('/api/admin/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ order_id: order.id, message: json.url })
+        });
+        if (!sendRes.ok) throw new Error('Failed to send file message');
+        fetchMessages();
+      }
+    } catch (err: any) {
+      alert(err.message || 'Error uploading file.');
+    } finally {
+      setIsUploadingFile(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
 
   const updateOrderStatus = (newStatus: string) => {
     const confirmMessage = newStatus === 'Completed' 
@@ -266,24 +309,63 @@ export default function OrderManagementClient({ order, customerInfo }: { order: 
                 })}
               </div>
 
-              <div className="om-chat-input-area">
+              <div className="om-chat-input-area" style={{ position: 'relative' }}>
+                {showEmojiPicker && (
+                  <div style={{ position: 'absolute', bottom: '100%', left: '0', zIndex: 50, marginBottom: '10px' }}>
+                    <EmojiPicker onEmojiClick={(emojiData) => {
+                      setNewMessage(prev => prev + emojiData.emoji);
+                      setShowEmojiPicker(false);
+                      setTimeout(() => inputRef.current?.focus(), 0);
+                    }} />
+                  </div>
+                )}
                 <form onSubmit={handleSendMessage} className="om-chat-form">
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    style={{ display: 'none' }}
+                    onChange={handleFileUpload}
+                    accept="image/*"
+                  />
+                  <div 
+                    onClick={() => fileInputRef.current?.click()} 
+                    style={{ cursor: 'pointer', padding: '0 10px', color: '#949BA4' }}
+                    title="Attach File"
+                  >
+                    {isUploadingFile ? <Loader2 className="w-5 h-5 animate-spin" /> : (
+                      <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                      </svg>
+                    )}
+                  </div>
+                  <div 
+                    onClick={() => setShowEmojiPicker(!showEmojiPicker)} 
+                    style={{ cursor: 'pointer', padding: '0 10px 0 0', color: '#949BA4' }}
+                    title="Emojis"
+                  >
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
                   <input 
                     type="text" 
+                    ref={inputRef}
                     value={newMessage}
                     onChange={e => setNewMessage(e.target.value)}
-                    placeholder="Message..."
-                    disabled={isSending}
+                    placeholder={isUploadingFile ? "Uploading..." : "Message..."}
+                    disabled={isSending || isUploadingFile}
                     className="om-chat-input"
+                    style={{ paddingLeft: '5px' }}
                   />
                   <button 
                     type="submit" 
-                    disabled={isSending || !newMessage.trim()}
+                    disabled={isSending || !newMessage.trim() || isUploadingFile}
                     className="om-chat-send"
                   >
-                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/>
-                    </svg>
+                    {isSending
+                      ? <Loader2 className="w-4 h-4 animate-spin" />
+                      : <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+                    }
                   </button>
                 </form>
               </div>
