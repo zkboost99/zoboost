@@ -54,15 +54,26 @@ export default function OrderChatClient({ initialOrder }: { initialOrder: any })
         const res = await fetch(`/api/client/chat?order_id=${order.id}`);
         const json = await res.json();
         if (json.data) setMessages(json.data);
-      } catch (err) { console.error('Failed to fetch messages:', err); }
+
+        // Also reliably poll order status just in case realtime drops or filter fails
+        const { data: latestOrder, error } = await supabase.from('orders').select('*').eq('id', order.id).single();
+        if (latestOrder && !error) {
+          // Keep existing real_media_url intact
+          setOrder((prev: any) => ({ ...latestOrder, real_media_url: prev.real_media_url }));
+        }
+      } catch (err) { console.error('Failed to fetch messages or order:', err); }
     };
     fetchMessages();
     const poll = setInterval(fetchMessages, 3000);
 
     const sub = supabase
-      .channel('public:orders')
-      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'orders', filter: `id=eq.${order.id}` },
-        payload => setOrder(payload.new))
+      .channel(`public:orders:${order.id}`)
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'orders' },
+        (payload) => {
+          if (payload.new && payload.new.id === order.id) {
+            setOrder(payload.new);
+          }
+        })
       .subscribe();
 
     return () => { clearInterval(poll); supabase.removeChannel(sub); };
