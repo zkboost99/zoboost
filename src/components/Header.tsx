@@ -207,11 +207,11 @@ export default function Header() {
     // Fetch unread chats
     let chatInterval: any;
     const fetchUnreadChats = async () => {
-      if (!session?.user?.email) return;
+      if (!user?.email) return;
       try {
         const { createClient } = await import('@/utils/supabase/client');
         const supabase = createClient();
-        const { data: contacts } = await supabase.from('contacts').select('message').eq('email', session.user.email);
+        const { data: contacts } = await supabase.from('contacts').select('message').eq('email', user.email);
         
         let count = 0;
         let latestOrderId = null;
@@ -231,7 +231,7 @@ export default function Header() {
       } catch (err) {}
     };
 
-    if (session?.user) {
+    if (user) {
       fetchUnreadChats();
       chatInterval = setInterval(fetchUnreadChats, 5000); // poll every 5s
     }
