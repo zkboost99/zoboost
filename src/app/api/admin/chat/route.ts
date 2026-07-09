@@ -41,6 +41,7 @@ export async function POST(request: NextRequest) {
     // Append to existing thread
     const parsed = JSON.parse(orderContact.message);
     parsed.messages.push(newMessageObj);
+    parsed.customerUnread = true; // Mark as unread for customer
     const { error } = await adminSupabase.from('contacts').update({
       message: JSON.stringify(parsed),
       status: 'Unread'
@@ -53,6 +54,7 @@ export async function POST(request: NextRequest) {
       type: 'chat',
       isBuyer: true,
       orderId: order_id,
+      customerUnread: true, // Mark as unread for customer
       messages: [newMessageObj]
     };
     const { error } = await adminSupabase.from('contacts').insert({

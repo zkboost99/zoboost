@@ -62,6 +62,7 @@ const navItems = [
 export default function Header() {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [notifications, setNotifications] = useState<any[]>([]);
+  const [unreadChats, setUnreadChats] = useState<{count: number, latestOrderId: string | null}>({count: 0, latestOrderId: null});
   const [isNotifOpen, setIsNotifOpen] = useState(false);
   const notifRef = useRef<HTMLDivElement>(null);
   
@@ -202,7 +203,43 @@ export default function Header() {
     
     let cleanup: any;
     setupRealtime().then(c => cleanup = c);
-    return () => { if (cleanup) cleanup(); };
+
+    // Fetch unread chats
+    let chatInterval: any;
+    const fetchUnreadChats = async () => {
+      if (!session?.user?.email) return;
+      try {
+        const { createClient } = await import('@/utils/supabase/client');
+        const supabase = createClient();
+        const { data: contacts } = await supabase.from('contacts').select('message').eq('email', session.user.email);
+        
+        let count = 0;
+        let latestOrderId = null;
+        
+        if (contacts) {
+          for (const c of contacts) {
+            try {
+              const parsed = JSON.parse(c.message);
+              if (parsed.type === 'chat' && parsed.customerUnread) {
+                count++;
+                latestOrderId = parsed.orderId; // Just pick the latest one encountered
+              }
+            } catch (e) {}
+          }
+        }
+        setUnreadChats({ count, latestOrderId });
+      } catch (err) {}
+    };
+
+    if (session?.user) {
+      fetchUnreadChats();
+      chatInterval = setInterval(fetchUnreadChats, 5000); // poll every 5s
+    }
+
+    return () => { 
+      if (cleanup) cleanup(); 
+      if (chatInterval) clearInterval(chatInterval);
+    };
   }, [user]);
 
   useEffect(() => {
@@ -349,13 +386,22 @@ export default function Header() {
               e.preventDefault(); 
               e.stopPropagation(); 
               if (user) {
-                router.push('/profile?tab=support');
+                if (unreadChats.count > 0 && unreadChats.latestOrderId) {
+                  router.push(`/order/${unreadChats.latestOrderId}`);
+                } else {
+                  router.push('/profile?tab=support');
+                }
               } else {
                 setShowLoginModal(true);
               }
             }}
           >
             <MessageSquare className="h-5 w-5" />
+            {unreadChats.count > 0 && (
+              <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white ring-2 ring-background">
+                {unreadChats.count > 9 ? '9+' : unreadChats.count}
+              </span>
+            )}
           </button>
           
           <div className="relative hidden sm:block" ref={notifRef}>
@@ -741,14 +787,23 @@ export default function Header() {
                   onClick={() => { 
                     setIsMobileMenuOpen(false); 
                     if (user) {
-                      router.push('/profile?tab=support');
+                      if (unreadChats.count > 0 && unreadChats.latestOrderId) {
+                        router.push(`/order/${unreadChats.latestOrderId}`);
+                      } else {
+                        router.push('/profile?tab=support');
+                      }
                     } else {
                       setShowLoginModal(true);
                     }
                   }}
-                  className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-full bg-white/5 text-white hover:bg-white/10 transition-colors border border-white/10 font-semibold text-sm cursor-pointer"
+                  className="flex-1 flex items-center justify-center gap-2 py-3.5 rounded-full bg-white/5 text-white hover:bg-white/10 transition-colors border border-white/10 font-semibold text-sm cursor-pointer relative"
                 >
-                  <HelpCircle className="w-4 h-4 text-amber-400" /> Support
+                  <MessageSquare className="w-4 h-4 text-amber-400" /> Support
+                  {unreadChats.count > 0 && (
+                    <span className="absolute top-0 right-0 flex h-5 w-5 -mt-1 -mr-1 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white ring-2 ring-background">
+                      {unreadChats.count > 9 ? '9+' : unreadChats.count}
+                    </span>
+                  )}
                 </button>
                 <button 
                   onClick={() => { setIsMobileMenuOpen(false); openCurrencyModal(); }}

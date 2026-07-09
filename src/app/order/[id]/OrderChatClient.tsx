@@ -53,7 +53,15 @@ export default function OrderChatClient({ initialOrder }: { initialOrder: any })
       try {
         const res = await fetch(`/api/client/chat?order_id=${order.id}`);
         const json = await res.json();
-        if (json.data) setMessages(json.data);
+        if (json.data) {
+          setMessages(json.data);
+          // Auto-mark chat as read for customer to clear the header badge
+          fetch('/api/client/chat/mark-read', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ order_id: order.id })
+          }).catch(() => {});
+        }
 
         // Also reliably poll order status just in case realtime drops or filter fails
         const { data: latestOrder, error } = await supabase.from('orders').select('*').eq('id', order.id).single();
