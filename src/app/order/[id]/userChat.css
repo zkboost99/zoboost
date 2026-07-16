@@ -309,7 +309,7 @@
 
 /* Buyer: yellow bubble, flat bottom-right, inline meta */
 .uc-msg-row.buyer .uc-msg-bubble {
-  background: #eab308; /* Brand yellow */
+  background: hsl(45, 93%, 47%); /* Brand yellow */
   color: #000;
   font-weight: 500;
   border-bottom-right-radius: 3px;

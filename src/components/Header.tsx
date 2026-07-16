@@ -220,9 +220,20 @@ export default function Header() {
           for (const c of contacts) {
             try {
               const parsed = JSON.parse(c.message);
-              if (parsed.type === 'chat' && parsed.customerUnread) {
-                count++;
-                latestOrderId = parsed.orderId; // Just pick the latest one encountered
+              if (parsed.type === 'chat' && parsed.customerUnread && Array.isArray(parsed.messages)) {
+                // Count trailing admin messages (messages since the last customer reply)
+                // This gives the true number of unread messages, not just 1 per order
+                let unreadInThread = 0;
+                for (let i = parsed.messages.length - 1; i >= 0; i--) {
+                  const sender = parsed.messages[i].sender;
+                  if (sender === 'admin') {
+                    unreadInThread++;
+                  } else {
+                    break; // stop at first non-admin message from the end
+                  }
+                }
+                count += unreadInThread || 1; // fallback to 1 if array parse fails
+                latestOrderId = parsed.orderId;
               }
             } catch (e) {}
           }
@@ -231,14 +242,37 @@ export default function Header() {
       } catch (err) {}
     };
 
-    if (user) {
+    let chatRealtimeCleanup: (() => void) | null = null;
+
+    if (user?.email) {
       fetchUnreadChats();
-      chatInterval = setInterval(fetchUnreadChats, 5000); // poll every 5s
+      chatInterval = setInterval(fetchUnreadChats, 5000); // poll every 5s as fallback
+
+      // Real-time: subscribe to contacts table changes for this customer's email
+      // so the navbar badge updates the instant admin sends a message — no refresh needed
+      const setupChatRealtime = async () => {
+        const { createClient } = await import('@/utils/supabase/client');
+        const supabase = createClient();
+        const ch = supabase
+          .channel(`contacts-unread:${user.email}`)
+          .on('postgres_changes', {
+            event: '*',
+            schema: 'public',
+            table: 'contacts',
+            filter: `email=eq.${user.email}`,
+          }, () => {
+            fetchUnreadChats();
+          })
+          .subscribe();
+        return () => supabase.removeChannel(ch);
+      };
+      setupChatRealtime().then(fn => { chatRealtimeCleanup = fn; });
     }
 
     return () => { 
       if (cleanup) cleanup(); 
       if (chatInterval) clearInterval(chatInterval);
+      if (chatRealtimeCleanup) chatRealtimeCleanup();
     };
   }, [user]);
 

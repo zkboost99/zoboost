@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { 
   User, Package, MessageSquare, Bell, Shield, Settings, Activity, 
   LogOut, ChevronRight, ShoppingBag, Clock, CheckCircle, XCircle, 
@@ -9,6 +9,9 @@ import {
 } from 'lucide-react';
 import { createClient } from '@/utils/supabase/client';
 import { useRouter } from 'next/navigation';
+import dynamic from 'next/dynamic';
+
+const EmojiPicker = dynamic(() => import('emoji-picker-react'), { ssr: false });
 
 interface UserProfileDashboardProps {
   user: any;
@@ -24,7 +27,7 @@ export default function UserProfileDashboard({
   initialActivity
 }: UserProfileDashboardProps) {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState('overview');
+  const [activeTab, setActiveTab] = useState<string>('overview');
   const [selectedOrder, setSelectedOrder] = useState<any | null>(null);
 
   useEffect(() => {
@@ -47,6 +50,17 @@ export default function UserProfileDashboard({
   const [isUpdating, setIsUpdating] = useState(false);
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
   const [toastMessage, setToastMessage] = useState<{ type: 'success'|'error', text: string } | null>(null);
+
+  // Support Tab — Chat State
+  const [selectedChatOrder, setSelectedChatOrder] = useState<any | null>(null);
+  const [chatMessages, setChatMessages] = useState<any[]>([]);
+  const [chatNewMsg, setChatNewMsg] = useState('');
+  const [chatIsSending, setChatIsSending] = useState(false);
+  const [chatIsUploading, setChatIsUploading] = useState(false);
+  const [chatShowEmoji, setChatShowEmoji] = useState(false);
+  const chatMessagesRef = useRef<HTMLDivElement>(null);
+  const chatFileInputRef = useRef<HTMLInputElement>(null);
+  const chatInputRef = useRef<HTMLInputElement>(null);
 
   // Derived user info
   const displayName = user.user_metadata?.custom_full_name || user.user_metadata?.full_name || user.email?.split('@')[0] || 'User';
@@ -143,6 +157,74 @@ export default function UserProfileDashboard({
     } finally {
       setIsUpdating(false);
     }
+  };
+
+  // Chat polling for Support tab
+  useEffect(() => {
+    if (!selectedChatOrder) return;
+    const fetchChatMessages = async () => {
+      try {
+        const res = await fetch(`/api/client/chat?order_id=${selectedChatOrder.id}`);
+        const json = await res.json();
+        if (json.data) setChatMessages(json.data);
+      } catch (e) {
+        console.error('Failed to fetch chat messages', e);
+      }
+    };
+    fetchChatMessages();
+    const interval = setInterval(fetchChatMessages, 3000);
+    return () => clearInterval(interval);
+  }, [selectedChatOrder?.id]);
+
+  // Auto-scroll chat to bottom
+  useEffect(() => {
+    if (chatMessagesRef.current) {
+      chatMessagesRef.current.scrollTop = chatMessagesRef.current.scrollHeight;
+    }
+  }, [chatMessages]);
+
+  const sendChatMessage = async (text: string) => {
+    if (!text.trim() || chatIsSending || !selectedChatOrder) return;
+    setChatIsSending(true);
+    try {
+      const res = await fetch('/api/client/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ order_id: selectedChatOrder.id, message: text.trim() })
+      });
+      if (!res.ok) throw new Error('Failed to send');
+      setChatNewMsg('');
+    } catch (e) {
+      alert('Error sending message.');
+    } finally {
+      setChatIsSending(false);
+    }
+  };
+
+  const handleChatFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setChatIsUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      const res = await fetch('/api/upload', { method: 'POST', body: formData });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error || 'Upload failed');
+      if (json.success && json.url) await sendChatMessage(json.url);
+    } catch (err: any) {
+      alert(err.message || 'Error uploading file.');
+    } finally {
+      setChatIsUploading(false);
+      if (chatFileInputRef.current) chatFileInputRef.current.value = '';
+    }
+  };
+
+  const renderChatMessageContent = (text: string) => {
+    if (text.match(/\.(jpeg|jpg|gif|png|webp)($|\?)/i) || text.startsWith('https://pub-')) {
+      return <img src={text} alt="attachment" style={{ maxWidth: '200px', borderRadius: '8px', display: 'block' }} />;
+    }
+    return <span>{text}</span>;
   };
 
   return (
@@ -483,74 +565,185 @@ export default function UserProfileDashboard({
         {/* SUPPORT TAB */}
         {activeTab === 'support' && (
           <div className="animate-fade-in-up">
-            <h1 className="text-2xl font-black text-foreground mb-8 tracking-tight" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>Support & Live Chat</h1>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-card border border-border-subtle rounded-xl p-8 flex flex-col items-center text-center">
-                <div className="w-20 h-20 bg-amber-400/10 rounded-full flex items-center justify-center mb-6 shadow-inner">
-                  <MessageSquare className="w-10 h-10 text-amber-400" />
+            <h1 className="text-2xl font-black text-foreground mb-8 tracking-tight" style={{ fontFamily: "'Space Grotesk', sans-serif" }}>Order Chats</h1>
+
+            {initialOrders.length === 0 ? (
+              <div className="bg-card border border-border-subtle rounded-xl p-12 flex flex-col items-center text-center">
+                <div className="w-20 h-20 bg-neutral-800/50 rounded-full flex items-center justify-center mb-6">
+                  <MessageSquare className="w-10 h-10 text-neutral-500" />
                 </div>
-                <h3 className="text-xl font-bold text-foreground mb-2">24/7 Live Support</h3>
-                <p className="text-muted-foreground mb-8 text-sm">Need help with an order, payment, or general inquiry? Our support team is online and ready to assist you instantly.</p>
-                <button onClick={openLiveChat} className="bg-amber-400 text-neutral-900 px-8 py-3 rounded-md text-base font-bold border-none cursor-pointer hover:bg-amber-500 transition-colors shadow-lg shadow-amber-400/20 flex items-center gap-2 w-full justify-center">
-                  <MessageSquare className="w-5 h-5" /> Start Live Chat
+                <h3 className="text-xl font-bold text-foreground mb-2">No Order Chats</h3>
+                <p className="text-muted-foreground max-w-md mx-auto mb-6">You haven't placed any orders yet. Order chats will appear here once you make a purchase.</p>
+                <button onClick={() => router.push('/discord-marketplace')} className="bg-amber-400 text-neutral-900 px-6 py-3 rounded-md text-sm font-bold border-none cursor-pointer hover:bg-amber-500 transition-colors shadow-lg shadow-amber-400/20">
+                  Browse Marketplace
                 </button>
               </div>
+            ) : (
+              <div style={{ display: 'flex', borderRadius: '12px', overflow: 'hidden', border: '1px solid rgba(255,255,255,0.05)', minHeight: '600px' }}>
 
-              <div className="bg-card border border-border-subtle rounded-xl p-8">
-                <h3 className="text-lg font-bold text-foreground mb-6">FAQ & Quick Links</h3>
-                <div className="space-y-4">
-                  {[
-                    { q: 'How long does delivery take?', a: 'Most orders are delivered instantly. Boosts may take up to 10 minutes.' },
-                    { q: 'What payment methods are accepted?', a: 'We accept Crypto, PayPal, and major Credit Cards.' },
-                    { q: 'Refund Policy', a: 'Check our refund policy page for details on eligible returns.' },
-                  ].map((faq, i) => (
-                    <div key={i} className="border-b border-border-subtle pb-4 last:border-0 last:pb-0">
-                      <h4 className="text-sm font-bold text-foreground mb-1">{faq.q}</h4>
-                      <p className="text-xs text-muted-foreground">{faq.a}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-card border border-border-subtle rounded-xl p-8 mt-6">
-              <h3 className="text-lg font-bold text-foreground mb-6">Order Chats</h3>
-              {initialOrders.length === 0 ? (
-                <p className="text-sm text-muted-foreground text-center py-4">You have no previous orders.</p>
-              ) : (
-                <div className="space-y-4">
-                  {initialOrders.map((order: any) => (
-                    <div 
-                      key={order.id} 
-                      className="border border-border-subtle rounded-lg p-4 flex flex-col sm:flex-row justify-between sm:items-center gap-4 hover:bg-white/5 transition-colors cursor-pointer" 
-                      onClick={() => router.push(`/order/${order.id}`)}
-                    >
-                      <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-full bg-amber-400/10 flex items-center justify-center shrink-0 border border-amber-400/20">
-                          <Package className="w-6 h-6 text-amber-400" />
+                {/* Left Panel: Conversation List */}
+                <div style={{ width: '280px', flexShrink: 0, backgroundColor: '#1B1D22', borderRight: '1px solid rgba(255,255,255,0.05)', display: 'flex', flexDirection: 'column' }}>
+                  <div style={{ padding: '16px 20px', borderBottom: '1px solid rgba(255,255,255,0.05)', fontSize: '14px', fontWeight: 600, color: '#FFFFFF' }}>
+                    Conversations
+                  </div>
+                  <div style={{ flex: 1, overflowY: 'auto' }}>
+                    {initialOrders.map((order: any) => (
+                      <div
+                        key={order.id}
+                        onClick={() => { setSelectedChatOrder(order); setChatMessages([]); setChatNewMsg(''); }}
+                        style={{
+                          padding: '14px 16px',
+                          cursor: 'pointer',
+                          borderBottom: '1px solid rgba(255,255,255,0.03)',
+                          backgroundColor: selectedChatOrder?.id === order.id ? 'rgba(59,130,246,0.15)' : 'transparent',
+                          borderLeft: selectedChatOrder?.id === order.id ? '3px solid #3B82F6' : '3px solid transparent',
+                          transition: 'background-color 0.15s',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '12px',
+                        }}
+                      >
+                        <div style={{ width: '36px', height: '36px', borderRadius: '50%', backgroundColor: '#A3E635', color: '#111827', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: '12px', flexShrink: 0 }}>
+                          {(order.product_name || order.product || 'OR').substring(0, 2).toUpperCase()}
                         </div>
-                        <div>
-                          <h4 className="text-sm font-bold text-foreground m-0">{order.product_name || order.product || 'Unknown Product'}</h4>
-                          <p className="text-xs text-muted-foreground mt-1 mb-0 uppercase tracking-wider">
-                            Order #{order.displayId || (order.id ? order.id.substring(0, 8) : '0000')} &bull; 
-                            <span className={`ml-2 ${
-                              order.status?.toLowerCase() === 'completed' ? 'text-emerald-400' :
-                              order.status?.toLowerCase() === 'pending' ? 'text-amber-400' :
-                              order.status?.toLowerCase() === 'processing' ? 'text-blue-400' :
-                              'text-red-400'
-                            }`}>{order.status || 'Pending'}</span>
-                          </p>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ fontSize: '13px', fontWeight: 600, color: '#E5E7EB', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                            {order.product_name || order.product || 'Unknown Product'}
+                          </div>
+                          <div style={{ fontSize: '11px', color: '#6B7280', marginTop: '2px' }}>
+                            #{order.id.substring(0, 8)} &bull; <span style={{ color: order.status?.toLowerCase() === 'completed' ? '#4ade80' : order.status?.toLowerCase() === 'pending' ? '#FACC15' : order.status?.toLowerCase() === 'processing' ? '#60a5fa' : '#f87171' }}>{order.status || 'Pending'}</span>
+                          </div>
                         </div>
                       </div>
-                      <button className="text-sm font-bold bg-amber-400 text-neutral-900 px-6 py-2 rounded-md hover:bg-amber-500 transition-colors shrink-0">
-                        Open Chat
-                      </button>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
-              )}
-            </div>
+
+                {/* Right Panel: Chat Interface */}
+                {selectedChatOrder ? (
+                  <div style={{ flex: 1, display: 'flex', flexDirection: 'column', backgroundColor: '#16181C', minWidth: 0 }}>
+
+                    {/* Chat Header */}
+                    <div style={{ backgroundColor: '#24262B', padding: '16px 20px', borderBottom: '1px solid rgba(255,255,255,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <div style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: '#A3E635', color: '#111827', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: '14px', flexShrink: 0 }}>
+                          {(selectedChatOrder.product_name || selectedChatOrder.product || 'OR').substring(0, 2).toUpperCase()}
+                        </div>
+                        <div>
+                          <div style={{ fontSize: '14px', fontWeight: 600, color: '#E5E7EB' }}>{selectedChatOrder.product_name || selectedChatOrder.product || 'Order Chat'}</div>
+                          <div style={{ fontSize: '11px', color: '#6B7280' }}>Order #{selectedChatOrder.id.substring(0, 8)}</div>
+                        </div>
+                      </div>
+                      <div style={{ color: '#949BA4' }}>
+                        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                      </div>
+                    </div>
+
+                    {/* Messages Area */}
+                    <div ref={chatMessagesRef} style={{ flex: 1, padding: '20px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '20px', minHeight: 0 }}>
+
+                      {/* System Message */}
+                      <div style={{ backgroundColor: '#1B1D22', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '8px', padding: '16px', width: '100%' }}>
+                        <div style={{ color: '#D1D5DB', fontSize: '12px', fontWeight: 500, marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <span style={{ display: 'inline-block', width: '4px', height: '16px', backgroundColor: '#FACC15', borderRadius: '2px', flexShrink: 0 }} />
+                          Product Link:{' '}
+                          <a href={`/product/${selectedChatOrder.product_id}`} target="_blank" rel="noreferrer" style={{ color: '#FACC15', textDecoration: 'none' }}>
+                            https://www.zoroboost.com/product/{selectedChatOrder.product_id}
+                          </a>
+                        </div>
+                        <a href={`/product/${selectedChatOrder.product_id}`} target="_blank" rel="noreferrer" style={{ textDecoration: 'none', color: 'inherit' }}>
+                          <div style={{ backgroundColor: 'rgba(0,0,0,0.5)', borderRadius: '4px', padding: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}>
+                            <div style={{ fontFamily: 'monospace', fontSize: '12px', color: '#9CA3AF', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                              <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z" /></svg>
+                              View Product
+                            </div>
+                            <span style={{ fontSize: '10px', color: '#4B5563' }}>0m</span>
+                          </div>
+                        </a>
+                      </div>
+
+                      {/* Dynamic Messages */}
+                      {chatMessages.map((msg: any, idx: number) => {
+                        const isAdmin = msg.sender === 'admin' || msg.sender === 'seller';
+                        return (
+                          <div key={idx} style={{ display: 'flex', alignItems: 'flex-end', gap: '12px', justifyContent: isAdmin ? 'flex-end' : 'flex-start' }}>
+                            {!isAdmin && (
+                              <div style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: '#A3E635', color: '#111827', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: '12px', flexShrink: 0 }}>
+                                {displayName.substring(0, 2).toUpperCase()}
+                              </div>
+                            )}
+                            <div style={{ position: 'relative', padding: '10px 16px', borderRadius: isAdmin ? '12px 12px 0 12px' : '12px 12px 12px 0', fontSize: '14px', maxWidth: '75%', lineHeight: 1.5, whiteSpace: 'pre-wrap', backgroundColor: isAdmin ? '#3B82F6' : '#2B2D31', color: isAdmin ? '#FFF' : '#E5E7EB' }}>
+                              {renderChatMessageContent(msg.message)}
+                              <span style={{ position: 'absolute', bottom: '6px', fontSize: '10px', color: isAdmin ? 'rgba(255,255,255,0.5)' : '#6B7280', ...(isAdmin ? { left: '-40px' } : { right: '-40px' }) }}>
+                                {msg.created_at ? new Date(msg.created_at).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }) : ''}
+                              </span>
+                            </div>
+                            {isAdmin && (
+                              <div style={{ width: '32px', height: '32px', borderRadius: '50%', backgroundColor: '#FFF', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', flexShrink: 0 }}>
+                                <img src="/fav icon.png" alt="Admin" style={{ width: '80%', height: '80%', objectFit: 'contain' }} />
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    {/* Input Area */}
+                    <div style={{ backgroundColor: '#24262B', padding: '16px', borderTop: '1px solid rgba(255,255,255,0.05)', position: 'relative', flexShrink: 0 }}>
+                      {chatShowEmoji && (
+                        <div style={{ position: 'absolute', bottom: '100%', left: '0', zIndex: 50, marginBottom: '10px' }}>
+                          <EmojiPicker onEmojiClick={(emojiData) => {
+                            setChatNewMsg(prev => prev + emojiData.emoji);
+                            setChatShowEmoji(false);
+                            setTimeout(() => chatInputRef.current?.focus(), 0);
+                          }} />
+                        </div>
+                      )}
+                      <form onSubmit={(e) => { e.preventDefault(); sendChatMessage(chatNewMsg); }} style={{ display: 'flex', alignItems: 'center', position: 'relative' }}>
+                        <input type="file" ref={chatFileInputRef} style={{ display: 'none' }} onChange={handleChatFileUpload} accept="image/*" />
+                        <div onClick={() => chatFileInputRef.current?.click()} style={{ cursor: 'pointer', padding: '0 10px', color: '#949BA4', flexShrink: 0 }} title="Attach File">
+                          {chatIsUploading ? <Loader2 className="w-5 h-5 animate-spin" /> : (
+                            <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
+                            </svg>
+                          )}
+                        </div>
+                        <div onClick={() => setChatShowEmoji(!chatShowEmoji)} style={{ cursor: 'pointer', padding: '0 10px 0 0', color: '#949BA4', flexShrink: 0 }} title="Emoji">
+                          <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        </div>
+                        <input
+                          type="text"
+                          ref={chatInputRef}
+                          value={chatNewMsg}
+                          onChange={e => setChatNewMsg(e.target.value)}
+                          placeholder={chatIsUploading ? 'Uploading...' : 'Message...'}
+                          disabled={chatIsSending || chatIsUploading}
+                          style={{ flex: 1, backgroundColor: '#1B1D22', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '50px', padding: '12px 50px 12px 20px', color: '#E5E7EB', fontSize: '14px', outline: 'none' }}
+                        />
+                        <button
+                          type="submit"
+                          disabled={chatIsSending || !chatNewMsg.trim() || chatIsUploading}
+                          style={{ position: 'absolute', right: '8px', top: '50%', transform: 'translateY(-50%)', width: '32px', height: '32px', borderRadius: '50%', backgroundColor: chatIsSending || !chatNewMsg.trim() || chatIsUploading ? 'rgba(59,130,246,0.5)' : '#3B82F6', border: 'none', color: '#FFF', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: chatIsSending || !chatNewMsg.trim() || chatIsUploading ? 'not-allowed' : 'pointer' }}
+                        >
+                          {chatIsSending ? <Loader2 className="w-4 h-4 animate-spin" /> : <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" /></svg>}
+                        </button>
+                      </form>
+                    </div>
+                  </div>
+                ) : (
+                  <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', backgroundColor: '#16181C', gap: '12px' }}>
+                    <div style={{ width: '64px', height: '64px', borderRadius: '50%', backgroundColor: '#1B1D22', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <MessageSquare style={{ width: '28px', height: '28px', color: '#4B5563' }} />
+                    </div>
+                    <p style={{ fontSize: '14px', color: '#6B7280', margin: 0 }}>Select an order to view its chat</p>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         )}
 
