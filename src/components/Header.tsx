@@ -420,11 +420,7 @@ export default function Header() {
               e.preventDefault(); 
               e.stopPropagation(); 
               if (user) {
-                if (unreadChats.count > 0 && unreadChats.latestOrderId) {
-                  router.push(`/order/${unreadChats.latestOrderId}`);
-                } else {
-                  router.push('/profile?tab=support');
-                }
+                router.push('/profile?tab=support');
               } else {
                 setShowLoginModal(true);
               }
@@ -821,11 +817,7 @@ export default function Header() {
                   onClick={() => { 
                     setIsMobileMenuOpen(false); 
                     if (user) {
-                      if (unreadChats.count > 0 && unreadChats.latestOrderId) {
-                        router.push(`/order/${unreadChats.latestOrderId}`);
-                      } else {
-                        router.push('/profile?tab=support');
-                      }
+                      router.push('/profile?tab=support');
                     } else {
                       setShowLoginModal(true);
                     }
