@@ -641,12 +641,19 @@ export default function UserProfileDashboard({
                             setSelectedChatOrder(order);
                             setChatMessages([]);
                             setChatNewMsg('');
-                            // Clear unread indicator for this order locally
+                            // Clear unread indicator locally (instant UI feedback)
                             setUnreadOrderIds(prev => {
                               const next = new Set(prev);
                               next.delete(order.id);
                               return next;
                             });
+                            // Call mark-read API so DB clears customerUnread=false
+                            // This triggers Realtime → navbar badge clears automatically
+                            fetch('/api/client/chat/mark-read', {
+                              method: 'POST',
+                              headers: { 'Content-Type': 'application/json' },
+                              body: JSON.stringify({ order_id: order.id }),
+                            }).catch(() => {});
                           }}
                           style={{
                             padding: '14px 16px',
