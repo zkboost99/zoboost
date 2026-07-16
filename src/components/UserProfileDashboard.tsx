@@ -62,6 +62,51 @@ export default function UserProfileDashboard({
   const chatFileInputRef = useRef<HTMLInputElement>(null);
   const chatInputRef = useRef<HTMLInputElement>(null);
 
+  // Unread order IDs — fetched from contacts table
+  const [unreadOrderIds, setUnreadOrderIds] = useState<Set<string>>(new Set());
+
+  useEffect(() => {
+    if (!initialUser?.email) return;
+    const email = initialUser.email;
+
+    const fetchUnread = async () => {
+      try {
+        const supabase = createClient();
+        const { data: contacts } = await supabase
+          .from('contacts')
+          .select('message')
+          .eq('email', email);
+        if (!contacts) return;
+        const ids = new Set<string>();
+        for (const c of contacts) {
+          try {
+            const parsed = JSON.parse(c.message);
+            if (parsed.type === 'chat' && parsed.customerUnread && parsed.orderId) {
+              ids.add(parsed.orderId);
+            }
+          } catch (e) {}
+        }
+        setUnreadOrderIds(ids);
+      } catch (e) {}
+    };
+
+    fetchUnread();
+
+    // Realtime: update unread dots when contacts table changes
+    const supabase = createClient();
+    const ch = supabase
+      .channel(`profile-unread:${email}`)
+      .on('postgres_changes', {
+        event: '*',
+        schema: 'public',
+        table: 'contacts',
+        filter: `email=eq.${email}`,
+      }, () => fetchUnread())
+      .subscribe();
+
+    return () => { supabase.removeChannel(ch); };
+  }, [initialUser?.email]);
+
   // Derived user info
   const displayName = user.user_metadata?.custom_full_name || user.user_metadata?.full_name || user.email?.split('@')[0] || 'User';
 
@@ -587,35 +632,57 @@ export default function UserProfileDashboard({
                     Conversations
                   </div>
                   <div style={{ flex: 1, overflowY: 'auto' }}>
-                    {initialOrders.map((order: any) => (
-                      <div
-                        key={order.id}
-                        onClick={() => { setSelectedChatOrder(order); setChatMessages([]); setChatNewMsg(''); }}
-                        style={{
-                          padding: '14px 16px',
-                          cursor: 'pointer',
-                          borderBottom: '1px solid rgba(255,255,255,0.03)',
-                          backgroundColor: selectedChatOrder?.id === order.id ? 'rgba(59,130,246,0.15)' : 'transparent',
-                          borderLeft: selectedChatOrder?.id === order.id ? '3px solid #3B82F6' : '3px solid transparent',
-                          transition: 'background-color 0.15s',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '12px',
-                        }}
-                      >
-                        <div style={{ width: '36px', height: '36px', borderRadius: '50%', backgroundColor: '#A3E635', color: '#111827', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: '12px', flexShrink: 0 }}>
-                          {(order.product_name || order.product || 'OR').substring(0, 2).toUpperCase()}
-                        </div>
-                        <div style={{ flex: 1, minWidth: 0 }}>
-                          <div style={{ fontSize: '13px', fontWeight: 600, color: '#E5E7EB', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                            {order.product_name || order.product || 'Unknown Product'}
+                    {initialOrders.map((order: any) => {
+                      const hasUnread = unreadOrderIds.has(order.id);
+                      return (
+                        <div
+                          key={order.id}
+                          onClick={() => {
+                            setSelectedChatOrder(order);
+                            setChatMessages([]);
+                            setChatNewMsg('');
+                            // Clear unread indicator for this order locally
+                            setUnreadOrderIds(prev => {
+                              const next = new Set(prev);
+                              next.delete(order.id);
+                              return next;
+                            });
+                          }}
+                          style={{
+                            padding: '14px 16px',
+                            cursor: 'pointer',
+                            borderBottom: '1px solid rgba(255,255,255,0.03)',
+                            backgroundColor: selectedChatOrder?.id === order.id ? 'rgba(59,130,246,0.15)' : hasUnread ? 'rgba(251,191,36,0.05)' : 'transparent',
+                            borderLeft: selectedChatOrder?.id === order.id ? '3px solid #3B82F6' : hasUnread ? '3px solid #FBBF24' : '3px solid transparent',
+                            transition: 'background-color 0.15s',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '12px',
+                            position: 'relative',
+                          }}
+                        >
+                          <div style={{ width: '36px', height: '36px', borderRadius: '50%', backgroundColor: '#A3E635', color: '#111827', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: '12px', flexShrink: 0, position: 'relative' }}>
+                            {(order.product_name || order.product || 'OR').substring(0, 2).toUpperCase()}
+                            {hasUnread && (
+                              <span style={{ position: 'absolute', top: '-3px', right: '-3px', width: '10px', height: '10px', borderRadius: '50%', backgroundColor: '#FBBF24', border: '2px solid #1B1D22' }} />
+                            )}
                           </div>
-                          <div style={{ fontSize: '11px', color: '#6B7280', marginTop: '2px' }}>
-                            #{order.id.substring(0, 8)} &bull; <span style={{ color: order.status?.toLowerCase() === 'completed' ? '#4ade80' : order.status?.toLowerCase() === 'pending' ? '#FACC15' : order.status?.toLowerCase() === 'processing' ? '#60a5fa' : '#f87171' }}>{order.status || 'Pending'}</span>
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <div style={{ fontSize: '13px', fontWeight: hasUnread ? 700 : 600, color: hasUnread ? '#FFFFFF' : '#E5E7EB', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                              {order.product_name || order.product || 'Unknown Product'}
+                            </div>
+                            <div style={{ fontSize: '11px', color: '#6B7280', marginTop: '2px' }}>
+                              #{order.id.substring(0, 8)} &bull; <span style={{ color: order.status?.toLowerCase() === 'completed' ? '#4ade80' : order.status?.toLowerCase() === 'pending' ? '#FACC15' : order.status?.toLowerCase() === 'processing' ? '#60a5fa' : '#f87171' }}>{order.status || 'Pending'}</span>
+                            </div>
                           </div>
+                          {hasUnread && (
+                            <span style={{ flexShrink: 0, backgroundColor: '#FBBF24', color: '#111827', borderRadius: '9999px', fontSize: '10px', fontWeight: 700, padding: '1px 6px', lineHeight: '16px' }}>
+                              NEW
+                            </span>
+                          )}
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
 
