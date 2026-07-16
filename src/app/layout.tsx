@@ -1,8 +1,31 @@
 
 import Script from 'next/script';
 import type { Metadata } from "next";
+import { Inter, Space_Grotesk } from 'next/font/google';
 import "./globals.css";
-import LiveChatWidget from "@/components/LiveChatWidget";
+import dynamic from 'next/dynamic';
+import { ViewTransitions } from 'next-view-transitions';
+import NextTopLoader from 'nextjs-toploader';
+
+// Self-hosted fonts — eliminates external Google Fonts HTTP requests
+const inter = Inter({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800'],
+  display: 'swap',
+  variable: '--font-inter',
+});
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  display: 'swap',
+  variable: '--font-space-grotesk',
+});
+
+// Lazy-loaded so it never blocks initial page render
+const LiveChatWidget = dynamic(() => import('@/components/LiveChatWidget'), {
+  ssr: false,
+});
 
 export const metadata: Metadata = {
   title: "ZoroBoost — Discord Accounts, Boosts, Members & Customizations",
@@ -15,34 +38,46 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <head>
-        <link rel="icon" href="/fav icon.png" type="image/png" />
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-        <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
-      </head>
-      <body className="antialiased min-h-screen bg-background text-foreground transition-colors duration-200" suppressHydrationWarning>
-        <Script
-          id="theme-switcher"
-          strategy="beforeInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function() {
-                try {
-                  var theme = localStorage.getItem('theme');
-                  if (theme === 'light') {
-                    document.documentElement.classList.add('light');
-                  } else {
-                    document.documentElement.classList.remove('light');
-                  }
-                } catch (e) {}
-              })();
-            `,
-          }}
-        />
-        {children}
-        <LiveChatWidget />
-      </body>
-    </html>
+    <ViewTransitions>
+      <html lang="en" suppressHydrationWarning className={`${inter.variable} ${spaceGrotesk.variable}`}>
+        <head>
+          <link rel="icon" href="/fav icon.png" type="image/png" />
+        </head>
+        <body className="antialiased min-h-screen bg-background text-foreground transition-colors duration-200" suppressHydrationWarning>
+          <Script
+            id="theme-switcher"
+            strategy="beforeInteractive"
+            dangerouslySetInnerHTML={{
+              __html: `
+                (function() {
+                  try {
+                    var theme = localStorage.getItem('theme');
+                    if (theme === 'light') {
+                      document.documentElement.classList.add('light');
+                    } else {
+                      document.documentElement.classList.remove('light');
+                    }
+                  } catch (e) {}
+                })();
+              `,
+            }}
+          />
+          {/* Slim amber progress bar on every page navigation */}
+          <NextTopLoader
+            color="#FBBF24"
+            initialPosition={0.08}
+            crawlSpeed={200}
+            height={3}
+            crawl={true}
+            showSpinner={false}
+            easing="ease"
+            speed={200}
+            shadow="0 0 10px #FBBF24,0 0 5px #FBBF24"
+          />
+          {children}
+          <LiveChatWidget />
+        </body>
+      </html>
+    </ViewTransitions>
   );
 }
