@@ -3,7 +3,7 @@ import Script from 'next/script';
 import type { Metadata } from "next";
 import { Inter, Space_Grotesk } from 'next/font/google';
 import "./globals.css";
-import dynamic from 'next/dynamic';
+import LiveChatWidget from '@/components/LiveChatWidget';
 import { ViewTransitions } from 'next-view-transitions';
 import NextTopLoader from 'nextjs-toploader';
 
@@ -20,11 +20,6 @@ const spaceGrotesk = Space_Grotesk({
   weight: ['400', '500', '600', '700'],
   display: 'swap',
   variable: '--font-space-grotesk',
-});
-
-// Lazy-loaded so it never blocks initial page render
-const LiveChatWidget = dynamic(() => import('@/components/LiveChatWidget'), {
-  ssr: false,
 });
 
 export const metadata: Metadata = {
